@@ -1,3 +1,2 @@
-= DRAFT OGC CityGML 3.0 Executable Test Suite
-
+= Prototype Executable Test Suite for the OGC CityGML 3.0 Part 2 GML Encoding
 
