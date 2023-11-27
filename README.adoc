@@ -1,1 +1,3 @@
-CityGML 3.0 GML Encoding Executable Test Suite
+= DRAFT OGC CityGML 3.0 Executable Test Suite
+
+
