@@ -18,11 +18,17 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
 
+import org.apache.xerces.dom.DeferredElementNSImpl;
 import org.apache.xerces.util.XMLCatalogResolver;
 import org.opengis.cite.citygml30part2.Namespaces;
 import org.opengis.cite.validation.SchematronValidator;
+import org.opengis.cite.validation.XmlSchemaCompiler;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.ls.LSResourceResolver;
+import org.xml.sax.SAXException;
 
 /**
  * A utility class that provides convenience methods to support schema
@@ -159,4 +165,59 @@ public class ValidationUtils {
         }
         return schemaURIs;
     }
+
+    public static Schema createMultipleSchema(String[] arrXsdPath) {
+        URL entityCatalog = ValidationUtils.class.getResource(ROOT_PKG
+                + "schema-catalog.xml");
+        XmlSchemaCompiler xsdCompiler = new XmlSchemaCompiler(entityCatalog);
+        Schema wpsSchema = null;
+        try {
+        	Source[] arrSource = new Source[arrXsdPath.length];
+        	for (int i = 0; i<arrXsdPath.length; i++) {
+        		String xsdPath = arrXsdPath[i]; 
+        		URL schemaURL = ValidationUtils.class.getResource(ROOT_PKG
+                        + xsdPath);
+        		Source xsdSource = new StreamSource(schemaURL.toString());
+        		arrSource[i] = xsdSource;
+			}
+            
+            wpsSchema = xsdCompiler
+                    .compileXmlSchema(arrSource);
+        } catch (SAXException e) {
+            TestSuiteLogger.log(Level.WARNING,
+                    "Failed to create WFS Schema object.", e);
+        }
+        return wpsSchema;
+    }
+
+    public static String getXmlns(String ns) {
+        String CITYGML_NS = "http://www.opengis.net/citygml/";
+        if (ns.toLowerCase().equals("core"))
+            return CITYGML_NS + "3.0";
+        return CITYGML_NS + ns.toLowerCase() + "/3.0";
+    }
+
+    public static boolean elementValidation(Document doc, String moduleName) {
+        String moduleNS = getXmlns(moduleName);
+        NodeList rootElementList = doc.getChildNodes();
+
+        boolean foundAtLeastOne = false;
+        for(int a=0; a<rootElementList.getLength(); a++) {
+            String itemClassName = rootElementList.item(a).getClass().toString();
+
+            if(itemClassName.equals("class org.apache.xerces.dom.DeferredElementNSImpl")) {
+                DeferredElementNSImpl element = (DeferredElementNSImpl) rootElementList.item(a);
+
+                boolean containCityModelAndNS = element.getLocalName().equals("CityModel") && element.getNamespaceURI().equals("http://www.opengis.net/citygml/3.0");
+                if(containCityModelAndNS) {
+                    NodeList nodeList = element.getElementsByTagNameNS(moduleNS, moduleName);
+                    if(nodeList.getLength()>0) {
+                        foundAtLeastOne = true;
+                    }
+                }
+            }
+        }
+        return foundAtLeastOne;
+    }
+
 }

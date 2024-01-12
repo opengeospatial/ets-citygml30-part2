@@ -1,5 +1,6 @@
 package org.opengis.cite.citygml30part2.util;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
@@ -25,6 +26,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.Validator;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -45,10 +49,12 @@ import net.sf.saxon.s9api.XsltCompiler;
 import net.sf.saxon.s9api.XsltExecutable;
 import net.sf.saxon.s9api.XsltTransformer;
 
+import org.opengis.cite.citygml30part2.CityGMLNameSpaceResolver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * Provides various utility methods for accessing or manipulating XML
@@ -407,4 +413,92 @@ public class XMLUtils {
         }
         return nodes;
     }
+
+    /**
+	 * Transform XML Document to UTF-8 String
+	 * @param xmlDoc The XML Document
+	 * @return A String data type of XML Document
+	 * @throws Exception TransformerConfigurationException, TransformerException
+	 */
+	public static String TransformXMLDocumentToXMLString(Document xmlDoc) throws Exception {
+		Transformer tf = TransformerFactory.newInstance().newTransformer();
+		tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+		tf.setOutputProperty(OutputKeys.INDENT, "yes");
+		Writer out = new StringWriter();
+		tf.transform(new DOMSource(xmlDoc), new StreamResult(out));
+		return out.toString();
+	}
+
+    public static boolean isMultipleXMLSchemaValid(String xmlString, String[] arrXsdPath) {
+		try {
+			Schema schema = ValidationUtils.createMultipleSchema(arrXsdPath);
+			Validator validator = schema.newValidator();
+			validator.validate(new StreamSource(new StringReader(xmlString)));
+		} catch (IOException | SAXException e) {
+			System.out.println("Exception: " + e.getMessage());
+			return false;
+		}
+		return true;
+	}
+
+    public static boolean isMultipleXMLSchemaValid(Document doc, ArrayList<String> arrayList) throws Exception{
+        String[] arrayXsdPath = new String[arrayList.size()];
+        arrayList.toArray(arrayXsdPath);
+        return isMultipleXMLSchemaValid(doc, arrayXsdPath);
+    }
+
+    public static boolean isMultipleXMLSchemaValid(Document doc, String[] arrXsdPath) throws Exception{
+        try {
+            String str = XMLUtils.TransformXMLDocumentToXMLString(doc);
+            return isMultipleXMLSchemaValid(str, arrXsdPath);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    public static boolean hasChildWithAttribute(Element element, String attributeName) {
+        NodeList childNodes = element.getChildNodes();
+        for (int j = 0; j < childNodes.getLength(); j++) {
+            Node childNode = childNodes.item(j);
+            if (childNode instanceof Element && ((Element) childNode).hasAttribute(attributeName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public static XPath getDocumentXPath(Document doc) {
+        XPathFactory xpathfactory = XPathFactory.newInstance();
+        XPath xpath = xpathfactory.newXPath();
+        xpath.setNamespaceContext(new CityGMLNameSpaceResolver(doc));
+        return xpath;
+    }
+
+    /**
+     * Return a NodeList of all Element nodes that match the XPath expression
+     * @param doc Document of XML Source
+     * @param expression XPath expression
+     * @return NodeList of Element nodes that match the XPath expression
+     */
+    public static NodeList getNodeListByXPath(Document doc, String expression) {
+        try {
+            XPath xpath = getDocumentXPath(doc);
+            NodeList nodes = (NodeList) xpath.evaluate(expression, doc, XPathConstants.NODESET);
+            return nodes;
+        } catch (Exception exception) {
+            System.out.println("Exception: " + exception.getMessage());
+            return null;
+        }
+    }
+
+    public static Node getNodeByXPath(Document doc, String expression) {
+        try {
+            XPath xpath = getDocumentXPath(doc);
+            Node nodes = (Node) xpath.evaluate(expression, doc, XPathConstants.NODE);
+            return nodes;
+        } catch (Exception exception) {
+            System.out.println("Exception: " + exception.getMessage());
+            return null;
+        }
+    }
+    
 }
