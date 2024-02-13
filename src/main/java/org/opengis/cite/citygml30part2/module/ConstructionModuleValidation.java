@@ -9,35 +9,31 @@ import org.w3c.dom.NodeList;
 
 import static org.opengis.cite.citygml30part2.util.ValidationUtils.getXmlns;
 
-public class BuildingModuleValidation extends CommonFixture {
+public class ConstructionModuleValidation  extends CommonFixture {
     final boolean MODULE_ENABLE = false;
-    String MODULE_NAME = "Building";
+    String MODULE_NAME = "Construction";
 
     @Test(enabled = MODULE_ENABLE)
-    public void verifyBuildingModule() throws Exception{
+    public void verifyConstructionModule() throws Exception{
         boolean foundAtLeastOne = ValidationUtils.elementValidation(this.testSubject, MODULE_NAME);
         Assert.assertTrue(foundAtLeastOne,"No "+MODULE_NAME+" element was found in the document.");
     }
 
     @Test(enabled = MODULE_ENABLE)
-    public void verifyBuildingElementBoundaries() {
+    public void verifyConstructionBoundaries() {
         String moduleNS = getXmlns(MODULE_NAME);
-        String[] moduleElementNameList = {
-                "AbstractBuilding", "AbstractBuildingSubdivision", "Building","BuildingConstructiveElement",
-                "BuildingFurniture", "BuildingInstallation", "BuildingPart", "BuildingRoom",
-                "BuildingUnit", "Storey"};
+        String[] moduleElementNameList = { "AbstractConstruction", "AbstractConstructiveElement", "AbstractFillingElement", "AbstractFurniture", "AbstractInstallation", "Door", "OtherConstruction", "Window" };
         String sb = String.join(", ", moduleElementNameList);
 
         NodeList rootElementList = this.testSubject.getChildNodes();
 
         boolean foundAtLeastOne = false;
 
-        for(int i=0; i<rootElementList.getLength(); i++)
-        {
+        for (int i=0; i<rootElementList.getLength(); i++) {
             DeferredElementNSImpl element = (DeferredElementNSImpl) rootElementList.item(i);
-            for(int j = 0 ; j< moduleElementNameList.length; j++) {
+            for (int j = 0 ; j< moduleElementNameList.length; j++) {
                 NodeList nodeList = element.getElementsByTagNameNS(moduleNS, moduleElementNameList[j]);
-                if(nodeList.getLength()>0) {
+                if (nodeList.getLength() > 0) {
                     foundAtLeastOne = true;
                 }
             }

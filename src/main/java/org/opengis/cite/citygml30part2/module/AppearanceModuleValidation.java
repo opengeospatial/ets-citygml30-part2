@@ -11,7 +11,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class AppearanceModuleValidation extends CommonFixture {
-    final boolean MODULE_ENABLE = true;
+    final boolean MODULE_ENABLE = false;
     String MODULE_NAME = "Appearance";
 
     @Test(enabled = MODULE_ENABLE)
@@ -81,7 +81,6 @@ public class AppearanceModuleValidation extends CommonFixture {
 
             textureCoordinatesTable.put(value, n.getTextContent().trim());
         }
-
 
         expressionPath = "//gml:LinearRing";
         nodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionPath);

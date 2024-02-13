@@ -24,5 +24,31 @@
       <class name="org.opengis.cite.citygml30part2.module.AppearanceModuleValidation" />
     </classes>
   </test>
+  <test name="Bridge Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.BridgeModuleValidation" />
+    </classes>
+  </test>
+  <test name="Building Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.BuildingModuleValidation" />
+    </classes>
+  </test>
+  <test name="CityObjectGroup Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.CityObjectGroupModuleValidation" />
+    </classes>
+  </test>
+  <test name="Dynamizer Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.DynamizerModuleValidation" />
+    </classes>
+  </test>
+  <test name="CityFurniture Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.CityFurnitureModuleValidation" />
+    </classes>
+  </test>
+
   <!-- Add test sets for other conformance classes/levels -->
 </suite>

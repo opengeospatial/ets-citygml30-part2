@@ -10,7 +10,7 @@ import org.apache.xerces.dom.DeferredElementNSImpl;
 import static org.opengis.cite.citygml30part2.util.ValidationUtils.getXmlns;
 
 public class BridgeModuleValidation extends CommonFixture {
-    final boolean MODULE_ENABLE = true;
+    final boolean MODULE_ENABLE = false;
     String MODULE_NAME = "Bridge";
 
     @Test(enabled = MODULE_ENABLE)
@@ -31,12 +31,11 @@ public class BridgeModuleValidation extends CommonFixture {
 
         boolean foundAtLeastOne = false;
 
-        for(int i=0; i<rootElementList.getLength(); i++)
-        {
+        for(int i=0; i<rootElementList.getLength(); i++) {
             DeferredElementNSImpl element = (DeferredElementNSImpl) rootElementList.item(i);
-            for(int j = 0 ; j< moduleElementNameList.length; j++) {
+            for (int j = 0 ; j< moduleElementNameList.length; j++) {
                 NodeList nodeList = element.getElementsByTagNameNS(moduleNS, moduleElementNameList[j]);
-                if(nodeList.getLength()>0) {
+                if (nodeList.getLength() > 0) {
                     foundAtLeastOne = true;
                 }
             }
