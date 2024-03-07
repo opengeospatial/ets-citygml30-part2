@@ -7,29 +7,24 @@ import org.opengis.cite.citygml30part2.util.XMLUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
 
 import static org.opengis.cite.citygml30part2.util.ValidationUtils.getXmlns;
 
-public class CityObjectGroupModuleValidation extends CommonFixture {
+public class TransportationModuleValidation extends CommonFixture {
     final boolean MODULE_ENABLE = false;
-    String MODULE_NAME = "CityObjectGroup";
+    String MODULE_NAME = "Transportation";
 
     @Test(enabled = MODULE_ENABLE)
-    public void verifyBridgeModule() throws Exception{
+    public void verifyTransportationModule() throws Exception{
         boolean foundAtLeastOne = ValidationUtils.elementValidation(this.testSubject, MODULE_NAME);
         Assert.assertTrue(foundAtLeastOne,"No "+MODULE_NAME+" element was found in the document.");
     }
 
     @Test(enabled = MODULE_ENABLE)
-    public void VerifyCityObjectGroupReference() {
+    public void VerifyTransportationReference() {
         try {
-            String expressionProperty = "//grp:parent";
+            String expressionProperty = "//tran:predecessor";
             String shouldHasAttribute = "xlink:href";
             NodeList result = XMLUtils.getNodeListByXPath(this.testSubject, expressionProperty);
             boolean isValid = true;
@@ -50,7 +45,7 @@ public class CityObjectGroupModuleValidation extends CommonFixture {
                 }
             }
             if (isValid) {
-                expressionProperty = "//grp:groupMember";
+                expressionProperty = "//tran:successor";
                 result = XMLUtils.getNodeListByXPath(this.testSubject, expressionProperty);
                 for (int i = 0; i < result.getLength(); i++) {
                     Element n = (Element) result.item(i);
@@ -77,8 +72,8 @@ public class CityObjectGroupModuleValidation extends CommonFixture {
     }
 
     @Test(enabled = MODULE_ENABLE)
-    public void verifyCityObjectGroupElementBoundaries() throws Exception {
-        String[] allowedBoundaries = { "core:ClosureSurface","gen:GenericThematicSurface" };
+    public void verifyTransportationBoundaries() throws Exception {
+        String[] allowedBoundaries = { "tran:Marking","core:ClosureSurface","gen:GenericThematicSurface","tran:AuxiliaryTrafficArea","tran:HoleSurface","tran:TrafficArea" };
         boolean foundAtLeastOne = ValidationUtils.boundriesValidation(this.testSubject, allowedBoundaries);
         Assert.assertTrue(foundAtLeastOne,"None of Allowed Boundaries elements was found in the document.");
     }

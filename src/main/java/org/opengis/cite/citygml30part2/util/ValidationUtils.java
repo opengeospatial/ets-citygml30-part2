@@ -19,13 +19,17 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
 
 import org.apache.xerces.dom.DeferredElementNSImpl;
 import org.apache.xerces.util.XMLCatalogResolver;
 import org.opengis.cite.citygml30part2.Namespaces;
 import org.opengis.cite.validation.SchematronValidator;
 import org.opengis.cite.validation.XmlSchemaCompiler;
+import org.testng.Assert;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
@@ -194,6 +198,7 @@ public class ValidationUtils {
         String CITYGML_NS = "http://www.opengis.net/citygml/";
         if (ns.toLowerCase().equals("core"))
             return CITYGML_NS + "3.0";
+
         return CITYGML_NS + ns.toLowerCase() + "/3.0";
     }
 
@@ -220,4 +225,29 @@ public class ValidationUtils {
         return foundAtLeastOne;
     }
 
+    public static boolean boundriesValidation(Document doc, String[] allowedBoundaries){
+        String expression = "//*[local-name()='boundary']";
+        try {
+            XPath xpath = XMLUtils.getCityGMLXPath();
+
+            NodeList boundaryNodes = (NodeList) xpath.evaluate(expression, doc, XPathConstants.NODESET);
+
+            boolean foundAtLeastOne = false;
+            for (int i = 0; i < boundaryNodes.getLength() && !foundAtLeastOne ; i++) {
+                Node currentNode = boundaryNodes.item(i);
+                for (String expr : allowedBoundaries) {
+                    expression = ".//" + expr;
+                    NodeList child = (NodeList) xpath.evaluate(expression, currentNode, XPathConstants.NODESET);
+                    if (child.getLength() > 0) {
+                        foundAtLeastOne = true;
+                        break;
+                    }
+                }
+            }
+            return foundAtLeastOne;
+        } catch(Exception e) {
+            System.out.println(e);
+            return false;
+        }
+    }
 }

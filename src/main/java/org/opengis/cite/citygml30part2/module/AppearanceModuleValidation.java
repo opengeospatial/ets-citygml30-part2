@@ -86,15 +86,13 @@ public class AppearanceModuleValidation extends CommonFixture {
         nodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionPath);
         for (int i = 0; i < nodes.getLength(); i++) {
             Element n = (Element) nodes.item(i);
-            if(!n.hasAttributeNS("http://www.opengis.net/gml","id"))
-            {
+            if (!n.hasAttributeNS("http://www.opengis.net/gml","id")) {
                 continue; //only check those linearings that are associated with texturecoordinates
             }
 
             String value = n.getAttributeNS("http://www.opengis.net/gml","id");
 
-            if(!textureCoordinatesTable.containsKey("#"+value))
-            {
+            if(!textureCoordinatesTable.containsKey("#"+value)) {
                 continue; //only check those linearings that are associated with texturecoordinates
             }
 

@@ -101,4 +101,29 @@ public class NamespaceBindings implements NamespaceContext {
     public String toString() {
         return "NamespaceBindings:\n" + bindings;
     }
+
+    public static Map<String, String> getNamespaceMap() {
+        HashMap<String, String> cityGmlMap = new HashMap<>();
+
+        cityGmlMap.put("http://www.opengis.net/citygml/appearance/3.0", "app");
+        cityGmlMap.put("http://www.opengis.net/citygml/bridge/3.0", "brid");
+        cityGmlMap.put("http://www.opengis.net/citygml/building/3.0", "bldg");
+        cityGmlMap.put("http://www.opengis.net/citygml/pointcloud/3.0", "pcl");
+        cityGmlMap.put("http://www.opengis.net/citygml/cityfurniture/3.0", "frn");
+        cityGmlMap.put("http://www.opengis.net/citygml/cityobjectgroup/3.0", "grp");
+        cityGmlMap.put("http://www.opengis.net/citygml/construction/3.0", "con");
+        cityGmlMap.put("http://www.opengis.net/citygml/3.0", "core");
+        cityGmlMap.put("http://www.opengis.net/citygml/dynamizer/3.0", "dyn");
+        cityGmlMap.put("http://www.opengis.net/citygml/generics/3.0", "gen");
+        cityGmlMap.put("http://www.opengis.net/citygml/landuse/3.0", "luse");
+        cityGmlMap.put("http://www.opengis.net/citygml/relief/3.0", "dem");
+        cityGmlMap.put("http://www.opengis.net/citygml/transportation/3.0", "tran");
+        cityGmlMap.put("http://www.opengis.net/citygml/tunnel/3.0", "tun");
+        cityGmlMap.put("http://www.opengis.net/citygml/vegetation/3.0", "veg");
+        cityGmlMap.put("http://www.opengis.net/citygml/versioning/3.0", "vers");
+        cityGmlMap.put("http://www.opengis.net/citygml/waterbody/3.0", "wtr");
+
+        return cityGmlMap;
+    }
+
 }

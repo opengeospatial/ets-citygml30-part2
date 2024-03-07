@@ -1,17 +1,11 @@
 package org.opengis.cite.citygml30part2.util;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import net.sf.saxon.s9api.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,11 +13,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -33,28 +23,10 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
-import net.sf.saxon.s9api.DOMDestination;
-import net.sf.saxon.s9api.DocumentBuilder;
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.XPathCompiler;
-import net.sf.saxon.s9api.XPathSelector;
-import net.sf.saxon.s9api.XQueryCompiler;
-import net.sf.saxon.s9api.XQueryEvaluator;
-import net.sf.saxon.s9api.XQueryExecutable;
-import net.sf.saxon.s9api.XdmNode;
-import net.sf.saxon.s9api.XdmValue;
-import net.sf.saxon.s9api.XsltCompiler;
-import net.sf.saxon.s9api.XsltExecutable;
-import net.sf.saxon.s9api.XsltTransformer;
-
-import org.opengis.cite.citygml30part2.CityGMLNameSpaceResolver;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import java.io.*;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Provides various utility methods for accessing or manipulating XML
@@ -466,10 +438,15 @@ public class XMLUtils {
         return false;
     }
     
-    public static XPath getDocumentXPath(Document doc) {
+    public static XPath getCityGMLXPath() {
         XPathFactory xpathfactory = XPathFactory.newInstance();
         XPath xpath = xpathfactory.newXPath();
-        xpath.setNamespaceContext(new CityGMLNameSpaceResolver(doc));
+
+        Map<String, String> namespaceBindings = NamespaceBindings.getNamespaceMap();
+
+        NamespaceBindings bindings = NamespaceBindings.withStandardBindings();
+        bindings.addAllBindings(namespaceBindings);
+        xpath.setNamespaceContext(bindings);
         return xpath;
     }
 
@@ -481,7 +458,7 @@ public class XMLUtils {
      */
     public static NodeList getNodeListByXPath(Document doc, String expression) {
         try {
-            XPath xpath = getDocumentXPath(doc);
+            XPath xpath = getCityGMLXPath();
             NodeList nodes = (NodeList) xpath.evaluate(expression, doc, XPathConstants.NODESET);
             return nodes;
         } catch (Exception exception) {
@@ -492,7 +469,7 @@ public class XMLUtils {
 
     public static Node getNodeByXPath(Document doc, String expression) {
         try {
-            XPath xpath = getDocumentXPath(doc);
+            XPath xpath = getCityGMLXPath();
             Node nodes = (Node) xpath.evaluate(expression, doc, XPathConstants.NODE);
             return nodes;
         } catch (Exception exception) {
