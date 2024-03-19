@@ -49,6 +49,51 @@
       <class name="org.opengis.cite.citygml30part2.module.CityFurnitureModuleValidation" />
     </classes>
   </test>
+  <test name="Construction Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.ConstructionModuleValidation" />
+    </classes>
+  </test>
+  <test name="Generics Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.GenericsModuleValidation" />
+    </classes>
+  </test>
+  <test name="LandUse Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.LandUseModuleValidation" />
+    </classes>
+  </test>
+  <test name="PointCloud Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.PointCloudModuleValidation" />
+    </classes>
+  </test>
+  <test name="Relief Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.ReliefModuleValidation" />
+    </classes>
+  </test>
+  <test name="Transportation Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.TransportationModuleValidation" />
+    </classes>
+  </test>
+  <test name="Vegetation Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.VegetationModuleValidation" />
+    </classes>
+  </test>
+  <test name="Versioning Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.VersioningModuleValidation" />
+    </classes>
+  </test>
+  <test name="WaterBody Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.WaterBodyModuleValidation" />
+    </classes>
+  </test>
 
   <!-- Add test sets for other conformance classes/levels -->
 </suite>
