@@ -9,7 +9,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class VersioningModuleValidation  extends CommonFixture {
-    final boolean MODULE_ENABLE = false;
+    final boolean MODULE_ENABLE = true;
     String MODULE_NAME = "Versioning";
 
     @Test(enabled = MODULE_ENABLE)

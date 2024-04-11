@@ -6,7 +6,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class VegetationModuleValidation  extends CommonFixture {
-    final boolean MODULE_ENABLE = false;
+    final boolean MODULE_ENABLE = true;
     String MODULE_NAME = "Vegetation";
 
     @Test(enabled = MODULE_ENABLE)

@@ -9,7 +9,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 public class DynamizerModuleValidation extends CommonFixture {
-    final boolean MODULE_ENABLE = false;
+    final boolean MODULE_ENABLE = true;
     String MODULE_NAME = "Dynamizer";
 
     @Test(enabled = MODULE_ENABLE)

@@ -12,7 +12,7 @@ import org.w3c.dom.NodeList;
 import static org.opengis.cite.citygml30part2.util.ValidationUtils.getXmlns;
 
 public class TransportationModuleValidation extends CommonFixture {
-    final boolean MODULE_ENABLE = false;
+    final boolean MODULE_ENABLE = true;
     String MODULE_NAME = "Transportation";
 
     @Test(enabled = MODULE_ENABLE)

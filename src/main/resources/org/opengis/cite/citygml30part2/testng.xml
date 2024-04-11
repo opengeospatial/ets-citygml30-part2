@@ -10,14 +10,25 @@
     <listener class-name="org.opengis.cite.citygml30part2.TestFailureListener" />
   </listeners>
 
-  <test name="Core Validation">
-    <packages>
-      <package name="org.opengis.cite.citygml30part2.core" />
-    </packages>
+  <test name="Global Validation">
     <classes>
-      <!-- <class name="org.opengis.cite.citygml30part2.core.CoreValidation" /> -->
+      <class name="org.opengis.cite.citygml30part2.global.GlobalValidation" />
     </classes>
   </test>
+  <test name="Core Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.core.CoreValidation" />
+    </classes>
+  </test>
+
+<!--  <test name="Core Validation">-->
+<!--    <packages>-->
+<!--      <package name="org.opengis.cite.citygml30part2.core" />-->
+<!--    </packages>-->
+<!--    <classes>-->
+<!--      &lt;!&ndash; <class name="org.opengis.cite.citygml30part2.core.CoreValidation" /> &ndash;&gt;-->
+<!--    </classes>-->
+<!--  </test>-->
 
   <test name="Appearance Validation">
     <classes>
@@ -94,6 +105,10 @@
       <class name="org.opengis.cite.citygml30part2.module.WaterBodyModuleValidation" />
     </classes>
   </test>
-
+  <test name="Tunnel Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.TunnelModuleValidation" />
+    </classes>
+  </test>
   <!-- Add test sets for other conformance classes/levels -->
 </suite>

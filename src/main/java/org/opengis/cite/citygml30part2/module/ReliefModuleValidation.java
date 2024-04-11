@@ -6,7 +6,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class ReliefModuleValidation extends CommonFixture {
-    final boolean MODULE_ENABLE = false;
+    final boolean MODULE_ENABLE = true;
     String MODULE_NAME = "Relief";
 
     @Test(enabled = MODULE_ENABLE)

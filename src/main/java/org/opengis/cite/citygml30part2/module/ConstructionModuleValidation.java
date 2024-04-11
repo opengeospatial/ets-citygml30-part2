@@ -15,7 +15,7 @@ import javax.xml.xpath.XPathConstants;
 import static org.opengis.cite.citygml30part2.util.ValidationUtils.getXmlns;
 
 public class ConstructionModuleValidation  extends CommonFixture {
-    final boolean MODULE_ENABLE = false;
+    final boolean MODULE_ENABLE = true;
     String MODULE_NAME = "Construction";
 
     @Test(enabled = MODULE_ENABLE)

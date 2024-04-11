@@ -17,7 +17,7 @@ import javax.xml.xpath.XPathExpressionException;
 import static org.opengis.cite.citygml30part2.util.ValidationUtils.getXmlns;
 
 public class CityObjectGroupModuleValidation extends CommonFixture {
-    final boolean MODULE_ENABLE = false;
+    final boolean MODULE_ENABLE = true;
     String MODULE_NAME = "CityObjectGroup";
 
     @Test(enabled = MODULE_ENABLE)

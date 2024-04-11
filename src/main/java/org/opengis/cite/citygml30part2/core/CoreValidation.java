@@ -12,7 +12,7 @@ import org.w3c.dom.NodeList;
 import static org.opengis.cite.citygml30part2.util.SchemaPathConst.XSD_CORE;
 
 public class CoreValidation extends CommonFixture {
-    final boolean CORE_ENABLE = false;
+    final boolean CORE_ENABLE = true;
     String MODULE_NAME = "Core";
 
     @Test(enabled = CORE_ENABLE)
