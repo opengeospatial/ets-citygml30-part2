@@ -12,12 +12,25 @@ public class VersioningModuleValidation  extends CommonFixture {
     final boolean MODULE_ENABLE = true;
     String MODULE_NAME = "Versioning";
 
+    /**
+     * <p>Verify that instance documents using the Versioning XML elements listed in <a href="https://docs.ogc.org/is/21-006r2/21-006r2.html#versioning-xml-elements">Table 29</a> validate against the XML schema specified in <a href="http://schemas.opengis.net/citygml/versioning/3.0/versioning.xsd">versioning.xsd</a>.</p>
+     */
     @Test(enabled = MODULE_ENABLE)
-    public void verifyVersioningModule() throws Exception{
+    public void verifyVersioningModule() {
         boolean foundAtLeastOne = ValidationUtils.elementValidation(this.testSubject, MODULE_NAME);
         Assert.assertTrue(foundAtLeastOne,"No "+MODULE_NAME+" element was found in the document.");
     }
 
+    /**
+     * <p>For the following properties, verify that:</p>
+     * <ul>
+     * <li><p>If the <em>from</em> property (type: <em>gml:ReferenceType</em>) of the <em>VersionTransition</em> element is not null, it only contains an XLink reference to a <em>Version</em> element.</p></li>
+     * <li><p>If the <em>to</em> property (type: <em>gml:ReferenceType</em>) of the <em>VersionTransition</em> element is not null, it only contains an XLink reference to a <em>Version</em> element.</p></li>
+     * <li><p>If the <em>oldFeature</em> property (type: <em>gml:ReferenceType</em>) of the <em>Transaction</em> element is not null, it only contains an XLink reference to a <em>core:AbstractFeatureWithLifespan</em> element.</p></li>
+     * <li><p>If the <em>newFeature</em> property (type: <em>gml:ReferenceType</em>) of the <em>Transaction</em> element is not null, it only contains an XLink reference to a <em>core:AbstractFeatureWithLifespan</em> element.</p></li>
+     * <li><p>If the <em>versionMember</em> property (type: <em>gml:AbstractFeatureMemberType</em>) of the <em>Version</em> element is not null, it only  contains an XLink reference to a <em>core:AbstractFeatureWithLifespan</em> element.</p></li>
+     * </ul>
+     */
     @Test(enabled = MODULE_ENABLE)
     public void VerifyVersioningReference() {
         try {

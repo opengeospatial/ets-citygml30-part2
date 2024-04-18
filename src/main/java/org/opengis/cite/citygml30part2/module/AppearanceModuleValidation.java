@@ -14,23 +14,20 @@ public class AppearanceModuleValidation extends CommonFixture {
     final boolean MODULE_ENABLE = true;
     String MODULE_NAME = "Appearance";
 
+    /**
+     * CityGML XML elements implemented by a conforming instance document shall conform to the XML schema in <a href="http://schemas.opengis.net/citygml/appearance/3.0/appearance.xsd">appearance.xsd</a>.
+     */
     @Test(enabled = MODULE_ENABLE)
-    public void verifyAppearanceModule() throws Exception{
+    public void verifyAppearanceModule(){
         boolean foundAtLeastOne = ValidationUtils.elementValidation(this.testSubject, MODULE_NAME);
         Assert.assertTrue(foundAtLeastOne,"No "+MODULE_NAME+" element was found in the document.");
     }
 
     /**
-     * Requirement 11
-        /req/appearance/target
-        Surface data SHALL only be applied to surface geometries.
-        The target property of a surface data element therefore SHALL only reference a subtype of gml:AbstractSurfaceType or a gml:MultiSurface.
-        
-        Verify that surface data is only applied to surface geometries. 
-        The target property of a surface data element therefore only references a subtype of gml:AbstractSurfaceType or a gml:MultiSurface.
+     * Surface data SHALL only be applied to surface geometries. The target property of a surface data element therefore SHALL only reference a subtype of gml:AbstractSurfaceType or a gml:MultiSurface.
      */
-    @Test(enabled = MODULE_ENABLE, dependsOnMethods = { "verifyAppearanceModule" })
-    public void VerifyAppearanceTarget() throws Exception {
+    @Test(enabled = MODULE_ENABLE)
+    public void VerifyAppearanceTarget() {
         String expressionTarget = "//app:target/text()";
         NodeList nodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionTarget);
         boolean flag = true;
@@ -53,7 +50,18 @@ public class AppearanceModuleValidation extends CommonFixture {
         Assert.assertTrue(flag,MODULE_NAME+" reference invalid.");
     }
 
-    @Test(enabled = MODULE_ENABLE, dependsOnMethods = { "verifyAppearanceModule" })
+    /**
+     * Assigning texture coordinates to a surface geometry using ParameterizedTexture elements is subject to the following restrictions:
+     * <ul>
+     *     <li>A: Texture coordinates given by the textureCoordinates property of the TexCoordList element define an explicit mapping of a surface’s boundary points to points in texture space. A point in texture space SHALL be given as a coordinate pair consisting of two doubles.</li>
+     *     <li>B: The textureCoordinates and ring properties of a TexCoordList element form pairs and their order is decisive. The first textureCoordinates property in the sequence forms a pair with the first ring property in the sequence, the second textureCoordinates property forms a pair with the second ring property, and so on. As a consequence, the number of textureCoordinates and ring properties SHALL be identical.</li>
+     *     <li>C: A TexCoordList element SHALL provide textureCoordinates for all gml:LinearRing elements contained in the surface geometry that is referenced by the target property of the embracing TextureAssociation. This explicitly includes both exterior and interior rings.</li>
+     *     <li>D: The ring property (type: anyURI) SHALL reference the gml:id of the target gml:LinearRing using an appropriate XPointer.</li>
+     *     <li>E: Each point in a ring of a surface geometry SHALL receive a point in texture space. The number of 2D points in the textureCoordinates element therefore SHALL be identical with the number of 3D points in the ring referenced by the corresponding ring property. This explicitly includes texture coordinates for the last point in a gml:LinearRing element which, by GML definition, must be coincident with the first point.</li>
+     *     <li>F: The order of points in the textureCoordinates SHALL follow the order of the points in the referenced ring element as given in the CityGML document regardless of a possibly flipped surface orientation.</li>
+     * </ul>
+     */
+    @Test(enabled = MODULE_ENABLE)
     public void VerifyAppearanceParameterizedTexture() {
         String expressionPath = "//app:textureCoordinates[@ring]";
         NodeList nodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionPath);

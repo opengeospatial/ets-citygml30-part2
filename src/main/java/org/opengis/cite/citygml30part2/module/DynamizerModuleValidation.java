@@ -12,12 +12,18 @@ public class DynamizerModuleValidation extends CommonFixture {
     final boolean MODULE_ENABLE = true;
     String MODULE_NAME = "Dynamizer";
 
+    /**
+     * <p>Verify that instance documents using the Dynamizer XML elements listed in <a href="https://docs.ogc.org/is/21-006r2/21-006r2.html#dynamizer-xml-elements">Table 17</a> validate against the XML schema specified in <a href="http://schemas.opengis.net/citygml/dynamizer/3.0/dynamizer.xsd">dynamizer.xsd</a>.</p>
+     */
     @Test(enabled = MODULE_ENABLE)
-    public void verifyDynamizerModule() throws Exception{
+    public void verifyDynamizerModule() {
         boolean foundAtLeastOne = ValidationUtils.elementValidation(this.testSubject, MODULE_NAME);
         Assert.assertTrue(foundAtLeastOne,"No "+MODULE_NAME+" element was found in the document.");
     }
 
+    /**
+     * <p>Verify that if the <em>sensorLocation</em> property (type: <em>gml:ReferenceType</em>) of the <em>SensorConnection</em> element is not null, it contains an XLink reference to a <em>core:AbstractCityObject</em> element.</p>
+     */
     @Test(enabled = MODULE_ENABLE)
     public void VerifyDynamizerReference() {
         try {
@@ -49,6 +55,20 @@ public class DynamizerModuleValidation extends CommonFixture {
         }
     }
 
+    /**
+     * <p>When referencing a feature property value using the <em>attributeRef</em> property of a <em>Dynamizer</em> element, verify that:</p>
+     * <ul>
+     * <li>
+     * <p>The <em>attributeRef</em> property (type: <em>xs:string</em>) references a feature property value using XPath.</p>
+     * </li>
+     * <li>
+     * <p>The feature property referenced by the <em>attributeRef</em> property exists.</p>
+     * </li>
+     * <li>
+     * <p>The data type of the timeseries data provided by a <em>Dynamizer</em> element is equal to the data type of the static value of the feature property that is referenced by the <em>attributeRef</em> property or is of a type that can be converted to the type of the feature property without information loss.</p>
+     * </li>
+     * </ul>
+     */
     @Test(enabled = MODULE_ENABLE)
     public void VerifyDynamizerAttributeRef() {
         String expressionProperty = "//dyn:attributeRef";
