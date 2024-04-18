@@ -49,17 +49,30 @@
   <properties>
     <ets-code>citygml30-part2</ets-code>
     <spec-version>1.0</spec-version>
-    <docker.teamengine.version>5.4</docker.teamengine.version>
+    <docker.teamengine.version>5.7</docker.teamengine.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.opengis.cite.teamengine</groupId>
       <artifactId>teamengine-spi</artifactId>
+      <version>5.7</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>xercesImpl</artifactId>
+          <groupId>xerces</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.opengis.cite</groupId>
       <artifactId>schema-utils</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>xercesImpl</artifactId>
+          <groupId>xerces</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.sun.jersey</groupId>
