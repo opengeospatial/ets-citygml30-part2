@@ -20,16 +20,6 @@
       <class name="org.opengis.cite.citygml30part2.core.CoreValidation" />
     </classes>
   </test>
-
-<!--  <test name="Core Validation">-->
-<!--    <packages>-->
-<!--      <package name="org.opengis.cite.citygml30part2.core" />-->
-<!--    </packages>-->
-<!--    <classes>-->
-<!--      &lt;!&ndash; <class name="org.opengis.cite.citygml30part2.core.CoreValidation" /> &ndash;&gt;-->
-<!--    </classes>-->
-<!--  </test>-->
-
   <test name="Appearance Validation">
     <classes>
       <class name="org.opengis.cite.citygml30part2.module.AppearanceModuleValidation" />

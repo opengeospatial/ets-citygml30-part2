@@ -2,46 +2,49 @@
 
 == Scope
 
-This executable test suite (ETS) verifies the conformance of the implementation
-under test (IUT) with respect to the set of relevant specifications depicted in
-Figure 1. Conformance testing is a kind of "black box" testing that examines the
-externally visible characteristics or behaviors of the IUT while disregarding
-any implementation details.
+This Standard documents the OGC GML Implementation Specification (IS) for the CityGML 3.0 Conceptual Model. The CityGML 3.0 conceptual model is a Platform Independent Model (PIM). It defines concepts in a manner which is independent of any implementing technology. As such, the CityGML Conceptual Model cannot be implemented directly. Rather, it serves as the base for Platform Specific Models (PSM). A PSM adds to the PIM the technology-specific details needed to fully define the CityGML model for use with a specific technology. The PSM can then be used to generate the schema and other artifacts needed to build CityGML 3.0 implementations.
 
-.Relevant specifications
-[caption="Figure 1: "]
-image::img/specifications.png[]
-
-
+This standard defines the PSMs and schemas for the CityGML 3.0 Implementation Specification (IS) for Geography Markup Language (GML) implementations. The GML schemas are explained in an overview and design decisions that have been made are documented as well.
 
 Several conformance classes are defined in the principal specifications; the ones
 listed below are covered by this test suite:
 
-* Class A
-   - List capabilities of conformance class A
-* Class B
-    - List capabilities of conformance class B
+* Annex A: Conformance Class Abstract Test Suite
+    - A.1. Conformance Class Global
+    - A.2. Conformance Class Core
+    - A.3. Conformance Class Appearance
+    - A.4. Conformance Class Bridge
+    - A.5. Conformance Class Building
+    - A.6. Conformance Class CityFurniture
+    - A.7. Conformance Class CityObjectGroup
+    - A.8. Conformance Class Construction
+    - A.9. Conformance Class Dynamizer
+    - A.10. Conformance Class Generics
+    - A.11. Conformance Class LandUse
+    - A.12. Conformance Class PointCloud
+    - A.13. Conformance Class Relief
+    - A.14. Conformance Class Transportation
+    - A.15. Conformance Class Tunnel
+    - A.16. Conformance Class Vegetation
+    - A.17. Conformance Class Versioning
+    - A.18. Conformance Class WaterBody
+
+#The Conformance Class Global Module has 1 missing requirement (https://github.com/opengeospatial/ets-citygml30-part2/issues/21 [Issue 21]), which will be implemented in the next stage if possible.#
 
 == Test requirements
 
-The documents listed below stipulate requirements that must be satisfied by a 
+The documents listed below stipulate requirements that must be satisfied by a
 conforming implementation.
 
-1. http://www.w3.org/TR/WCAG20/[Web Content Accessibility Guidelines (WCAG) 2.0]
-2. http://www.w3.org/TR/xml/[Extensible Markup Language (XML) 1.0, Fifth Edition]
-3. https://tools.ietf.org/html/rfc7231)[RFC 7231] - Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content
+The documents listed below stipulate requirements that must be satisfied by a conforming implementation.
 
-If any of the following preconditions are not satisfied then all tests in the
-suite will be marked as skipped.
-
-1. Precondition 1
-2. Precondition 2
+1. https://docs.ogc.org/is/21-006r2/21-006r2.html[OGC City Geography Markup Language (CityGML) Part 2: GML Encoding Standard]
 
 == Test suite structure
 
-The test suite definition file (testng.xml) is located in the root package, 
+The test suite definition file (testng.xml) is located in the root package,
 `org.opengis.cite.citygml30part2`. A conformance class corresponds to a &lt;test&gt; element, each
-of which includes a set of test classes that contain the actual test methods. 
+of which includes a set of test classes that contain the actual test methods.
 The general structure of the test suite is shown in Table 1.
 
 .Test suite structure
@@ -50,15 +53,63 @@ The general structure of the test suite is shown in Table 1.
 |Conformance class
 |Test classes
 
-|Conformance Level 1
-|org.opengis.cite.citygml30part2.level1.*
+|GlobalValidation
+|org.opengis.cite.citygml30part2.global.GlobalValidation
 
-|Conformance Level 2
-|org.opengis.cite.citygml30part2.level2.*
+|CoreValidation
+|org.opengis.cite.citygml30part2.core.CoreValidation
+
+|AppearanceModuleValidation
+|org.opengis.cite.citygml30part2.module.AppearanceModuleValidation
+
+| Appearance Module
+| org.opengis.cite.citygml30part2.module.AppearanceModuleValidation
+
+| BuildingModuleValidation
+| org.opengis.cite.citygml30part2.module.BuildingModuleValidation
+
+| BridgeModuleValidation
+| org.opengis.cite.citygml30part2.module.BridgeModuleValidation
+
+| CityObjectGroupModuleValidation
+| org.opengis.cite.citygml30part2.module.CityObjectGroupModuleValidation
+
+| DynamizerModuleValidation
+| org.opengis.cite.citygml30part2.module.DynamizerModuleValidation
+
+| ConstructionModuleValidation
+| org.opengis.cite.citygml30part2.module.ConstructionModuleValidation
+
+| GenericsModuleValidation
+| org.opengis.cite.citygml30part2.module.GenericsModuleValidation
+
+| LandUseModuleValidation
+| org.opengis.cite.citygml30part2.module.LandUseModuleValidation
+
+| PointCloudModuleValidation
+| org.opengis.cite.citygml30part2.module.PointCloudModuleValidation
+
+| ReliefModuleValidation
+| org.opengis.cite.citygml30part2.module.ReliefModuleValidation
+
+| TransportationModuleValidation
+| org.opengis.cite.citygml30part2.module.TransportationModuleValidation
+
+| VegetationModuleValidation
+| org.opengis.cite.citygml30part2.module.VegetationModuleValidation
+
+| VersioningModuleValidation
+| org.opengis.cite.citygml30part2.module.VersioningModuleValidation
+
+| WaterBodyModuleValidation
+| org.opengis.cite.citygml30part2.module.WaterBodyModuleValidation
+
+| TunnelModuleValidation
+| org.opengis.cite.citygml30part2.module.TunnelModuleValidation
 
 |===
 
-The Javadoc documentation provides more detailed information about the test 
+The Javadoc documentation provides more detailed information about the test
 methods that constitute the suite.
 
 include::how-to-run-the-tests.adoc[]
@@ -80,10 +131,5 @@ The _Obligation_ descriptor can have the following values: M (mandatory), O (opt
 |URI
 |M
 |A URI that refers to the implementation under test or metadata about it. Ampersand ('&amp;') characters must be percent-encoded as '%26'.
-
-|ics
-|A comma-separated list of string values.
-|O
-|An implementation conformance statement that indicates which conformance classes or options are supported.
 
 |===
