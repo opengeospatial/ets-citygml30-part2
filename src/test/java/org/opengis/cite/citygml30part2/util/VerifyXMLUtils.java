@@ -28,10 +28,6 @@ import org.xml.sax.SAXException;
  * Verifies the behavior of the XMLUtils class.
  */
 public class VerifyXMLUtils {
-
-    private static final String ATOM_NS = "http://www.w3.org/2005/Atom";
-    private static final String EX_NS = "http://example.org/ns1";
-
     private static final String GML_NS = "http://www.opengis.net/gml/3.2";
     private static final String CORE_NS = "http://www.opengis.net/citygml/3.0";
 
