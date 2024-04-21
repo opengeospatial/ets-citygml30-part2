@@ -45,8 +45,7 @@ public class VerifyETSAssert {
         URL url = this.getClass().getResource("/Gamma.xml");
         Schema schema = factory.newSchema();
         Validator validator = schema.newValidator();
-        ETSAssert
-                .assertSchemaValid(validator, new StreamSource(url.toString()));
+        ETSAssert.assertSchemaValid(validator, new StreamSource(url.toString()));
     }
 
     @Test

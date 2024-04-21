@@ -20,7 +20,7 @@ public class GlobalValidation extends CommonFixture {
      * @throws Exception
      */
     @Test(enabled = GLOBAL_ENABLE)
-    public void verifyCityGMLinstanceDoc() throws Exception {
+    public void verifyCityGMLInstanceDoc() throws Exception {
         ArrayList<String> arrayList = GetToValidateXsdPathArrayList(this.testSubject);
         boolean result = XMLUtils.isMultipleXMLSchemaValid(this.testSubject, arrayList);
         Assert.assertTrue(result, "Invalid CityGML Instance Document");

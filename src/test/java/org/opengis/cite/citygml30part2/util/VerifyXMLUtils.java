@@ -3,6 +3,8 @@ package org.opengis.cite.citygml30part2.util;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -14,6 +16,7 @@ import net.sf.saxon.trans.XPathException;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -28,6 +31,10 @@ public class VerifyXMLUtils {
 
     private static final String ATOM_NS = "http://www.w3.org/2005/Atom";
     private static final String EX_NS = "http://example.org/ns1";
+
+    private static final String GML_NS = "http://www.opengis.net/gml/3.2";
+    private static final String CORE_NS = "http://www.opengis.net/citygml/3.0";
+
     private static DocumentBuilder docBuilder;
 
     public VerifyXMLUtils() {
@@ -42,49 +49,45 @@ public class VerifyXMLUtils {
 
     @Test
     public void writeDocToString() throws SAXException, IOException {
-        Document doc = docBuilder.parse(this.getClass().getResourceAsStream(
-                "/atom-feed.xml"));
+        Document doc = docBuilder.parse(this.getClass().getResourceAsStream("/LocalCRS_CityGML3.gml"));
         String content = XMLUtils.writeNodeToString(doc);
-        Assert.assertTrue("String should start with '<feed'",
-                content.startsWith("<feed"));
+        // Regular expression to match XML comments
+        Matcher matcher = Pattern.compile("<!--(.*?)-->", Pattern.DOTALL).matcher(content);
+        content =  matcher.replaceAll("");
+        Assert.assertTrue("String should start with '<core:CityModel'", content.startsWith("<core:CityModel"));
     }
 
     @Test
-    public void evaluateXPathExpression_match()
-            throws XPathExpressionException, SAXException, IOException {
-        Document doc = docBuilder.parse(this.getClass().getResourceAsStream(
-                "/atom-feed.xml"));
-        String expr = "/tns:feed/tns:author[ns1:phone]";
+    public void evaluateXPathExpression_match() throws XPathExpressionException, SAXException, IOException {
+        Document doc = docBuilder.parse(this.getClass().getResourceAsStream("/LocalCRS_CityGML3.gml"));
         Map<String, String> nsBindings = new HashMap<String, String>();
-        nsBindings.put(ATOM_NS, "tns");
-        nsBindings.put(EX_NS, "ns1");
+        nsBindings.put(CORE_NS, "core");
+        nsBindings.put(GML_NS, "gml");
+        String expr = "//core:engineeringCRS/gml:EngineeringCRS";
         NodeList results = XMLUtils.evaluateXPath(doc, expr, nsBindings);
         Assert.assertTrue("Expected 1 node in results.",
                 results.getLength() == 1);
-        Assert.assertEquals("author", results.item(0).getLocalName());
+        Assert.assertEquals("EngineeringCRS", results.item(0).getLocalName());
     }
 
     @Test
-    public void evaluateXPathExpression_noMatch()
-            throws XPathExpressionException, SAXException, IOException {
-        Document doc = docBuilder.parse(this.getClass().getResourceAsStream(
-                "/atom-feed.xml"));
-        String expr = "/tns:feed/tns:author[ns1:blog]";
+    public void evaluateXPathExpression_noMatch() throws XPathExpressionException, SAXException, IOException {
+        Document doc = docBuilder.parse(this.getClass().getResourceAsStream("/LocalCRS_CityGML3.gml"));
         Map<String, String> nsBindings = new HashMap<String, String>();
-        nsBindings.put(ATOM_NS, "tns");
-        nsBindings.put(EX_NS, "ns1");
+        nsBindings.put(CORE_NS, "core");
+        nsBindings.put(GML_NS, "gml");
+        String expr = "//core:engineeringCRS/gml:EngineeringCRS2";
         NodeList results = XMLUtils.evaluateXPath(doc, expr, nsBindings);
+
         Assert.assertTrue("Expected empty results.", results.getLength() == 0);
     }
 
     @Test(expected = XPathExpressionException.class)
-    public void evaluateXPathExpression_booleanResult()
-            throws XPathExpressionException, SAXException, IOException {
-        Document doc = docBuilder.parse(this.getClass().getResourceAsStream(
-                "/atom-feed.xml"));
-        String expr = "count(//tns:entry) > 0";
+    public void evaluateXPathExpression_booleanResult() throws XPathExpressionException, SAXException, IOException {
+        Document doc = docBuilder.parse(this.getClass().getResourceAsStream("/LocalCRS_CityGML3.gml"));
+        String expr = "count(//core:cityObjectMember) > 0";
         Map<String, String> nsBindings = new HashMap<String, String>();
-        nsBindings.put(ATOM_NS, "tns");
+        nsBindings.put(CORE_NS, "core");
         NodeList results = XMLUtils.evaluateXPath(doc, expr, nsBindings);
         Assert.assertNull(results);
     }
@@ -99,31 +102,25 @@ public class VerifyXMLUtils {
     }
 
     @Test
-    public void evaluateXPath2ExpressionAgainstDocument() throws SAXException,
-            IOException, SaxonApiException, XPathException {
-        Document doc = docBuilder.parse(this.getClass().getResourceAsStream(
-                "/atom-feed.xml"));
-        String expr = "matches(//tns:entry/tns:title, '.*Robots')";
+    public void evaluateXPath2ExpressionAgainstDocument() throws SAXException, IOException, SaxonApiException, XPathException {
+        Document doc = docBuilder.parse(this.getClass().getResourceAsStream("/LocalCRS_CityGML3.gml"));
+        String expr = "matches(//gml:EngineeringCRS/gml:description, 'engineering')";
         Map<String, String> nsBindings = new HashMap<String, String>();
-        nsBindings.put(ATOM_NS, "tns");
-        XdmValue result = XMLUtils.evaluateXPath2(new DOMSource(doc), expr,
-                nsBindings);
+        nsBindings.put(GML_NS, "gml");
+        XdmValue result = XMLUtils.evaluateXPath2(new DOMSource(doc), expr, nsBindings);
         Assert.assertTrue("Expected non-empty result.", result.size() > 0);
         Assert.assertEquals("Result has unexpected string value.", "true",
                 result.getUnderlyingValue().getStringValue());
     }
 
     @Test
-    public void evaluateXPath2ExpressionAgainstElement() throws SAXException,
-            IOException, SaxonApiException, XPathException {
-        Document doc = docBuilder.parse(this.getClass().getResourceAsStream(
-                "/atom-feed.xml"));
-        Node entry = doc.getElementsByTagNameNS(ATOM_NS, "entry").item(0);
-        String expr = "matches(tns:title, '.*Robots')";
+    public void evaluateXPath2ExpressionAgainstElement() throws SAXException, IOException, SaxonApiException, XPathException {
+        Document doc = docBuilder.parse(this.getClass().getResourceAsStream("/LocalCRS_CityGML3.gml"));
+        Node entry = doc.getElementsByTagNameNS(GML_NS, "EngineeringCRS").item(0);
+        String expr = "matches(gml:description, 'engineering')";
         Map<String, String> nsBindings = new HashMap<String, String>();
-        nsBindings.put(ATOM_NS, "tns");
-        XdmValue result = XMLUtils.evaluateXPath2(new DOMSource(entry), expr,
-                nsBindings);
+        nsBindings.put(GML_NS, "gml");
+        XdmValue result = XMLUtils.evaluateXPath2(new DOMSource(entry), expr, nsBindings);
         Assert.assertTrue("Expected non-empty result.", result.size() > 0);
         Assert.assertEquals("Result has unexpected string value.", "true",
                 result.getUnderlyingValue().getStringValue());
