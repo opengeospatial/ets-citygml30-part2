@@ -33,11 +33,11 @@ public class VerifyValidationUtils {
     @Test
     public void extractRelativeSchemaReference() throws FileNotFoundException,
             XMLStreamException {
-        File xmlFile = new File("src/test/resources/Alpha-1.xml");
+        File xmlFile = new File("src/test/resources/LocalCRS_CityGML3.gml");
         Set<URI> xsdSet = ValidationUtils.extractSchemaReferences(
                 new StreamSource(xmlFile), null);
         URI schemaURI = xsdSet.iterator().next();
         assertTrue("Expected schema reference */xsd/alpha.xsd", schemaURI
-                .toString().endsWith("/xsd/alpha.xsd"));
+                .toString().endsWith("building.xsd"));
     }
 }

@@ -20,8 +20,9 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 public class VerifyETSAssert {
+    private static final String GML_NS = "http://www.opengis.net/gml/3.2";
+    private static final String CORE_NS = "http://www.opengis.net/citygml/3.0";
 
-    private static final String WADL_NS = "http://wadl.dev.java.net/2009/02";
     private static DocumentBuilder docBuilder;
     private static SchemaFactory factory;
     @Rule
@@ -45,18 +46,25 @@ public class VerifyETSAssert {
         URL url = this.getClass().getResource("/Gamma.xml");
         Schema schema = factory.newSchema();
         Validator validator = schema.newValidator();
-        ETSAssert
-                .assertSchemaValid(validator, new StreamSource(url.toString()));
+        ETSAssert.assertSchemaValid(validator, new StreamSource(url.toString()));
     }
 
     @Test
     public void assertXPathWithNamespaceBindings() throws SAXException,
             IOException {
-        Document doc = docBuilder.parse(this.getClass().getResourceAsStream(
-                "/capabilities-simple.xml"));
+        Document doc = docBuilder.parse(this.getClass().getResourceAsStream("/LocalCRS_CityGML3.gml"));
         Map<String, String> nsBindings = new HashMap<String, String>();
-        nsBindings.put(WADL_NS, "ns1");
-        String xpath = "//ns1:resources";
+        nsBindings.put(GML_NS, "gml");
+        String xpath = "//gml:description";
+        ETSAssert.assertXPath(xpath, doc, nsBindings);
+    }
+
+    @Test
+    public void assertXPath_expectTrue() throws SAXException, IOException {
+        Document doc = docBuilder.parse(this.getClass().getResourceAsStream("/LocalCRS_CityGML3.gml"));
+        Map<String, String> nsBindings = new HashMap<String, String>();
+        nsBindings.put(GML_NS, "gml");
+        String xpath = "//*/gml:EngineeringCRS[@gml:id='local-CRS-1']/gml:scope = 'CityGML'";
         ETSAssert.assertXPath(xpath, doc, nsBindings);
     }
 
@@ -64,10 +72,10 @@ public class VerifyETSAssert {
     public void assertXPath_expectFalse() throws SAXException, IOException {
         thrown.expect(AssertionError.class);
         thrown.expectMessage("Unexpected result evaluating XPath expression");
-        Document doc = docBuilder.parse(this.getClass().getResourceAsStream(
-                "/capabilities-simple.xml"));
-        // using built-in namespace binding
-        String xpath = "//ows:OperationsMetadata/ows:Constraint[@name='XMLEncoding']/ows:DefaultValue = 'TRUE'";
-        ETSAssert.assertXPath(xpath, doc, null);
+        Document doc = docBuilder.parse(this.getClass().getResourceAsStream("/LocalCRS_CityGML3.gml"));
+        Map<String, String> nsBindings = new HashMap<String, String>();
+        nsBindings.put(GML_NS, "gml");
+        String xpath = "//*/gml:EngineeringCRS[@gml:id='local-CRS-1']/gml:scope = 'NOTCityGML'";
+        ETSAssert.assertXPath(xpath, doc, nsBindings);
     }
 }

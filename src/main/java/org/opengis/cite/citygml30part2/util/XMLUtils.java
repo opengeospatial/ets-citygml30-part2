@@ -66,7 +66,7 @@ public class XMLUtils {
         try {
             Transformer idTransformer = TransformerFactory.newInstance().newTransformer();
             Properties outProps = new Properties();
-            outProps.setProperty(OutputKeys.ENCODING, "US-ASCII");
+            outProps.setProperty(OutputKeys.ENCODING, "UTF-8");
             outProps.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             outProps.setProperty(OutputKeys.INDENT, "yes");
             idTransformer.setOutputProperties(outProps);

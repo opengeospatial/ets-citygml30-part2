@@ -185,8 +185,7 @@ public class ValidationUtils {
         		arrSource[i] = xsdSource;
 			}
             
-            wpsSchema = xsdCompiler
-                    .compileXmlSchema(arrSource);
+            wpsSchema = xsdCompiler.compileXmlSchema(arrSource);
         } catch (SAXException e) {
             TestSuiteLogger.log(Level.WARNING,
                     "Failed to create WFS Schema object.", e);
