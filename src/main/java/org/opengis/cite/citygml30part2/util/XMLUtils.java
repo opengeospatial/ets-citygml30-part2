@@ -401,14 +401,15 @@ public class XMLUtils {
 		return out.toString();
 	}
 
-    public static boolean isMultipleXMLSchemaValid(String xmlString, String[] arrXsdPath) {
+    public static boolean isMultipleXMLSchemaValid(String xmlString, String[] arrXsdPath) throws Exception {
 		try {
 			Schema schema = ValidationUtils.createMultipleSchema(arrXsdPath);
 			Validator validator = schema.newValidator();
 			validator.validate(new StreamSource(new StringReader(xmlString)));
 		} catch (IOException | SAXException e) {
 			System.out.println("Exception: " + e.getMessage());
-			return false;
+            String s = "Exception: " + e.getMessage();
+            throw new Exception(s);
 		}
 		return true;
 	}

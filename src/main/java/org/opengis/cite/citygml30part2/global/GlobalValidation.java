@@ -1,5 +1,7 @@
 package org.opengis.cite.citygml30part2.global;
 
+import org.apache.xerces.dom.DeferredAttrNSImpl;
+import org.apache.xerces.dom.DeferredElementNSImpl;
 import org.opengis.cite.citygml30part2.CommonFixture;
 import org.opengis.cite.citygml30part2.util.XMLUtils;
 import org.testng.Assert;
@@ -22,8 +24,16 @@ public class GlobalValidation extends CommonFixture {
     @Test(enabled = GLOBAL_ENABLE)
     public void verifyCityGMLInstanceDoc() throws Exception {
         ArrayList<String> arrayList = GetToValidateXsdPathArrayList(this.testSubject);
-        boolean result = XMLUtils.isMultipleXMLSchemaValid(this.testSubject, arrayList);
-        Assert.assertTrue(result, "Invalid CityGML Instance Document");
+        boolean result;
+        String exceptionMessage = "";
+        try {
+            result = XMLUtils.isMultipleXMLSchemaValid(this.testSubject, arrayList);
+        }
+        catch (Exception e) {
+            exceptionMessage = e.getMessage();
+            result = false;
+        }
+        Assert.assertTrue(result, "Invalid CityGML Instance Document. " + exceptionMessage);
     }
 
     /**
@@ -35,25 +45,21 @@ public class GlobalValidation extends CommonFixture {
     public void verifyGlobalReferencingGeometries1() throws Exception {
         String xlinkAttribute = "xlink:href";
         String findReferenceExpression = "//*/@" + xlinkAttribute;
-        boolean onlyContainImplicit = true;
+        boolean exist = true;
 
         NodeList xlinkNodeList = XMLUtils.getNodeListByXPath(this.testSubject, findReferenceExpression);
         for (int i = 0; i < xlinkNodeList.getLength(); i++) {
-            Element n = (Element) xlinkNodeList.item(i);
-
-            String hrefName = n.getAttribute(xlinkAttribute);
+            DeferredAttrNSImpl n = (DeferredAttrNSImpl) xlinkNodeList.item(i);
+            String hrefName = n.getValue();
 
             hrefName = hrefName.replace("#","");
             String gmlIdItem = "//*[@gml:id='"+hrefName+"']";
-            NodeList targetNode = XMLUtils.getNodeListByXPath(this.testSubject, findReferenceExpression);
-            for (int j = 0; j < targetNode.getLength(); j++) {
-                Node node = targetNode.item(j);
-                if (!node.getLocalName().contains("ImplicitGeometry")) {
-                    onlyContainImplicit = false;
-                }
+            NodeList targetNode = XMLUtils.getNodeListByXPath(this.testSubject, gmlIdItem);
+            if (!(targetNode.getLength() > 0)) {
+                exist = false;
             }
         }
-        Assert.assertTrue(onlyContainImplicit,"XLinks SHALL NOT be used to reference geometries, except for geometries of ImplicitGeometry elements, from another top-level feature..");
+        Assert.assertTrue(exist,"XLinks SHALL NOT be used to reference geometries, except for geometries of ImplicitGeometry elements, from another top-level feature..");
     }
 
     /**
@@ -115,10 +121,14 @@ public class GlobalValidation extends CommonFixture {
             NodeList childrens = parent.getChildNodes();
             int numChildElements = 0;
             for (int j = 0; j < childrens.getLength(); j++) {
-                Node child = childrens.item(j);
-                if (child.getNodeType() == Node.ELEMENT_NODE) {
-                    numChildElements++;
+                String itemClassName = childrens.item(j).getClass().toString();
+
+                if(itemClassName.equals("class org.apache.xerces.dom.DeferredElementNSImpl")) {
+                    DeferredElementNSImpl element = (DeferredElementNSImpl) childrens.item(j);
+                    if (element.hasAttribute("xlink:href"))
+                        numChildElements++ ;
                 }
+
             }
             if (numChildElements > 1)
                 selfContainedStatus = false;
