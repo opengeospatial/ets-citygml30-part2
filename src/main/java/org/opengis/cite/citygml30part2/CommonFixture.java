@@ -154,6 +154,7 @@ public class CommonFixture {
         hashMap.put(getXmlns("VEGETATION"), XSD_VEGETATION);
         hashMap.put(getXmlns("VERSIONING"), XSD_VERSIONING);
         hashMap.put(getXmlns("WATERBODY"), XSD_WATERBODY);
+        hashMap.put("urn:oasis:names:tc:ciq:xal:3", "xsd/opengis/citygml/schema/xAL/xAL.xsd");
 		//
 
         Element rootElement = doc.getDocumentElement();
@@ -170,7 +171,9 @@ public class CommonFixture {
 				}
 			}
 		}
-
+        arrayList.add("xsd/opengis/citygml/schema/CityGML.xsd");
+        arrayList.add("xsd/opengis/gml/3.2.1/gml-3.2.1.xsd");
+        /*arrayList.add("xsd/opengis/gml/3.2/gml-3.2.2.xsd");*/
 		return arrayList;
 	}
 

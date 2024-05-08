@@ -205,23 +205,30 @@ public class ValidationUtils {
         String moduleNS = getXmlns(moduleName);
         NodeList rootElementList = doc.getChildNodes();
 
-        boolean foundAtLeastOne = false;
+        boolean validElement = false;
         for(int a=0; a<rootElementList.getLength(); a++) {
             String itemClassName = rootElementList.item(a).getClass().toString();
 
             if(itemClassName.equals("class org.apache.xerces.dom.DeferredElementNSImpl")) {
                 DeferredElementNSImpl element = (DeferredElementNSImpl) rootElementList.item(a);
 
-                boolean containCityModelAndNS = element.getLocalName().equals("CityModel") && element.getNamespaceURI().equals("http://www.opengis.net/citygml/3.0");
-                if(containCityModelAndNS) {
-                    NodeList nodeList = element.getElementsByTagNameNS(moduleNS, moduleName);
-                    if(nodeList.getLength()>0) {
-                        foundAtLeastOne = true;
+                boolean containCityModel = element.getLocalName().equals("CityModel");
+                boolean nsEqual = element.getNamespaceURI().equals(getXmlns("Core"));
+                if(containCityModel && nsEqual) {
+                    if (moduleName != "Core") {
+                        String prefix = NamespaceBindings.getNameSpacePrefix(moduleNS);
+                        String expr = "//" + prefix + ":"+ moduleName;
+                        NodeList nodeList = XMLUtils.getNodeListByXPath(doc, expr);
+                        if (nodeList.getLength() > 0) {
+                            validElement = true;
+                        }
+                    } else {
+                        validElement = true;
                     }
                 }
             }
         }
-        return foundAtLeastOne;
+        return validElement;
     }
 
     public static boolean boundriesValidation(Document doc, String[] allowedBoundaries){
@@ -230,6 +237,9 @@ public class ValidationUtils {
             XPath xpath = XMLUtils.getCityGMLXPath();
 
             NodeList boundaryNodes = (NodeList) xpath.evaluate(expression, doc, XPathConstants.NODESET);
+            // No boundary need to validate
+            if (boundaryNodes.getLength() == 0)
+                return true;
 
             boolean foundAtLeastOne = false;
             for (int i = 0; i < boundaryNodes.getLength() && !foundAtLeastOne ; i++) {

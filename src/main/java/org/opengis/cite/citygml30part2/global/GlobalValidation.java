@@ -68,7 +68,6 @@ public class GlobalValidation extends CommonFixture {
      */
     @Test(enabled = GLOBAL_ENABLE)
     public void verifyGlobalReferencingGeometries2() {
-        String xlinkAttribute = "xlink:href";
         String spaceGeometriesExpr = "//*:spaceType";
         NodeList spaceGeometries = XMLUtils.getNodeListByXPath(this.testSubject, spaceGeometriesExpr);
         boolean spaceStatus = true;
@@ -77,7 +76,12 @@ public class GlobalValidation extends CommonFixture {
         NodeList boundaryGeometries = XMLUtils.getNodeListByXPath(this.testSubject, boundaryGeometriesExpr);
         boolean boundaryStatus = true;
 
-        for (int i = 0; i < boundaryGeometries.getLength(); i++) {
+        // No boundary need to validate
+        if (spaceGeometries == null || boundaryGeometries == null) {
+            return;
+        }
+
+        for (int i = 0; i < boundaryGeometries.getLength() ; i++) {
             String boundaryGeomId = boundaryGeometries.item(i).getAttributes().getNamedItem("id").getNodeValue();
             for (int j = 0; j < spaceGeometries.getLength(); j++) {
                 Node spaceGeometry = spaceGeometries.item(j);

@@ -126,4 +126,8 @@ public class NamespaceBindings implements NamespaceContext {
         return cityGmlMap;
     }
 
+    public static String getNameSpacePrefix(String ns) {
+        Map<String, String> cityGmlMap = getNamespaceMap();
+        return cityGmlMap.get(ns);
+    }
 }
