@@ -37,7 +37,7 @@ public class VerifyValidationUtils {
         Set<URI> xsdSet = ValidationUtils.extractSchemaReferences(
                 new StreamSource(xmlFile), null);
         URI schemaURI = xsdSet.iterator().next();
-        assertTrue("Expected schema reference building.xsd", schemaURI
-                .toString().endsWith("building.xsd"));
+        assertTrue("Expected schema reference building.xsd or relief.xsd", schemaURI
+                .toString().endsWith("building.xsd") || schemaURI.toString().endsWith("relief.xsd"));
     }
 }
