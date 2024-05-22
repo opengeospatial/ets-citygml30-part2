@@ -19,6 +19,7 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 
@@ -171,9 +172,7 @@ public class ValidationUtils {
     }
 
     public static Schema createMultipleSchema(String[] arrXsdPath) {
-        URL entityCatalog = ValidationUtils.class.getResource(ROOT_PKG
-                + "schema-catalog.xml");
-        XmlSchemaCompiler xsdCompiler = new XmlSchemaCompiler(entityCatalog);
+        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         Schema wpsSchema = null;
         try {
         	Source[] arrSource = new Source[arrXsdPath.length];
@@ -184,8 +183,7 @@ public class ValidationUtils {
         		Source xsdSource = new StreamSource(schemaURL.toString());
         		arrSource[i] = xsdSource;
 			}
-            
-            wpsSchema = xsdCompiler.compileXmlSchema(arrSource);
+            wpsSchema = schemaFactory.newSchema(arrSource);
         } catch (SAXException e) {
             TestSuiteLogger.log(Level.WARNING,
                     "Failed to create WFS Schema object.", e);

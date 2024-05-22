@@ -122,7 +122,7 @@ public class NamespaceBindings implements NamespaceContext {
         cityGmlMap.put("http://www.opengis.net/citygml/vegetation/3.0", "veg");
         cityGmlMap.put("http://www.opengis.net/citygml/versioning/3.0", "vers");
         cityGmlMap.put("http://www.opengis.net/citygml/waterbody/3.0", "wtr");
-
+        cityGmlMap.put("http://www.w3.org/2001/XMLSchema-instance", "xsi");
         return cityGmlMap;
     }
 
