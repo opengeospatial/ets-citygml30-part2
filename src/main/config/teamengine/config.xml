@@ -16,6 +16,7 @@
         <!-- Add basic conformance test suites -->
         <BasicConformanceClasses>
           <conformanceClass>Core Validation</conformanceClass>
+          <conformanceClass>Global Validation</conformanceClass>
         </BasicConformanceClasses>
 
       </suite>
