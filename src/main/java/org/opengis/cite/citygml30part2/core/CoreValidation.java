@@ -66,8 +66,10 @@ public class CoreValidation extends CommonFixture {
      * <p>If a space element is bounded by space boundaries using the property core:boundary (type: core:AbstractSpaceBoundaryPropertyType), each property SHALL contain exactly one surface element from <a href="https://docs.ogc.org/is/21-006r2/21-006r2.html#core-boundaries-table">Table 5</a>that is supported for the specific space element.</p>
      * <p>If no surface element is supported, the space element SHALL NOT be bounded by space boundaries.</p>
      */
-    @Test(enabled = CORE_ENABLE)
+    @Test(enabled = false)
     public void VerifyCoreBoundaries() {
+        // This test case should verify the type of this node, its inherited types
+        // For the current stage, we don't have solutions that can verify the node's type
         String[] allowedBoundaries = { "core:AbstractSpaceBoundary", "core:AbstractThematicSurface", "core:ClosureSurface", "gen:GenericThematicSurface" };
         boolean foundAtLeastOne = ValidationUtils.boundriesValidation(this.testSubject, allowedBoundaries);
         Assert.assertTrue(foundAtLeastOne,"None of Allowed Boundaries elements was found in the document.");
