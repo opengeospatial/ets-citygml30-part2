@@ -29,7 +29,7 @@ public class DynamizerModuleValidation extends CommonFixture {
         try {
             String expressionProperty = "//dyn:sensorLocation";
             String shouldHasAttribute = "xlink:href";
-            NodeList result = XMLUtils.getNodeListByXPath(this.testSubject, expressionProperty);
+            NodeList result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionProperty);
             boolean isValid = true;
 
             for (int i = 0; i < result.getLength(); i++) {
@@ -41,7 +41,7 @@ public class DynamizerModuleValidation extends CommonFixture {
                 }
                 hrefName = hrefName.replace("#","");
                 String findReferenceExpression = "//*[@gml:id='"+hrefName+"']";
-                NodeList targetNode = XMLUtils.getNodeListByXPath(this.testSubject, findReferenceExpression);
+                NodeList targetNode = XMLUtils.GetNodeListByXPath(this.testSubject, findReferenceExpression);
                 if (targetNode.getLength() <= 0) {
                     isValid = false;
                     break;
@@ -72,12 +72,12 @@ public class DynamizerModuleValidation extends CommonFixture {
     @Test(enabled = MODULE_ENABLE, groups = { "Module" })
     public void VerifyDynamizerAttributeRef() {
         String expressionProperty = "//dyn:attributeRef";
-        NodeList result = XMLUtils.getNodeListByXPath(this.testSubject, expressionProperty);
+        NodeList result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionProperty);
         boolean isValid = true;
         for (int i = 0; i < result.getLength(); i++) {
             Element n = (Element) result.item(i);
             String refXPath = n.getTextContent();
-            NodeList refNodeList = XMLUtils.getNodeListByXPath(this.testSubject, refXPath);
+            NodeList refNodeList = XMLUtils.GetNodeListByXPath(this.testSubject, refXPath);
             if (refNodeList.getLength() <= 0)
                 isValid = false;
         }

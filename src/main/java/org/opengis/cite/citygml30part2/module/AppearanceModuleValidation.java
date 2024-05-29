@@ -29,7 +29,7 @@ public class AppearanceModuleValidation extends CommonFixture {
     @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
     public void VerifyAppearanceTarget() {
         String expressionTarget = "//app:target/text()";
-        NodeList nodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionTarget);
+        NodeList nodes = XMLUtils.GetNodeListByXPath(this.testSubject, expressionTarget);
         boolean flag = true;
         for (int i = 0; i < nodes.getLength() && flag == true; i++) {
             String referenceTarget = nodes.item(i).getNodeValue().substring(1);
@@ -64,7 +64,7 @@ public class AppearanceModuleValidation extends CommonFixture {
     @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
     public void VerifyAppearanceParameterizedTexture() {
         String expressionPath = "//app:textureCoordinates[@ring]";
-        NodeList nodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionPath);
+        NodeList nodes = XMLUtils.GetNodeListByXPath(this.testSubject, expressionPath);
         boolean flag = true;
         for (int i = 0; i < nodes.getLength(); i++) {
             Element n = (Element) nodes.item(i);
@@ -82,7 +82,7 @@ public class AppearanceModuleValidation extends CommonFixture {
         Hashtable<String, String> textureCoordinatesTable = new Hashtable<String, String>();
 
         expressionPath = "//app:textureCoordinates[@ring]";
-        nodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionPath);
+        nodes = XMLUtils.GetNodeListByXPath(this.testSubject, expressionPath);
         for (int i = 0; i < nodes.getLength(); i++) {
             Element n = (Element) nodes.item(i);
             String value = n.getAttribute("ring");
@@ -91,7 +91,7 @@ public class AppearanceModuleValidation extends CommonFixture {
         }
 
         expressionPath = "//gml:LinearRing";
-        nodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionPath);
+        nodes = XMLUtils.GetNodeListByXPath(this.testSubject, expressionPath);
         for (int i = 0; i < nodes.getLength(); i++) {
             Element n = (Element) nodes.item(i);
             if (!n.hasAttributeNS("http://www.opengis.net/gml","id")) {

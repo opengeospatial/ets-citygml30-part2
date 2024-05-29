@@ -36,7 +36,7 @@ public class VersioningModuleValidation  extends CommonFixture {
         try {
             String expressionProperty = "//vers:from";
             String shouldHasAttribute = "xlink:href";
-            NodeList result = XMLUtils.getNodeListByXPath(this.testSubject, expressionProperty);
+            NodeList result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionProperty);
             boolean isValid = true;
 
             for (int i = 0; i < result.getLength(); i++) {
@@ -48,7 +48,7 @@ public class VersioningModuleValidation  extends CommonFixture {
                 }
                 hrefName = hrefName.replace("#","");
                 String findReferenceExpression = "//*[@gml:id='"+hrefName+"']";
-                NodeList targetNode = XMLUtils.getNodeListByXPath(this.testSubject, findReferenceExpression);
+                NodeList targetNode = XMLUtils.GetNodeListByXPath(this.testSubject, findReferenceExpression);
                 if (targetNode.getLength() <= 0 || targetNode.item(0).getLocalName() != "Version") {
                     isValid = false;
                     break;
@@ -57,7 +57,7 @@ public class VersioningModuleValidation  extends CommonFixture {
 
             if (isValid) {
                 expressionProperty = "//vers:to";
-                result = XMLUtils.getNodeListByXPath(this.testSubject, expressionProperty);
+                result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionProperty);
                 for (int i = 0; i < result.getLength(); i++) {
                     Element n = (Element) result.item(i);
                     String hrefName = n.getAttribute(shouldHasAttribute);
@@ -67,7 +67,7 @@ public class VersioningModuleValidation  extends CommonFixture {
                     }
                     hrefName = hrefName.replace("#","");
                     String findReferenceExpression = "//*[@gml:id='"+hrefName+"']";
-                    NodeList targetNode = XMLUtils.getNodeListByXPath(this.testSubject, findReferenceExpression);
+                    NodeList targetNode = XMLUtils.GetNodeListByXPath(this.testSubject, findReferenceExpression);
                     if (targetNode.getLength() <= 0 || targetNode.item(0).getLocalName() != "Version") {
                         isValid = false;
                         break;
@@ -77,7 +77,7 @@ public class VersioningModuleValidation  extends CommonFixture {
 
             if (isValid) {
                 expressionProperty = "//vers:oldFeature";
-                result = XMLUtils.getNodeListByXPath(this.testSubject, expressionProperty);
+                result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionProperty);
                 for (int i = 0; i < result.getLength(); i++) {
                     Element n = (Element) result.item(i);
                     String hrefName = n.getAttribute(shouldHasAttribute);
@@ -87,7 +87,7 @@ public class VersioningModuleValidation  extends CommonFixture {
                     }
                     hrefName = hrefName.replace("#","");
                     String findReferenceExpression = "//*[@gml:id='"+hrefName+"']";
-                    NodeList targetNode = XMLUtils.getNodeListByXPath(this.testSubject, findReferenceExpression);
+                    NodeList targetNode = XMLUtils.GetNodeListByXPath(this.testSubject, findReferenceExpression);
                     if (targetNode.getLength() <= 0) {
                         isValid = false;
                         break;
@@ -97,7 +97,7 @@ public class VersioningModuleValidation  extends CommonFixture {
 
             if (isValid) {
                 expressionProperty = "//vers:newFeature";
-                result = XMLUtils.getNodeListByXPath(this.testSubject, expressionProperty);
+                result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionProperty);
                 for (int i = 0; i < result.getLength(); i++) {
                     Element n = (Element) result.item(i);
                     String hrefName = n.getAttribute(shouldHasAttribute);
@@ -107,7 +107,7 @@ public class VersioningModuleValidation  extends CommonFixture {
                     }
                     hrefName = hrefName.replace("#","");
                     String findReferenceExpression = "//*[@gml:id='"+hrefName+"']";
-                    NodeList targetNode = XMLUtils.getNodeListByXPath(this.testSubject, findReferenceExpression);
+                    NodeList targetNode = XMLUtils.GetNodeListByXPath(this.testSubject, findReferenceExpression);
                     if (targetNode.getLength() <= 0) {
                         isValid = false;
                         break;
@@ -117,7 +117,7 @@ public class VersioningModuleValidation  extends CommonFixture {
 
             if (isValid) {
                 expressionProperty = "//vers:versionMember";
-                result = XMLUtils.getNodeListByXPath(this.testSubject, expressionProperty);
+                result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionProperty);
                 for (int i = 0; i < result.getLength(); i++) {
                     Element n = (Element) result.item(i);
                     String hrefName = n.getAttribute(shouldHasAttribute);
@@ -127,7 +127,7 @@ public class VersioningModuleValidation  extends CommonFixture {
                     }
                     hrefName = hrefName.replace("#","");
                     String findReferenceExpression = "//*[@gml:id='"+hrefName+"']";
-                    NodeList targetNode = XMLUtils.getNodeListByXPath(this.testSubject, findReferenceExpression);
+                    NodeList targetNode = XMLUtils.GetNodeListByXPath(this.testSubject, findReferenceExpression);
                     if (targetNode.getLength() <= 0) {
                         isValid = false;
                         break;

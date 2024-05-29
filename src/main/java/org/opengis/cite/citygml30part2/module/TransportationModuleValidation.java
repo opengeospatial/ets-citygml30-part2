@@ -1,6 +1,5 @@
 package org.opengis.cite.citygml30part2.module;
 
-import org.apache.xerces.dom.DeferredElementNSImpl;
 import org.opengis.cite.citygml30part2.CommonFixture;
 import org.opengis.cite.citygml30part2.util.ValidationUtils;
 import org.opengis.cite.citygml30part2.util.XMLUtils;
@@ -8,8 +7,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import static org.opengis.cite.citygml30part2.util.ValidationUtils.getXmlns;
 
 public class TransportationModuleValidation extends CommonFixture {
     final boolean MODULE_ENABLE = true;
@@ -40,7 +37,7 @@ public class TransportationModuleValidation extends CommonFixture {
         try {
             String expressionProperty = "//tran:predecessor";
             String shouldHasAttribute = "xlink:href";
-            NodeList result = XMLUtils.getNodeListByXPath(this.testSubject, expressionProperty);
+            NodeList result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionProperty);
             boolean isValid = true;
 
             for (int i = 0; i < result.getLength(); i++) {
@@ -52,7 +49,7 @@ public class TransportationModuleValidation extends CommonFixture {
                 }
                 hrefName = hrefName.replace("#","");
                 String findReferenceExpression = "//*[@gml:id='"+hrefName+"']";
-                NodeList targetNode = XMLUtils.getNodeListByXPath(this.testSubject, findReferenceExpression);
+                NodeList targetNode = XMLUtils.GetNodeListByXPath(this.testSubject, findReferenceExpression);
                 if (targetNode.getLength() <= 0) {
                     isValid = false;
                     break;
@@ -60,7 +57,7 @@ public class TransportationModuleValidation extends CommonFixture {
             }
             if (isValid) {
                 expressionProperty = "//tran:successor";
-                result = XMLUtils.getNodeListByXPath(this.testSubject, expressionProperty);
+                result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionProperty);
                 for (int i = 0; i < result.getLength(); i++) {
                     Element n = (Element) result.item(i);
                     String hrefName = n.getAttribute(shouldHasAttribute);
@@ -70,7 +67,7 @@ public class TransportationModuleValidation extends CommonFixture {
                     }
                     hrefName = hrefName.replace("#","");
                     String findReferenceExpression = "//*[@gml:id='"+hrefName+"']";
-                    NodeList targetNode = XMLUtils.getNodeListByXPath(this.testSubject, findReferenceExpression);
+                    NodeList targetNode = XMLUtils.GetNodeListByXPath(this.testSubject, findReferenceExpression);
                     if (targetNode.getLength() <= 0) {
                         isValid = false;
                         break;

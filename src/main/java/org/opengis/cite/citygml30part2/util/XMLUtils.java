@@ -1,10 +1,7 @@
 package org.opengis.cite.citygml30part2.util;
 
 import net.sf.saxon.s9api.*;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.namespace.QName;
@@ -27,6 +24,9 @@ import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static org.opengis.cite.citygml30part2.util.SchemaPathConst.*;
+import static org.opengis.cite.citygml30part2.util.ValidationUtils.getXmlns;
 
 /**
  * Provides various utility methods for accessing or manipulating XML
@@ -457,7 +457,7 @@ public class XMLUtils {
      * @param expression XPath expression
      * @return NodeList of Element nodes that match the XPath expression
      */
-    public static NodeList getNodeListByXPath(Document doc, String expression) {
+    public static NodeList GetNodeListByXPath(Document doc, String expression) {
         try {
             XPath xpath = getCityGMLXPath();
             NodeList nodes = (NodeList) xpath.evaluate(expression, doc, XPathConstants.NODESET);
@@ -478,5 +478,47 @@ public class XMLUtils {
             return null;
         }
     }
-    
+
+    public static ArrayList<String> GetToValidateXsdPathArrayList(Document doc){
+        //
+        HashMap<String, String> hashMap = new LinkedHashMap<String, String>();
+        hashMap.put(getXmlns("CORE"), XSD_CORE);
+        hashMap.put(getXmlns("APPEARANCE"), XSD_APPEARANCE);
+        hashMap.put(getXmlns("BRIDGE"), XSD_BRIDGE);
+        hashMap.put(getXmlns("BUILDING"), XSD_BUILDING);
+        hashMap.put(getXmlns("CITYFURNITURE"), XSD_CITYFURNITURE);
+        hashMap.put(getXmlns("CITYOBJECTGROUP"), XSD_CITYOBJECTGROUP);
+        hashMap.put(getXmlns("CONSTRUCTION"), XSD_CONSTRUCTION);
+        hashMap.put(getXmlns("DYNAMIZER"), XSD_DYNAMIZER);
+        hashMap.put(getXmlns("GENERICS"), XSD_GENERICS);
+        hashMap.put(getXmlns("LANDUSE"), XSD_LANDUSE);
+        hashMap.put(getXmlns("POINTCLOUD"), XSD_POINTCLOUD);
+        hashMap.put(getXmlns("RELIEF"), XSD_RELIEF);
+        hashMap.put(getXmlns("TRANSPORTATION"), XSD_TRANSPORTATION);
+        hashMap.put(getXmlns("TUNNEL"), XSD_TUNNEL);
+        hashMap.put(getXmlns("VEGETATION"), XSD_VEGETATION);
+        hashMap.put(getXmlns("VERSIONING"), XSD_VERSIONING);
+        hashMap.put(getXmlns("WATERBODY"), XSD_WATERBODY);
+        hashMap.put("urn:oasis:names:tc:ciq:xal:3", "xsd/opengis/citygml/schema/xAL/xAL.xsd");
+        //
+
+        Element rootElement = doc.getDocumentElement();
+        NamedNodeMap namedNodeMap = rootElement.getAttributes();
+        ArrayList<String> arrayList = new ArrayList<String>();
+        for (int i = 0; i < namedNodeMap.getLength(); i++) {
+            Node attr = namedNodeMap.item(i);
+            String attrName = attr.getNodeName();
+            String namespaceUri = attr.getNodeValue();
+            if (attrName.contains("xmlns")) {
+                if (hashMap.containsKey(namespaceUri)) {
+                    arrayList.add(hashMap.get(namespaceUri));
+                    //System.out.println(attr.getNodeName()+ " = \"" + attr.getNodeValue() + "\"");
+                }
+            }
+        }
+        arrayList.add("xsd/opengis/citygml/schema/CityGML.xsd");
+        arrayList.add("xsd/opengis/gml/3.2.1/gml-3.2.1.xsd");
+        /*arrayList.add("xsd/opengis/gml/3.2/gml-3.2.2.xsd");*/
+        return arrayList;
+    }
 }

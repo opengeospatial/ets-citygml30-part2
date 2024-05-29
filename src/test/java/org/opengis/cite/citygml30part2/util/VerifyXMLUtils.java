@@ -1,8 +1,7 @@
 package org.opengis.cite.citygml30part2.util;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.namespace.QName;
@@ -14,6 +13,7 @@ import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmValue;
 import net.sf.saxon.trans.XPathException;
 
+import org.apache.jena.base.Sys;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -136,5 +136,58 @@ public class VerifyXMLUtils {
         String result = XMLUtils.expandReferencesInText(text);
         Assert.assertEquals("Expected result to contain character é (U+00E9)",
                 "Montréal", result);
+    }
+
+    @Test
+    public void GetToValidateXsdPathArrayList_expected(){
+        boolean status;
+        try{
+            ArrayList<String> expectedSchemaList = new ArrayList<>(
+                    Arrays.asList("xsd/opengis/citygml/schema/building.xsd",
+                            "xsd/opengis/citygml/schema/construction.xsd",
+                            "xsd/opengis/citygml/schema/core.xsd",
+                            "xsd/opengis/citygml/schema/relief.xsd",
+                            "xsd/opengis/citygml/schema/xAL/xAL.xsd",
+                            "xsd/opengis/citygml/schema/CityGML.xsd",
+                            "xsd/opengis/gml/3.2.1/gml-3.2.1.xsd"));
+            Collections.sort(expectedSchemaList);
+
+            Document doc = docBuilder.parse(this.getClass().getResourceAsStream("/LocalCRS_CityGML3.gml"));
+            ArrayList<String> schemaList = XMLUtils.GetToValidateXsdPathArrayList(doc);
+            Collections.sort(schemaList);
+            Assert.assertTrue("The size of the schema list is invalid", schemaList.size() == 7);
+            Assert.assertTrue("The content of the schema list is invalid", expectedSchemaList.equals(schemaList));
+            status = true;
+        } catch (Exception e) {
+            status = false;
+        }
+        Assert.assertTrue(status);
+    }
+
+    @Test
+    public void isMultipleXMLSchemaValid_expected() throws Exception {
+        Document doc = docBuilder.parse(this.getClass().getResourceAsStream("/LocalCRS_CityGML3.gml"));
+        ArrayList<String> schemaList = XMLUtils.GetToValidateXsdPathArrayList(doc);
+
+        boolean result = XMLUtils.isMultipleXMLSchemaValid(doc, schemaList);
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void GetNodeListByXPath_expected() throws Exception {
+        Document doc = docBuilder.parse(this.getClass().getResourceAsStream("/LocalCRS_CityGML3.gml"));
+        String expression = "//*[@gml:id = 'local-CRS-1']" ;
+        NodeList lodNodeList = XMLUtils.GetNodeListByXPath(doc, expression);
+        Assert.assertTrue("Get node by xpath failed", lodNodeList.getLength() == 1);
+
+        Element element = (Element) lodNodeList.item(0);
+        Assert.assertTrue("Get node name failed", element.getNodeName().equals("gml:EngineeringCRS"));
+
+        NodeList childNodes = element.getChildNodes();
+        Assert.assertTrue("Get child node failed",childNodes.getLength() == 11);
+
+        NodeList tagname = element.getElementsByTagName("gml:identifier");
+        Assert.assertTrue("Access element failed", tagname.getLength() == 6);
+
     }
 }

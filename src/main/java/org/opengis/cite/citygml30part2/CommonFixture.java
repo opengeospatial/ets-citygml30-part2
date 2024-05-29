@@ -133,48 +133,4 @@ public class CommonFixture {
         tf.transform(new DOMSource(xmlDoc), new StreamResult(out));
         return out.toString();
     }
-
-    public ArrayList<String> GetToValidateXsdPathArrayList(Document doc){
-		//
-		HashMap<String, String> hashMap = new LinkedHashMap<String, String>();
-        hashMap.put(getXmlns("CORE"), XSD_CORE);
-        hashMap.put(getXmlns("APPEARANCE"), XSD_APPEARANCE);
-        hashMap.put(getXmlns("BRIDGE"), XSD_BRIDGE);
-        hashMap.put(getXmlns("BUILDING"), XSD_BUILDING);
-        hashMap.put(getXmlns("CITYFURNITURE"), XSD_CITYFURNITURE);
-        hashMap.put(getXmlns("CITYOBJECTGROUP"), XSD_CITYOBJECTGROUP);
-        hashMap.put(getXmlns("CONSTRUCTION"), XSD_CONSTRUCTION);
-        hashMap.put(getXmlns("DYNAMIZER"), XSD_DYNAMIZER);
-        hashMap.put(getXmlns("GENERICS"), XSD_GENERICS);
-        hashMap.put(getXmlns("LANDUSE"), XSD_LANDUSE);
-        hashMap.put(getXmlns("POINTCLOUD"), XSD_POINTCLOUD);
-        hashMap.put(getXmlns("RELIEF"), XSD_RELIEF);
-        hashMap.put(getXmlns("TRANSPORTATION"), XSD_TRANSPORTATION);
-        hashMap.put(getXmlns("TUNNEL"), XSD_TUNNEL);
-        hashMap.put(getXmlns("VEGETATION"), XSD_VEGETATION);
-        hashMap.put(getXmlns("VERSIONING"), XSD_VERSIONING);
-        hashMap.put(getXmlns("WATERBODY"), XSD_WATERBODY);
-        hashMap.put("urn:oasis:names:tc:ciq:xal:3", "xsd/opengis/citygml/schema/xAL/xAL.xsd");
-		//
-
-        Element rootElement = doc.getDocumentElement();
-		NamedNodeMap namedNodeMap = rootElement.getAttributes();
-		ArrayList<String> arrayList = new ArrayList<String>();
-		for (int i = 0; i < namedNodeMap.getLength(); i++) {
-			Node attr = namedNodeMap.item(i);
-			String attrName = attr.getNodeName();
-			String namespaceUri = attr.getNodeValue();
-			if (attrName.contains("xmlns")) {
-				if (hashMap.containsKey(namespaceUri)) {
-					arrayList.add(hashMap.get(namespaceUri));
-					//System.out.println(attr.getNodeName()+ " = \"" + attr.getNodeValue() + "\"");
-				}
-			}
-		}
-        arrayList.add("xsd/opengis/citygml/schema/CityGML.xsd");
-        arrayList.add("xsd/opengis/gml/3.2.1/gml-3.2.1.xsd");
-        /*arrayList.add("xsd/opengis/gml/3.2/gml-3.2.2.xsd");*/
-		return arrayList;
-	}
-
 }

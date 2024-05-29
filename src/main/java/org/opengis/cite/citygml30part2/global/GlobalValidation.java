@@ -10,7 +10,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.io.Console;
 import java.util.ArrayList;
 
 public class GlobalValidation extends CommonFixture {
@@ -23,7 +22,7 @@ public class GlobalValidation extends CommonFixture {
      */
     @Test(enabled = GLOBAL_ENABLE)
     public void VerifyCityGMLInstanceDoc() throws Exception {
-        ArrayList<String> arrayList = GetToValidateXsdPathArrayList(this.testSubject);
+        ArrayList<String> arrayList = XMLUtils.GetToValidateXsdPathArrayList(this.testSubject);
         boolean result;
         String exceptionMessage = "";
         try {
@@ -47,14 +46,14 @@ public class GlobalValidation extends CommonFixture {
         String findReferenceExpression = "//*/@" + xlinkAttribute;
         boolean exist = true;
 
-        NodeList xlinkNodeList = XMLUtils.getNodeListByXPath(this.testSubject, findReferenceExpression);
+        NodeList xlinkNodeList = XMLUtils.GetNodeListByXPath(this.testSubject, findReferenceExpression);
         for (int i = 0; i < xlinkNodeList.getLength(); i++) {
             DeferredAttrNSImpl n = (DeferredAttrNSImpl) xlinkNodeList.item(i);
             String hrefName = n.getValue();
 
             hrefName = hrefName.replace("#","");
             String gmlIdItem = "//*[@gml:id='"+hrefName+"']";
-            NodeList targetNode = XMLUtils.getNodeListByXPath(this.testSubject, gmlIdItem);
+            NodeList targetNode = XMLUtils.GetNodeListByXPath(this.testSubject, gmlIdItem);
             if (!(targetNode.getLength() > 0)) {
                 exist = false;
             }
@@ -75,11 +74,11 @@ public class GlobalValidation extends CommonFixture {
     @Test(enabled = GLOBAL_ENABLE)
     public void VerifyGlobalReferencingGeometries2() {
         String spaceGeometriesExpr = "//*:spaceType";
-        NodeList spaceGeometries = XMLUtils.getNodeListByXPath(this.testSubject, spaceGeometriesExpr);
+        NodeList spaceGeometries = XMLUtils.GetNodeListByXPath(this.testSubject, spaceGeometriesExpr);
         boolean spaceStatus = true;
 
         String boundaryGeometriesExpr = "//*:SpaceBoundary";
-        NodeList boundaryGeometries = XMLUtils.getNodeListByXPath(this.testSubject, boundaryGeometriesExpr);
+        NodeList boundaryGeometries = XMLUtils.GetNodeListByXPath(this.testSubject, boundaryGeometriesExpr);
         boolean boundaryStatus = true;
 
         // No boundary need to validate
@@ -114,7 +113,7 @@ public class GlobalValidation extends CommonFixture {
     public void VerifyGlobalReferencingGeometries3() {
         String lodExpr = "//*[starts-with(name(), 'lod')]";
         boolean selfContainedStatus = true;
-        NodeList lodNodeList = XMLUtils.getNodeListByXPath(this.testSubject, lodExpr);
+        NodeList lodNodeList = XMLUtils.GetNodeListByXPath(this.testSubject, lodExpr);
         for (int i = 0; i < lodNodeList.getLength(); i++) {
             Node lodNode = lodNodeList.item(i);
             Node parent = lodNode.getParentNode();
@@ -149,7 +148,7 @@ public class GlobalValidation extends CommonFixture {
     public void VerifyGlobalReferencingGeometries4() {
         String cityObjectRelationExpr = "//*/core:CityObjectRelation/core:relationType";
         boolean referenceStatus = true;
-        NodeList lodNodeList = XMLUtils.getNodeListByXPath(this.testSubject, cityObjectRelationExpr);
+        NodeList lodNodeList = XMLUtils.GetNodeListByXPath(this.testSubject, cityObjectRelationExpr);
         for (int i = 0; i < lodNodeList.getLength(); i++) {
             Node lodNode = lodNodeList.item(i);
 

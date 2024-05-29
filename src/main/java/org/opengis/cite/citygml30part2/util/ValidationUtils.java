@@ -27,8 +27,6 @@ import org.apache.xerces.dom.DeferredElementNSImpl;
 import org.apache.xerces.util.XMLCatalogResolver;
 import org.opengis.cite.citygml30part2.Namespaces;
 import org.opengis.cite.validation.SchematronValidator;
-import org.opengis.cite.validation.XmlSchemaCompiler;
-import org.testng.Assert;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -216,7 +214,7 @@ public class ValidationUtils {
                     if (moduleName != "Core") {
                         String prefix = NamespaceBindings.getNameSpacePrefix(moduleNS);
                         String expr = "//" + prefix + ":"+ moduleName;
-                        NodeList nodeList = XMLUtils.getNodeListByXPath(doc, expr);
+                        NodeList nodeList = XMLUtils.GetNodeListByXPath(doc, expr);
                         if (nodeList.getLength() > 0) {
                             validElement = true;
                         }

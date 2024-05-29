@@ -1,6 +1,5 @@
 package org.opengis.cite.citygml30part2.core;
 
-import java.util.ArrayList;
 import org.opengis.cite.citygml30part2.CommonFixture;
 import org.opengis.cite.citygml30part2.util.ValidationUtils;
 import org.opengis.cite.citygml30part2.util.XMLUtils;
@@ -8,8 +7,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import static org.opengis.cite.citygml30part2.util.SchemaPathConst.XSD_CORE;
 
 public class CoreValidation extends CommonFixture {
     final boolean CORE_ENABLE = true;
@@ -36,7 +33,7 @@ public class CoreValidation extends CommonFixture {
         try {
             String expressionGeneralizesTo = "//core:generalizesTo";
             String shouldHasAttribute = "xlink:href";
-            NodeList result = XMLUtils.getNodeListByXPath(this.testSubject, expressionGeneralizesTo);
+            NodeList result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionGeneralizesTo);
             boolean hasGmlIdAttribute = false;
             for (int i = 0; i < result.getLength(); i++) {
                 Element n = (Element) result.item(i);
@@ -47,7 +44,7 @@ public class CoreValidation extends CommonFixture {
             
             //----//
             String expressionRelatedTo = "//core:relatedTo";
-            result = XMLUtils.getNodeListByXPath(this.testSubject, expressionRelatedTo);
+            result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionRelatedTo);
             hasGmlIdAttribute = false;
             for (int i = 0; i < result.getLength(); i++) {
                 Element n = (Element) result.item(i);
