@@ -14,8 +14,8 @@ public class GenericsModuleValidation extends CommonFixture {
     /**
      * <p>Verify that instance documents using the Generics XML elements listed in <a href="https://docs.ogc.org/is/21-006r2/21-006r2.html#generics-xml-elements">Table 18</a> validate against the XML schema specified in <a href="http://schemas.opengis.net/citygml/generics/3.0/generics.xsd">generics.xsd</a>.</p>
      */
-    @Test(enabled = MODULE_ENABLE)
-    public void verifyGenericsModule() {
+    @Test(enabled = MODULE_ENABLE, groups = { "Module" })
+    public void VerifyGenericsModule() {
         boolean foundAtLeastOne = ValidationUtils.elementValidation(this.testSubject, MODULE_NAME);
         Assert.assertTrue(foundAtLeastOne,"No "+MODULE_NAME+" element was found in the document.");
     }
@@ -23,8 +23,8 @@ public class GenericsModuleValidation extends CommonFixture {
     /**
      * <p>For each Generics space element verify that if the space element is bounded by thematic surface boundaries using the property <em>core:boundary</em> (type: <em>core:AbstractSpaceBoundaryPropertyType</em>), each property contains exactly one surface element from <a href="https://docs.ogc.org/is/21-006r2/21-006r2.html#generics-boundaries-table">Table 19</a> that is supported for the specific space element. If no surface element is supported, the space element is not bounded by thematic surface boundaries.</p>
      */
-    @Test(enabled = MODULE_ENABLE)
-    public void verifyGenericsBoundaries() {
+    @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
+    public void VerifyGenericsBoundaries() {
         String[] allowedBoundaries = { "core:ClosureSurface","gen:GenericThematicSurface" };
         boolean foundAtLeastOne = ValidationUtils.boundriesValidation(this.testSubject, allowedBoundaries);
         Assert.assertTrue(foundAtLeastOne,"None of Allowed Boundaries elements was found in the document.");

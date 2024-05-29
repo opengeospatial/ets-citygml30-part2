@@ -15,8 +15,8 @@ public class VersioningModuleValidation  extends CommonFixture {
     /**
      * <p>Verify that instance documents using the Versioning XML elements listed in <a href="https://docs.ogc.org/is/21-006r2/21-006r2.html#versioning-xml-elements">Table 29</a> validate against the XML schema specified in <a href="http://schemas.opengis.net/citygml/versioning/3.0/versioning.xsd">versioning.xsd</a>.</p>
      */
-    @Test(enabled = MODULE_ENABLE)
-    public void verifyVersioningModule() {
+    @Test(enabled = MODULE_ENABLE, groups = { "Module" })
+    public void VerifyVersioningModule() {
         boolean foundAtLeastOne = ValidationUtils.elementValidation(this.testSubject, MODULE_NAME);
         Assert.assertTrue(foundAtLeastOne,"No "+MODULE_NAME+" element was found in the document.");
     }
@@ -31,7 +31,7 @@ public class VersioningModuleValidation  extends CommonFixture {
      * <li><p>If the <em>versionMember</em> property (type: <em>gml:AbstractFeatureMemberType</em>) of the <em>Version</em> element is not null, it only  contains an XLink reference to a <em>core:AbstractFeatureWithLifespan</em> element.</p></li>
      * </ul>
      */
-    @Test(enabled = MODULE_ENABLE)
+    @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
     public void VerifyVersioningReference() {
         try {
             String expressionProperty = "//vers:from";

@@ -15,8 +15,8 @@ public class DynamizerModuleValidation extends CommonFixture {
     /**
      * <p>Verify that instance documents using the Dynamizer XML elements listed in <a href="https://docs.ogc.org/is/21-006r2/21-006r2.html#dynamizer-xml-elements">Table 17</a> validate against the XML schema specified in <a href="http://schemas.opengis.net/citygml/dynamizer/3.0/dynamizer.xsd">dynamizer.xsd</a>.</p>
      */
-    @Test(enabled = MODULE_ENABLE)
-    public void verifyDynamizerModule() {
+    @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
+    public void VerifyDynamizerModule() {
         boolean foundAtLeastOne = ValidationUtils.elementValidation(this.testSubject, MODULE_NAME);
         Assert.assertTrue(foundAtLeastOne,"No "+MODULE_NAME+" element was found in the document.");
     }
@@ -24,7 +24,7 @@ public class DynamizerModuleValidation extends CommonFixture {
     /**
      * <p>Verify that if the <em>sensorLocation</em> property (type: <em>gml:ReferenceType</em>) of the <em>SensorConnection</em> element is not null, it contains an XLink reference to a <em>core:AbstractCityObject</em> element.</p>
      */
-    @Test(enabled = MODULE_ENABLE)
+    @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
     public void VerifyDynamizerReference() {
         try {
             String expressionProperty = "//dyn:sensorLocation";
@@ -69,7 +69,7 @@ public class DynamizerModuleValidation extends CommonFixture {
      * </li>
      * </ul>
      */
-    @Test(enabled = MODULE_ENABLE)
+    @Test(enabled = MODULE_ENABLE, groups = { "Module" })
     public void VerifyDynamizerAttributeRef() {
         String expressionProperty = "//dyn:attributeRef";
         NodeList result = XMLUtils.getNodeListByXPath(this.testSubject, expressionProperty);

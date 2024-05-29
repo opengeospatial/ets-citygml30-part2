@@ -19,7 +19,7 @@ public class CoreValidation extends CommonFixture {
      * Verify that instance documents using the Core XML elements listed in Table 4 validate against the XML schema specified in <a href="http://schemas.opengis.net/citygml/3.0/core.xsd">core.xsd</a>.
      */
     @Test(enabled = CORE_ENABLE)
-    public void verifyCoreModule() {
+    public void VerifyCoreModule() {
         boolean foundAtLeastOne = ValidationUtils.elementValidation(this.testSubject, MODULE_NAME);
         Assert.assertTrue(foundAtLeastOne,"No "+MODULE_NAME+" element was found in the document.");
     }

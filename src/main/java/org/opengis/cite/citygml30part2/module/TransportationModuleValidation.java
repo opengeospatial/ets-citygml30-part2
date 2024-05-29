@@ -18,8 +18,8 @@ public class TransportationModuleValidation extends CommonFixture {
     /**
      * <p>Verify that instance documents using the Transportation XML elements listed in <a href="#transportation-xml-elements">Table 23</a> validate against the XML schema specified in <a href="http://schemas.opengis.net/citygml/transportation/3.0/transportation.xsd">transportation.xsd</a>.</p>
      */
-    @Test(enabled = MODULE_ENABLE)
-    public void verifyTransportationModule(){
+    @Test(enabled = MODULE_ENABLE, groups = { "Module" })
+    public void VerifyTransportationModule(){
         boolean foundAtLeastOne = ValidationUtils.elementValidation(this.testSubject, MODULE_NAME);
         Assert.assertTrue(foundAtLeastOne,"No "+MODULE_NAME+" element was found in the document.");
     }
@@ -35,7 +35,7 @@ public class TransportationModuleValidation extends CommonFixture {
      * </li>
      * </ul>
      */
-    @Test(enabled = MODULE_ENABLE)
+    @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
     public void VerifyTransportationReference() {
         try {
             String expressionProperty = "//tran:predecessor";
@@ -88,8 +88,8 @@ public class TransportationModuleValidation extends CommonFixture {
     /**
      * <p>For each Transportation space element verify that if the space element is bounded by thematic surface boundaries using the property <em>core:boundary</em> (type: <em>core:AbstractSpaceBoundaryPropertyType</em>), each property contains exactly one surface element from <a href="https://docs.ogc.org/is/21-006r2/21-006r2.html#transportation-boundaries-table">Table 24</a> that is supported for the specific space element. If no surface element is supported, the space element is not bounded by thematic surface boundaries.</p>
      */
-    @Test(enabled = MODULE_ENABLE)
-    public void verifyTransportationBoundaries() throws Exception {
+    @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
+    public void VerifyTransportationBoundaries() throws Exception {
         String[] allowedBoundaries = { "tran:Marking","core:ClosureSurface","gen:GenericThematicSurface","tran:AuxiliaryTrafficArea","tran:HoleSurface","tran:TrafficArea" };
         boolean foundAtLeastOne = ValidationUtils.boundriesValidation(this.testSubject, allowedBoundaries);
         Assert.assertTrue(foundAtLeastOne,"None of Allowed Boundaries elements was found in the document.");

@@ -23,8 +23,8 @@ public class CityObjectGroupModuleValidation extends CommonFixture {
     /**
      * Verify that instance documents using the CityObjectGroup XML elements listed in <a href="https://docs.ogc.org/is/21-006r2/21-006r2.html#cityobjectgroup-xml-elements">Table 13</a>validate against the XML schema specified in<a href="http://schemas.opengis.net/citygml/cityobjectgroup/3.0/cityObjectGroup.xsd">cityObjectGroup.xsd</a>.
      */
-    @Test(enabled = MODULE_ENABLE)
-    public void verifyBridgeModule(){
+    @Test(enabled = MODULE_ENABLE, groups = { "Module" })
+    public void VerifyBridgeModule(){
         boolean foundAtLeastOne = ValidationUtils.elementValidation(this.testSubject, MODULE_NAME);
         Assert.assertTrue(foundAtLeastOne,"No "+MODULE_NAME+" element was found in the document.");
     }
@@ -36,7 +36,7 @@ public class CityObjectGroupModuleValidation extends CommonFixture {
      *     <li>If the groupMember property (type: gml:AbstractFeatureMemberType) of the Role element is not null, it contains an XLink reference to a core:AbstractCityObject element.</li>
      * </ul>
      */
-    @Test(enabled = MODULE_ENABLE)
+    @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
     public void VerifyCityObjectGroupReference() {
         try {
             String expressionProperty = "//grp:parent";
@@ -90,8 +90,8 @@ public class CityObjectGroupModuleValidation extends CommonFixture {
      * <p>For each CityObjectGroup space element verify that if the space element is bounded by thematic surface boundaries using the property core:boundary (type: core:AbstractSpaceBoundaryPropertyType), each property contains exactly one surface element from <a href="https://docs.ogc.org/is/21-006r2/21-006r2.html#cityobjectgroup-boundaries-table">Table 14</a> that is supported for the specific space element. </p>
      * <p>If no surface element is supported, the space element is not bounded by thematic surface boundaries.</p>
      */
-    @Test(enabled = MODULE_ENABLE)
-    public void verifyCityObjectGroupElementBoundaries() {
+    @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
+    public void VerifyCityObjectGroupElementBoundaries() {
         String[] allowedBoundaries = { "core:ClosureSurface","gen:GenericThematicSurface" };
         boolean foundAtLeastOne = ValidationUtils.boundriesValidation(this.testSubject, allowedBoundaries);
         Assert.assertTrue(foundAtLeastOne,"None of Allowed Boundaries elements was found in the document.");

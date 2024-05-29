@@ -22,7 +22,7 @@ public class GlobalValidation extends CommonFixture {
      * @throws Exception
      */
     @Test(enabled = GLOBAL_ENABLE)
-    public void verifyCityGMLInstanceDoc() throws Exception {
+    public void VerifyCityGMLInstanceDoc() throws Exception {
         ArrayList<String> arrayList = GetToValidateXsdPathArrayList(this.testSubject);
         boolean result;
         String exceptionMessage = "";
@@ -42,7 +42,7 @@ public class GlobalValidation extends CommonFixture {
      * @throws Exception
      */
     @Test(enabled = GLOBAL_ENABLE)
-    public void verifyGlobalReferencingGeometries1() throws Exception {
+    public void VerifyGlobalReferencingGeometries1() throws Exception {
         String xlinkAttribute = "xlink:href";
         String findReferenceExpression = "//*/@" + xlinkAttribute;
         boolean exist = true;
@@ -73,7 +73,7 @@ public class GlobalValidation extends CommonFixture {
      * </ul>
      */
     @Test(enabled = GLOBAL_ENABLE)
-    public void verifyGlobalReferencingGeometries2() {
+    public void VerifyGlobalReferencingGeometries2() {
         String spaceGeometriesExpr = "//*:spaceType";
         NodeList spaceGeometries = XMLUtils.getNodeListByXPath(this.testSubject, spaceGeometriesExpr);
         boolean spaceStatus = true;
@@ -111,7 +111,7 @@ public class GlobalValidation extends CommonFixture {
      * Verify that LoDs are self-contained: Geometries are not shared between different LoDs using XLinks.
      */
     @Test(enabled = GLOBAL_ENABLE)
-    public void verifyGlobalReferencingGeometries3() {
+    public void VerifyGlobalReferencingGeometries3() {
         String lodExpr = "//*[starts-with(name(), 'lod')]";
         boolean selfContainedStatus = true;
         NodeList lodNodeList = XMLUtils.getNodeListByXPath(this.testSubject, lodExpr);
@@ -146,7 +146,7 @@ public class GlobalValidation extends CommonFixture {
      * </ul>
      */
     @Test(enabled = GLOBAL_ENABLE)
-    public void verifyGlobalReferencingGeometries4() {
+    public void VerifyGlobalReferencingGeometries4() {
         String cityObjectRelationExpr = "//*/core:CityObjectRelation/core:relationType";
         boolean referenceStatus = true;
         NodeList lodNodeList = XMLUtils.getNodeListByXPath(this.testSubject, cityObjectRelationExpr);

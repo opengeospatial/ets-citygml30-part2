@@ -17,8 +17,8 @@ public class AppearanceModuleValidation extends CommonFixture {
     /**
      * CityGML XML elements implemented by a conforming instance document shall conform to the XML schema in <a href="http://schemas.opengis.net/citygml/appearance/3.0/appearance.xsd">appearance.xsd</a>.
      */
-    @Test(enabled = MODULE_ENABLE)
-    public void verifyAppearanceModule(){
+    @Test(enabled = MODULE_ENABLE, groups = { "Module" })
+    public void VerifyAppearanceModule(){
         boolean foundAtLeastOne = ValidationUtils.elementValidation(this.testSubject, MODULE_NAME);
         Assert.assertTrue(foundAtLeastOne,"No "+MODULE_NAME+" element was found in the document.");
     }
@@ -26,7 +26,7 @@ public class AppearanceModuleValidation extends CommonFixture {
     /**
      * Surface data SHALL only be applied to surface geometries. The target property of a surface data element therefore SHALL only reference a subtype of gml:AbstractSurfaceType or a gml:MultiSurface.
      */
-    @Test(enabled = MODULE_ENABLE)
+    @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
     public void VerifyAppearanceTarget() {
         String expressionTarget = "//app:target/text()";
         NodeList nodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionTarget);
@@ -61,7 +61,7 @@ public class AppearanceModuleValidation extends CommonFixture {
      *     <li>F: The order of points in the textureCoordinates SHALL follow the order of the points in the referenced ring element as given in the CityGML document regardless of a possibly flipped surface orientation.</li>
      * </ul>
      */
-    @Test(enabled = MODULE_ENABLE)
+    @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
     public void VerifyAppearanceParameterizedTexture() {
         String expressionPath = "//app:textureCoordinates[@ring]";
         NodeList nodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionPath);
