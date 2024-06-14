@@ -1,6 +1,7 @@
 package org.opengis.cite.citygml30part2.module;
 
 import java.util.Hashtable;
+import java.util.List;
 
 import org.opengis.cite.citygml30part2.CommonFixture;
 import org.opengis.cite.citygml30part2.util.*;

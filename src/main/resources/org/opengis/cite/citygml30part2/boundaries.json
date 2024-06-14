@@ -1,0 +1,1252 @@
+{
+  "core:AbstractLogicalSpace": {
+    "AbstractSpaceBoundary": [
+      "core:AbstractSpaceBoundary",
+      "core:AbstractThematicSurface",
+      "core:ClosureSurface",
+      "core:boundary"
+    ],
+    "AbstractThematicSurface": [
+      "core:AbstractThematicSurface",
+      "core:ClosureSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "core:AbstractOccupiedSpace": {
+    "AbstractSpaceBoundary": [
+      "core:AbstractSpaceBoundary",
+      "core:AbstractThematicSurface",
+      "core:ClosureSurface",
+      "core:boundary"
+    ],
+    "AbstractThematicSurface": [
+      "core:AbstractThematicSurface",
+      "core:ClosureSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "core:AbstractPhysicalSpace": {
+    "AbstractSpaceBoundary": [
+      "core:AbstractSpaceBoundary",
+      "core:AbstractThematicSurface",
+      "core:ClosureSurface",
+      "core:boundary"
+    ],
+    "AbstractThematicSurface": [
+      "core:AbstractThematicSurface",
+      "core:ClosureSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "core:AbstractSpace": {
+    "AbstractSpaceBoundary": [
+      "core:AbstractSpaceBoundary",
+      "core:AbstractThematicSurface",
+      "core:ClosureSurface",
+      "core:boundary"
+    ],
+    "AbstractThematicSurface": [
+      "core:AbstractThematicSurface",
+      "core:ClosureSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "core:AbstractUnoccupiedSpace": {
+    "AbstractSpaceBoundary": [
+      "core:AbstractSpaceBoundary",
+      "core:AbstractThematicSurface",
+      "core:ClosureSurface",
+      "core:boundary"
+    ],
+    "AbstractThematicSurface": [
+      "core:AbstractThematicSurface",
+      "core:ClosureSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "brid:AbstractBridge": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:RoofSurface",
+      "con:OuterCeilingSurface",
+      "con:CeilingSurface",
+      "con:InteriorWallSurface",
+      "con:WallSurface",
+      "con:OuterFloorSurface",
+      "con:FloorSurface",
+      "con:GroundSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "brid:Bridge": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:RoofSurface",
+      "con:OuterCeilingSurface",
+      "con:CeilingSurface",
+      "con:InteriorWallSurface",
+      "con:WallSurface",
+      "con:OuterFloorSurface",
+      "con:FloorSurface",
+      "con:GroundSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "brid:BridgeConstructiveElement": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:RoofSurface",
+      "con:OuterCeilingSurface",
+      "con:CeilingSurface",
+      "con:InteriorWallSurface",
+      "con:WallSurface",
+      "con:OuterFloorSurface",
+      "con:FloorSurface",
+      "con:GroundSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "brid:BridgeInstallation": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:RoofSurface",
+      "con:OuterCeilingSurface",
+      "con:CeilingSurface",
+      "con:InteriorWallSurface",
+      "con:WallSurface",
+      "con:OuterFloorSurface",
+      "con:FloorSurface",
+      "con:GroundSurface"
+    ],
+    "GroundSurface": [
+      "con:GroundSurface"
+    ],
+    "RoofSurface": [
+      "con:RoofSurface"
+    ],
+    "CeilingSurface": [
+      "con:CeilingSurface"
+    ],
+    "OuterCeilingSurface": [
+      "con:OuterCeilingSurface"
+    ],
+    "FloorSurface": [
+      "con:FloorSurface"
+    ],
+    "OuterFloorSurface": [
+      "con:OuterFloorSurface"
+    ],
+    "WallSurface": [
+      "con:WallSurface"
+    ],
+    "InteriorWallSurface": [
+      "con:InteriorWallSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "brid:BridgePart": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:RoofSurface",
+      "con:OuterCeilingSurface",
+      "con:CeilingSurface",
+      "con:InteriorWallSurface",
+      "con:WallSurface",
+      "con:OuterFloorSurface",
+      "con:FloorSurface",
+      "con:GroundSurface"
+    ],
+    "GroundSurface": [
+      "con:GroundSurface"
+    ],
+    "RoofSurface": [
+      "con:RoofSurface"
+    ],
+    "CeilingSurface": [
+      "con:CeilingSurface"
+    ],
+    "OuterCeilingSurface": [
+      "con:OuterCeilingSurface"
+    ],
+    "FloorSurface": [
+      "con:FloorSurface"
+    ],
+    "OuterFloorSurface": [
+      "con:OuterFloorSurface"
+    ],
+    "WallSurface": [
+      "con:WallSurface"
+    ],
+    "InteriorWallSurface": [
+      "con:InteriorWallSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "brid:BridgeRoom": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:RoofSurface",
+      "con:OuterCeilingSurface",
+      "con:CeilingSurface",
+      "con:InteriorWallSurface",
+      "con:WallSurface",
+      "con:OuterFloorSurface",
+      "con:FloorSurface",
+      "con:GroundSurface"
+    ],
+    "GroundSurface": [
+      "con:GroundSurface"
+    ],
+    "RoofSurface": [
+      "con:RoofSurface"
+    ],
+    "CeilingSurface": [
+      "con:CeilingSurface"
+    ],
+    "OuterCeilingSurface": [
+      "con:OuterCeilingSurface"
+    ],
+    "FloorSurface": [
+      "con:FloorSurface"
+    ],
+    "OuterFloorSurface": [
+      "con:OuterFloorSurface"
+    ],
+    "WallSurface": [
+      "con:WallSurface"
+    ],
+    "InteriorWallSurface": [
+      "con:InteriorWallSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "bldg:AbstractBuilding": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:RoofSurface",
+      "con:OuterCeilingSurface",
+      "con:CeilingSurface",
+      "con:InteriorWallSurface",
+      "con:WallSurface",
+      "con:OuterFloorSurface",
+      "con:FloorSurface",
+      "con:GroundSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "bldg:Building": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:RoofSurface",
+      "con:OuterCeilingSurface",
+      "con:CeilingSurface",
+      "con:InteriorWallSurface",
+      "con:WallSurface",
+      "con:OuterFloorSurface",
+      "con:FloorSurface",
+      "con:GroundSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "bldg:BuildingConstructiveElement": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:RoofSurface",
+      "con:OuterCeilingSurface",
+      "con:CeilingSurface",
+      "con:InteriorWallSurface",
+      "con:WallSurface",
+      "con:OuterFloorSurface",
+      "con:FloorSurface",
+      "con:GroundSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "bldg:BuildingInstallation": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:RoofSurface",
+      "con:OuterCeilingSurface",
+      "con:CeilingSurface",
+      "con:InteriorWallSurface",
+      "con:WallSurface",
+      "con:OuterFloorSurface",
+      "con:FloorSurface",
+      "con:GroundSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "bldg:BuildingPart": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:RoofSurface",
+      "con:OuterCeilingSurface",
+      "con:CeilingSurface",
+      "con:InteriorWallSurface",
+      "con:WallSurface",
+      "con:OuterFloorSurface",
+      "con:FloorSurface",
+      "con:GroundSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "bldg:BuildingRoom": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:RoofSurface",
+      "con:OuterCeilingSurface",
+      "con:CeilingSurface",
+      "con:InteriorWallSurface",
+      "con:WallSurface",
+      "con:OuterFloorSurface",
+      "con:FloorSurface",
+      "con:GroundSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "bldg:BuildingUnit": {
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "bldg:Storey": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:RoofSurface",
+      "con:OuterCeilingSurface",
+      "con:CeilingSurface",
+      "con:InteriorWallSurface",
+      "con:WallSurface",
+      "con:OuterFloorSurface",
+      "con:FloorSurface",
+      "con:GroundSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "frn:CityFurniture": {
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "grp:CityObjectGroup": {
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "con:AbstractConstruction": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:RoofSurface",
+      "con:OuterCeilingSurface",
+      "con:CeilingSurface",
+      "con:InteriorWallSurface",
+      "con:WallSurface",
+      "con:OuterFloorSurface",
+      "con:FloorSurface",
+      "con:GroundSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "con:AbstractConstructiveElement": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:RoofSurface",
+      "con:OuterCeilingSurface",
+      "con:CeilingSurface",
+      "con:InteriorWallSurface",
+      "con:WallSurface",
+      "con:OuterFloorSurface",
+      "con:FloorSurface",
+      "con:GroundSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "con:AbstractInstallation": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:RoofSurface",
+      "con:OuterCeilingSurface",
+      "con:CeilingSurface",
+      "con:InteriorWallSurface",
+      "con:WallSurface",
+      "con:OuterFloorSurface",
+      "con:FloorSurface",
+      "con:GroundSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "con:Door": {
+    "DoorSurface": [
+      "con:DoorSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "con:OtherConstruction": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:RoofSurface",
+      "con:OuterCeilingSurface",
+      "con:CeilingSurface",
+      "con:InteriorWallSurface",
+      "con:WallSurface",
+      "con:OuterFloorSurface",
+      "con:FloorSurface",
+      "con:GroundSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "con:Window": {
+    "WindowSurface": [
+      "con:WindowSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "gen:GenericLogicalSpace": {
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "gen:GenericOccupiedSpace": {
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "gen:GenericUnoccupiedSpace": {
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "tran:AbstractTransportationSpace": {
+    "Marking": [
+      "tran:Marking",
+      "tran:Track",
+      "tran:Square",
+      "tran:AbstractTransportationSpace",
+      "tran:Section",
+      "tran:Railway",
+      "tran:Waterway",
+      "tran:Road",
+      "tran:Intersection"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "tran:AuxiliaryTrafficSpace": {
+    "AuxiliaryTrafficArea": [
+      "tran:AuxiliaryTrafficArea"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "tran:ClearanceSpace": {
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "tran:Hole": {
+    "HoleSurface": [
+      "tran:HoleSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "tran:Intersection": {
+    "Marking": [
+      "tran:AbstractTransportationSpace",
+      "tran:Intersection",
+      "tran:Marking",
+      "tran:Railway",
+      "tran:Road",
+      "tran:Section",
+      "tran:Square",
+      "tran:Track",
+      "tran:Waterway"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "tran:Railway": {
+    "Marking": [
+      "tran:AbstractTransportationSpace",
+      "tran:Intersection",
+      "tran:Marking",
+      "tran:Railway",
+      "tran:Road",
+      "tran:Section",
+      "tran:Square",
+      "tran:Track",
+      "tran:Waterway"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "tran:Road": {
+    "Marking": [
+      "tran:AbstractTransportationSpace",
+      "tran:Intersection",
+      "tran:Marking",
+      "tran:Railway",
+      "tran:Road",
+      "tran:Section",
+      "tran:Square",
+      "tran:Track",
+      "tran:Waterway"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "tran:Section": {
+    "Marking": [
+      "tran:AbstractTransportationSpace",
+      "tran:Intersection",
+      "tran:Marking",
+      "tran:Railway",
+      "tran:Road",
+      "tran:Section",
+      "tran:Square",
+      "tran:Track",
+      "tran:Waterway"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "tran:Square": {
+    "Marking": [
+      "tran:AbstractTransportationSpace",
+      "tran:Intersection",
+      "tran:Marking",
+      "tran:Railway",
+      "tran:Road",
+      "tran:Section",
+      "tran:Square",
+      "tran:Track",
+      "tran:Waterway"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "tran:Track": {
+    "Marking": [
+      "tran:AbstractTransportationSpace",
+      "tran:Intersection",
+      "tran:Marking",
+      "tran:Railway",
+      "tran:Road",
+      "tran:Section",
+      "tran:Square",
+      "tran:Track",
+      "tran:Waterway"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "tran:TrafficSpace": {
+    "TrafficArea": [
+      "tran:TrafficArea"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "tran:Waterway": {
+    "Marking": [
+      "tran:AbstractTransportationSpace",
+      "tran:Intersection",
+      "tran:Marking",
+      "tran:Railway",
+      "tran:Road",
+      "tran:Section",
+      "tran:Square",
+      "tran:Track",
+      "tran:Waterway"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "tun:AbstractTunnel": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:CeilingSurface",
+      "con:FloorSurface",
+      "con:GroundSurface",
+      "con:InteriorWallSurface",
+      "con:OuterCeilingSurface",
+      "con:OuterFloorSurface",
+      "con:RoofSurface",
+      "con:WallSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "tun:HollowSpace": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:CeilingSurface",
+      "con:FloorSurface",
+      "con:GroundSurface",
+      "con:InteriorWallSurface",
+      "con:OuterCeilingSurface",
+      "con:OuterFloorSurface",
+      "con:RoofSurface",
+      "con:WallSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "tun:Tunnel": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:CeilingSurface",
+      "con:FloorSurface",
+      "con:GroundSurface",
+      "con:InteriorWallSurface",
+      "con:OuterCeilingSurface",
+      "con:OuterFloorSurface",
+      "con:RoofSurface",
+      "con:WallSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "tun:TunnelConstructiveElement": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:CeilingSurface",
+      "con:FloorSurface",
+      "con:GroundSurface",
+      "con:InteriorWallSurface",
+      "con:OuterCeilingSurface",
+      "con:OuterFloorSurface",
+      "con:RoofSurface",
+      "con:WallSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "tun:TunnelInstallation": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:CeilingSurface",
+      "con:FloorSurface",
+      "con:GroundSurface",
+      "con:InteriorWallSurface",
+      "con:OuterCeilingSurface",
+      "con:OuterFloorSurface",
+      "con:RoofSurface",
+      "con:WallSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "tun:TunnelPart": {
+    "AbstractConstructionSurface": [
+      "con:AbstractConstructionSurface",
+      "con:CeilingSurface",
+      "con:FloorSurface",
+      "con:GroundSurface",
+      "con:InteriorWallSurface",
+      "con:OuterCeilingSurface",
+      "con:OuterFloorSurface",
+      "con:RoofSurface",
+      "con:WallSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "wtr:WaterBody": {
+    "AbstractWaterBoundarySurface": [
+      "wtr:AbstractWaterBoundarySurface",
+      "wtr:WaterGroundSurface",
+      "wtr:WaterSurface"
+    ],
+    "WaterGroundSurface": [
+      "wtr:WaterGroundSurface"
+    ],
+    "WaterSurface": [
+      "wtr:WaterSurface"
+    ],
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ],
+    "GenericThematicSurface": [
+      "gen:GenericThematicSurface"
+    ]
+  },
+  "GGG": {
+    "ClosureSurface": [
+      "core:ClosureSurface"
+    ]
+  },
+  "space:brid:AbstractBridge": {
+    "AbstractBridge": [
+      "brid:AbstractBridge",
+      "brid:Bridge",
+      "brid:BridgePart"
+    ]
+  },
+  "space:core:AbstractLogicalSpace": {
+    "AbstractLogicalSpace": [
+      "core:AbstractLogicalSpace"
+    ]
+  },
+  "space:core:AbstractOccupiedSpace": {
+    "AbstractOccupiedSpace": [
+      "core:AbstractOccupiedSpace"
+    ]
+  },
+  "space:core:AbstractPhysicalSpace": {
+    "AbstractPhysicalSpace": [
+      "core:AbstractOccupiedSpace",
+      "core:AbstractPhysicalSpace",
+      "core:AbstractUnoccupiedSpace"
+    ]
+  },
+  "space:core:AbstractSpace": {
+    "AbstractSpace": [
+      "core:AbstractLogicalSpace",
+      "core:AbstractOccupiedSpace",
+      "core:AbstractPhysicalSpace",
+      "core:AbstractSpace",
+      "core:AbstractUnoccupiedSpace"
+    ]
+  },
+  "space:core:AbstractUnoccupiedSpace": {
+    "AbstractUnoccupiedSpace": [
+      "core:AbstractUnoccupiedSpace"
+    ]
+  },
+  "space:brid:Bridge": {
+    "Bridge": [
+      "brid:Bridge"
+    ],
+    "AbstractBridge": [
+      "brid:AbstractBridge",
+      "brid:Bridge",
+      "brid:BridgePart"
+    ]
+  },
+  "space:brid:BridgeConstructiveElement": {
+    "BridgeConstructiveElement": [
+      "brid:AbstractBridge",
+      "brid:Bridge",
+      "brid:BridgeConstructiveElement",
+      "brid:BridgePart"
+    ]
+  },
+  "space:brid:BridgeFurniture": {
+    "BridgeFurniture": [
+      "brid:AbstractBridge",
+      "brid:Bridge",
+      "brid:BridgeFurniture",
+      "brid:BridgePart",
+      "brid:BridgeRoom"
+    ]
+  },
+  "space:brid:BridgeInstallation": {
+    "BridgeInstallation": [
+      "brid:AbstractBridge",
+      "brid:Bridge",
+      "brid:BridgeInstallation",
+      "brid:BridgePart",
+      "brid:BridgeRoom"
+    ]
+  },
+  "space:brid:BridgePart": {
+    "BridgePart": [
+      "brid:Bridge",
+      "brid:BridgePart"
+    ]
+  },
+  "space:bldg:AbstractBuilding": {
+    "AbstractBuilding": [
+      "bldg:AbstractBuilding",
+      "bldg:Building",
+      "bldg:BuildingPart"
+    ]
+  },
+  "space:bldg:AbstractBuildingSubdivision": {
+    "AbstractBuildingSubdivision": [
+      "bldg:AbstractBuilding",
+      "bldg:AbstractBuildingSubdivision",
+      "bldg:Building",
+      "bldg:BuildingPart",
+      "bldg:BuildingUnit",
+      "bldg:Storey",
+      "bldg:buildingUnit",
+      "bldg:storey"
+    ]
+  },
+  "space:bldg:Building": {
+    "Building": [
+      "bldg:Building"
+    ]
+  },
+  "space:bldg:BuildingConstructiveElement": {
+    "BuildingConstructiveElement": [
+      "bldg:AbstractBuilding",
+      "bldg:Building",
+      "bldg:BuildingConstructiveElement",
+      "bldg:BuildingPart",
+      "bldg:buildingConstructiveElement"
+    ]
+  },
+  "space:bldg:BuildingFurniture": {
+    "BuildingFurniture": [
+      "bldg:AbstractBuilding",
+      "bldg:AbstractBuildingSubdivision",
+      "bldg:Building",
+      "bldg:BuildingFurniture",
+      "bldg:BuildingPart",
+      "bldg:BuildingRoom",
+      "bldg:BuildingUnit",
+      "bldg:Storey",
+      "bldg:buildingRoom",
+      "bldg:buildingUnit",
+      "bldg:storey"
+    ]
+  },
+  "space:bldg:BuildingInstallation": {
+    "BuildingInstallation": [
+      "bldg:AbstractBuilding",
+      "bldg:AbstractBuildingSubdivision",
+      "bldg:Building",
+      "bldg:BuildingInstallation",
+      "bldg:BuildingPart",
+      "bldg:BuildingRoom",
+      "bldg:BuildingUnit",
+      "bldg:Storey",
+      "bldg:buildingRoom",
+      "bldg:buildingUnit",
+      "bldg:storey"
+    ]
+  },
+  "space:bldg:BuildingPart": {
+    "BuildingPart": [
+      "bldg:Building",
+      "bldg:BuildingPart"
+    ]
+  },
+  "space:bldg:BuildingRoom": {
+    "BuildingRoom": [
+      "bldg:AbstractBuilding",
+      "bldg:Building",
+      "bldg:BuildingPart",
+      "bldg:BuildingRoom",
+      "bldg:buildingRoom"
+    ]
+  },
+  "space:bldg:BuildingUnit": {
+    "BuildingUnit": [
+      "bldg:BuildingUnit",
+      "bldg:buildingUnit"
+    ]
+  },
+  "space:bldg:Storey": {
+    "Storey": [
+      "bldg:Storey",
+      "bldg:storey"
+    ]
+  },
+  "space:frn:CityFurniture": {
+    "CityFurniture": [
+      "frn:CityFurniture"
+    ]
+  },
+  "space:grp:CityObjectGroup": {
+    "CityObjectGroup": [
+      "grp:CityObjectGroup"
+    ]
+  },
+  "space:con:AbstractConstruction": {
+    "AbstractConstruction": [
+      "con:AbstractConstruction",
+      "con:OtherConstruction"
+    ]
+  },
+  "space:con:AbstractConstructiveElement": {
+    "AbstractConstructiveElement": [
+      "con:AbstractConstructiveElement"
+    ]
+  },
+  "space:con:AbstractFillingElement": {
+    "AbstractFillingElement": [
+      "con:AbstractFillingElement",
+      "con:Door",
+      "con:Window",
+      "con:filling"
+    ]
+  },
+  "space:con:AbstractFurniture": {
+    "AbstractFurniture": [
+      "con:AbstractFurniture"
+    ]
+  },
+  "space:con:AbstractInstallation": {
+    "AbstractInstallation": [
+      "con:AbstractInstallation"
+    ]
+  },
+  "space:con:Door": {
+    "Door": [
+      "con:Door"
+    ]
+  },
+  "space:con:OtherConstruction": {
+    "OtherConstruction": [
+      "con:OtherConstruction"
+    ]
+  },
+  "space:con:Window": {
+    "Window": [
+      "con:Window"
+    ]
+  },
+  "space:gen:GenericLogicalSpace": {
+    "GenericLogicalSpace": [
+      "gen:GenericLogicalSpace"
+    ]
+  },
+  "space:gen:GenericOccupiedSpace": {
+    "GenericOccupiedSpace": [
+      "gen:GenericOccupiedSpace"
+    ]
+  },
+  "space:gen:GenericUnoccupiedSpace": {
+    "GenericUnoccupiedSpace": [
+      "gen:GenericUnoccupiedSpace"
+    ]
+  },
+  "space:tran:AbstractTransportationSpace": {
+    "AbstractTransportationSpace": [
+      "tran:AbstractTransportationSpace",
+      "tran:Intersection",
+      "tran:Railway",
+      "tran:Road",
+      "tran:Section",
+      "tran:Square",
+      "tran:Track",
+      "tran:Waterway"
+    ]
+  },
+  "space:tran:AuxiliaryTrafficSpace": {
+    "AuxiliaryTrafficSpace": [
+      "tran:AbstractTransportationSpace",
+      "tran:AuxiliaryTrafficSpace",
+      "tran:Intersection",
+      "tran:Railway",
+      "tran:Road",
+      "tran:Section",
+      "tran:Square",
+      "tran:Track",
+      "tran:Waterway"
+    ]
+  },
+  "space:tran:ClearanceSpace": {
+    "ClearanceSpace": [
+      "tran:AbstractTransportationSpace",
+      "tran:ClearanceSpace",
+      "tran:Intersection",
+      "tran:Railway",
+      "tran:Road",
+      "tran:Section",
+      "tran:Square",
+      "tran:Track",
+      "tran:TrafficSpace",
+      "tran:Waterway"
+    ]
+  },
+  "space:tran:Hole": {
+    "Hole": [
+      "tran:AbstractTransportationSpace",
+      "tran:Hole",
+      "tran:Intersection",
+      "tran:Railway",
+      "tran:Road",
+      "tran:Section",
+      "tran:Square",
+      "tran:Track",
+      "tran:Waterway"
+    ]
+  },
+  "space:tran:Intersection": {
+    "Intersection": [
+      "tran:Intersection",
+      "tran:Railway",
+      "tran:Road",
+      "tran:Track",
+      "tran:Waterway"
+    ]
+  },
+  "space:tran:Railway": {
+    "Railway": [
+      "tran:Railway"
+    ]
+  },
+  "space:tran:Road": {
+    "Road": [
+      "tran:Road"
+    ]
+  },
+  "space:tran:Section": {
+    "Section": [
+      "tran:Railway",
+      "tran:Road",
+      "tran:Section",
+      "tran:Track",
+      "tran:Waterway"
+    ]
+  },
+  "space:tran:Square": {
+    "Square": [
+      "tran:Square"
+    ]
+  },
+  "space:tran:Track": {
+    "Track": [
+      "tran:Track"
+    ]
+  },
+  "space:tran:TrafficSpace": {
+    "TrafficSpace": [
+      "tran:AbstractTransportationSpace",
+      "tran:Intersection",
+      "tran:Railway",
+      "tran:Road",
+      "tran:Section",
+      "tran:Square",
+      "tran:Track",
+      "tran:TrafficSpace",
+      "tran:Waterway"
+    ]
+  },
+  "space:tran:Waterway": {
+    "Waterway": [
+      "tran:Waterway"
+    ]
+  },
+  "space:veg:AbstractVegetationObject": {
+    "AbstractVegetationObject": [
+      "veg:AbstractVegetationObject",
+      "veg:PlantCover",
+      "veg:SolitaryVegetationObject"
+    ]
+  },
+  "space:veg:PlantCover": {
+    "PlantCover": [
+      "veg:PlantCover"
+    ]
+  },
+  "space:veg:SolitaryVegetationObject": {
+    "SolitaryVegetationObject": [
+      "veg:SolitaryVegetationObject"
+    ]
+  }
+}

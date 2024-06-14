@@ -25,8 +25,11 @@ public class GenericsModuleValidation extends CommonFixture {
      */
     @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
     public void VerifyGenericsBoundaries() {
-        String[] allowedBoundaries = { "core:ClosureSurface","gen:GenericThematicSurface" };
-        boolean foundAtLeastOne = ValidationUtils.boundriesValidation(this.testSubject, allowedBoundaries);
-        Assert.assertTrue(foundAtLeastOne,"None of Allowed Boundaries elements was found in the document.");
+        String[] allowedSpace = {
+                "gen:GenericLogicalSpace",
+                "gen:GenericOccupiedSpace",
+                "gen:GenericUnoccupiedSpace"};
+        boolean boundaryStatus = ValidationUtils.isBoundariesValid(this.testSubject, allowedSpace);
+        Assert.assertTrue(boundaryStatus,"None of Allowed Boundaries elements was found in the document.");
     }
 }

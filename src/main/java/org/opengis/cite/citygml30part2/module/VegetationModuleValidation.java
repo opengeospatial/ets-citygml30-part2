@@ -23,8 +23,13 @@ public class VegetationModuleValidation  extends CommonFixture {
      */
     @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
     public void VerifyVegetationBoundaries() {
-        String[] allowedBoundaries = { "veg:PlantCover", "veg:SolitaryVegetationObject", "veg:AbstractVegetationObjectPropertyType" };
-        boolean foundAtLeastOne = ValidationUtils.boundriesValidation(this.testSubject, allowedBoundaries);
-        Assert.assertTrue(foundAtLeastOne,"None of Allowed Boundaries elements was found in the document.");
+        // there are no boundaries allowed in Vegetation module
+        String[] allowedSpace = {
+                "veg:AbstractVegetationObject",
+                "veg:PlantCover",
+                "veg:SolitaryVegetationObject"
+        };
+        boolean boundaryStatus = ValidationUtils.isBoundariesValid(this.testSubject, allowedSpace);
+        Assert.assertTrue(boundaryStatus,"None of Allowed Boundaries elements was found in the document.");
     }
 }

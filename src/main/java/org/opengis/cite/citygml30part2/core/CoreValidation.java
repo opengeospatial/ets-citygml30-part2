@@ -68,7 +68,7 @@ public class CoreValidation extends CommonFixture {
         // This test case should verify the type of this node, its inherited types
         // For the current stage, we don't have solutions that can verify the node's type
         String[] allowedBoundaries = { "core:AbstractSpaceBoundary", "core:AbstractThematicSurface", "core:ClosureSurface", "gen:GenericThematicSurface" };
-        boolean foundAtLeastOne = ValidationUtils.boundriesValidation(this.testSubject, allowedBoundaries);
+        boolean foundAtLeastOne = ValidationUtils.OnlyOneSpecifyBoundary(this.testSubject, allowedBoundaries);
         Assert.assertTrue(foundAtLeastOne,"None of Allowed Boundaries elements was found in the document.");
     }
 }

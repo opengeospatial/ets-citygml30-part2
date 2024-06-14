@@ -87,8 +87,20 @@ public class TransportationModuleValidation extends CommonFixture {
      */
     @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
     public void VerifyTransportationBoundaries() throws Exception {
-        String[] allowedBoundaries = { "tran:Marking","core:ClosureSurface","gen:GenericThematicSurface","tran:AuxiliaryTrafficArea","tran:HoleSurface","tran:TrafficArea" };
-        boolean foundAtLeastOne = ValidationUtils.boundriesValidation(this.testSubject, allowedBoundaries);
-        Assert.assertTrue(foundAtLeastOne,"None of Allowed Boundaries elements was found in the document.");
+        String[] allowedSpace = {
+                "tran:AbstractTransportationSpace",
+                "tran:AuxiliaryTrafficSpace",
+                "tran:ClearanceSpace",
+                "tran:Hole",
+                "tran:Intersection",
+                "tran:Railway",
+                "tran:Road",
+                "tran:Section",
+                "tran:Square",
+                "tran:Track",
+                "tran:TrafficSpace",
+                "tran:Waterway"};
+        boolean boundaryStatus = ValidationUtils.isBoundariesValid(this.testSubject, allowedSpace);
+        Assert.assertTrue(boundaryStatus,"None of Allowed Boundaries elements was found in the document.");
     }
 }

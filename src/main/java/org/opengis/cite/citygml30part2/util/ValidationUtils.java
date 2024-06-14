@@ -1,12 +1,12 @@
 package org.opengis.cite.citygml30part2.util;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 import javax.xml.XMLConstants;
@@ -23,11 +23,14 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.apache.xerces.dom.DeferredElementNSImpl;
 import org.apache.xerces.util.XMLCatalogResolver;
 import org.opengis.cite.citygml30part2.Namespaces;
 import org.opengis.cite.validation.SchematronValidator;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ls.LSResourceResolver;
@@ -188,7 +191,23 @@ public class ValidationUtils {
         }
         return wpsSchema;
     }
+    public static List<String> getAllowedBoundaries(String spaceName) {
+        String jsonPath = ROOT_PKG + "boundaries.json";
+        URL schemaURL = ValidationUtils.class.getResource(jsonPath);
+        List<String> stringList = new ArrayList<>();
 
+        Map<String, Map<String, List<String>>> jsonObj = readBoundariesJsonObj(schemaURL.getPath());
+        Map<String, List<String>> temp = jsonObj.get(spaceName);
+        if (temp == null) {
+            return stringList;
+        }
+        Set<String> boundariesSet = new HashSet<>();
+        for (List<String> values : temp.values()) {
+            boundariesSet.addAll(values);
+        }
+        stringList = new ArrayList<>(boundariesSet);
+        return stringList;
+    }
     public static String getXmlns(String ns) {
         String CITYGML_NS = "http://www.opengis.net/citygml/";
         if (ns.toLowerCase().equals("core"))
@@ -254,5 +273,107 @@ public class ValidationUtils {
             System.out.println(e);
             return false;
         }
+    }
+
+    public static boolean OnlyOneSpecifyBoundary(Document doc, String[] allowedBoundaries) {
+        String expression = "//*[local-name()='boundary']";
+        try {
+            XPath xpath = XMLUtils.getCityGMLXPath();
+
+            NodeList boundaryNodes = (NodeList) xpath.evaluate(expression, doc, XPathConstants.NODESET);
+            // No boundary need to validate
+            if (boundaryNodes.getLength() == 0)
+                return true;
+
+            boolean boundaryFound = false;
+            for (int i = 0; i < boundaryNodes.getLength() ; i++) {
+                Node currentNode = boundaryNodes.item(i);
+                for (String expr : allowedBoundaries) {
+                    expression = ".//" + expr;
+                    NodeList child = (NodeList) xpath.evaluate(expression, currentNode, XPathConstants.NODESET);
+                    if (child.getLength() > 0) {
+                        if (boundaryFound) {
+                            // there are more than one specify boundary
+                            boundaryFound = false;
+                            break;
+                        } else {
+                            boundaryFound = true;
+                        }
+                    }
+                }
+            }
+            return boundaryFound;
+        } catch(Exception e) {
+            System.out.println(e);
+            return false;
+        }
+    }
+
+    // if the document contain node named boundary, it's parent node name should inside allowedSpace list, and the boundary node should only contain 1 child
+    public static boolean isBoundariesValid(Document doc, String[] allowedSpace) {
+        try {
+            XPath xpath = XMLUtils.getCityGMLXPath();
+            List<String> spaces = Arrays.asList(allowedSpace);
+            String expr = "//*[*[local-name()='boundary']]";
+
+            NodeList boundariesParentList = (NodeList) xpath.evaluate(expr, doc, XPathConstants.NODESET);
+            // not contain boundary
+            if (boundariesParentList.getLength() == 0) {
+                return true;
+            }
+            for (int i = 0; i < boundariesParentList.getLength(); i++) {
+                Element element = (Element) boundariesParentList.item(i);
+                String currentSpaceName = element.getNodeName();
+                // not an allowed space
+                if (!spaces.contains(currentSpaceName)) {
+                    return false;
+                }
+                NodeList boundaries = element.getElementsByTagName("boundary");
+                List<String> allowedBoundaries = getAllowedBoundaries(currentSpaceName);
+                // No allowed boundaries
+                if (allowedBoundaries.size() == 0 && boundaries.getLength() > 0) {
+                    return false;
+                }
+                for (int j = 0; j < boundaries.getLength(); j++) {
+                    NodeList childNodes = boundaries.item(j).getChildNodes();
+                    int elementNodeCount = 0;
+                    for (int k = 0; k < childNodes.getLength(); k++) {
+                        Node childNode = childNodes.item(k);
+                        if (childNode.getNodeType() == Node.ELEMENT_NODE){
+                            elementNodeCount ++;
+                            String childNodeName = childNode.getNodeName();
+                            // not an allowed boundary
+                            if (!allowedBoundaries.contains(childNodeName)) {
+                                return false;
+                            }
+                        }
+                    }
+                    // should only contain one specify boundary
+                    if (elementNodeCount != 1) {
+                        return false;
+                    }
+                }
+            }
+        } catch(Exception e) {
+            System.out.println(e);
+            return false;
+        }
+        return true;
+    }
+
+    public static Map<String, Map<String, List<String>>> readBoundariesJsonObj(String path) {
+        Gson gson = new Gson();
+        Type mapType = new TypeToken<Map<String, Map<String, List<String>>>>(){}.getType();
+
+        Map<String, Map<String, List<String>>> jsonObj = new HashMap<>();
+        try (FileReader reader = new FileReader(path)) {
+            Map<String, Map<String, List<String>>> jsonObjTemp = gson.fromJson(reader, mapType);
+            if (jsonObjTemp != null && !jsonObjTemp.isEmpty()) {
+                jsonObj = jsonObjTemp;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return jsonObj;
     }
 }

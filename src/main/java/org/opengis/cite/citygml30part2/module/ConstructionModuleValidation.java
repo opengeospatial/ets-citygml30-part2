@@ -32,8 +32,16 @@ public class ConstructionModuleValidation  extends CommonFixture {
      */
     @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
     public void VerifyConstructionBoundaries() {
-        String[] allowedBoundaries = { "con:GroundSurface","con:RoofSurface","con:CeilingSurface","con:OuterCeilingSurface","con:FloorSurface","con:OuterFloorSurface","con:WallSurface","con:InteriorWallSurface","core:ClosureSurface","gen:GenericThematicSurface","con:DoorSurface","con:WindowSurface" };
-        boolean foundAtLeastOne = ValidationUtils.boundriesValidation(this.testSubject, allowedBoundaries);
-        Assert.assertTrue(foundAtLeastOne,"None of Allowed Boundaries elements was found in the document.");
+        String[] allowedSpace = {
+                "con:AbstractConstruction",
+                "con:AbstractConstructiveElement",
+                "con:AbstractFillingElement",
+                "con:AbstractFurniture",
+                "con:AbstractInstallation",
+                "con:Door",
+                "con:OtherConstruction",
+                "con:Window"};
+        boolean boundaryStatus = ValidationUtils.isBoundariesValid(this.testSubject, allowedSpace);
+        Assert.assertTrue(boundaryStatus,"None of Allowed Boundaries elements was found in the document.");
     }
 }

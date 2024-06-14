@@ -1,8 +1,10 @@
 package org.opengis.cite.citygml30part2.global;
 
+import org.apache.jena.base.Sys;
 import org.apache.xerces.dom.DeferredAttrNSImpl;
 import org.apache.xerces.dom.DeferredElementNSImpl;
 import org.opengis.cite.citygml30part2.CommonFixture;
+import org.opengis.cite.citygml30part2.util.ValidationUtils;
 import org.opengis.cite.citygml30part2.util.XMLUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -11,6 +13,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GlobalValidation extends CommonFixture {
     final boolean GLOBAL_ENABLE = true;

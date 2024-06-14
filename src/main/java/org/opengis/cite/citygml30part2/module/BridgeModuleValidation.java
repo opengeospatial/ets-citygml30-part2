@@ -12,6 +12,8 @@ import org.apache.xerces.dom.DeferredElementNSImpl;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 
+import java.util.List;
+
 import static org.opengis.cite.citygml30part2.util.ValidationUtils.getXmlns;
 
 public class BridgeModuleValidation extends CommonFixture {
@@ -32,8 +34,15 @@ public class BridgeModuleValidation extends CommonFixture {
      */
     @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
     public void VerifyBridgeElementBoundaries(){
-        String[] allowedBoundaries = { "core:ClosureSurface","gen:GenericThematicSurface" };
-        boolean foundAtLeastOne = ValidationUtils.boundriesValidation(this.testSubject, allowedBoundaries);
-        Assert.assertTrue(foundAtLeastOne,"None of Allowed Boundaries elements was found in the document.");
+        String[] allowedSpace = {
+                "brid:AbstractBridge",
+                "brid:Bridge",
+                "brid:BridgeConstructiveElement",
+                "brid:BridgeFurniture",
+                "brid:BridgeInstallation",
+                "brid:BridgePart",
+                "brid:BridgeRoom"};
+        boolean boundaryStatus = ValidationUtils.isBoundariesValid(this.testSubject, allowedSpace);
+        Assert.assertTrue(boundaryStatus,"None of Allowed Boundaries elements was found in the document.");
     }
 }
