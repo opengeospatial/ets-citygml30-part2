@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.opengis.cite.citygml30part2.CommonFixture;
 import org.opengis.cite.citygml30part2.util.*;
+import org.testng.SkipException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -31,7 +32,7 @@ public class AppearanceModuleValidation extends CommonFixture {
      * Surface data SHALL only be applied to surface geometries. The target property of a surface data element therefore SHALL only reference a subtype of gml:AbstractSurfaceType or a gml:MultiSurface.
      */
     @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
-    public void VerifyAppearanceTarget() {
+    public void VerifyAppearanceTarget() throws Exception  {
         String expressionTarget = "//app:target/text()";
         NodeList nodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionTarget);
         boolean flag = true;
@@ -48,12 +49,15 @@ public class AppearanceModuleValidation extends CommonFixture {
             String nodeName = node.getLocalName();
             // TODO: add  gml:AbstractSurfaceType, gml:MultiSurface and their inheritance
             List<String> allowedRef = new ArrayList<>();
+
+
             if (allowedRef.contains(nodeName)) {
                 break;
             }
             flag = false;
         }
-        Assert.assertTrue(flag,MODULE_NAME+" reference invalid.");
+        throw new SkipException("Not implemented yet.");
+        //Assert.assertTrue(flag,MODULE_NAME+" reference invalid.");
     }
 
     /**
