@@ -8,6 +8,8 @@ import org.testng.annotations.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import java.util.List;
+
 public class CoreValidation extends CommonFixture {
     final boolean CORE_ENABLE = true;
     String MODULE_NAME = "Core";
@@ -30,32 +32,24 @@ public class CoreValidation extends CommonFixture {
      */
     @Test(enabled = CORE_ENABLE)
     public void VerifyCoreReference() {
+        boolean isValid;
+        List<String> allowedType = ValidationUtils.getTypeData("AbstractCityObject");
         try {
-            String expressionGeneralizesTo = "//core:generalizesTo";
-            String shouldHasAttribute = "xlink:href";
-            NodeList result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionGeneralizesTo);
-            boolean hasGmlIdAttribute = false;
-            for (int i = 0; i < result.getLength(); i++) {
-                Element n = (Element) result.item(i);
-                hasGmlIdAttribute = XMLUtils.hasChildWithAttribute(n, shouldHasAttribute);
-            }
-            if (result.getLength() > 0)
-                Assert.assertTrue(hasGmlIdAttribute, "message");
-            
-            //----//
-            String expressionRelatedTo = "//core:relatedTo";
-            result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionRelatedTo);
-            hasGmlIdAttribute = false;
-            for (int i = 0; i < result.getLength(); i++) {
-                Element n = (Element) result.item(i);
-                hasGmlIdAttribute = XMLUtils.hasChildWithAttribute(n, shouldHasAttribute);
-            }
-            if (result.getLength() > 0)
-                Assert.assertTrue(hasGmlIdAttribute, "message");
+            isValid = XMLUtils.isRefValid("//core:generalizesTo", "xlink:href", allowedType, this.testSubject);
 
-        } catch (Exception exception) {
-            System.out.println("Exception: " + exception.getMessage());
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            isValid = false;
         }
+        Assert.assertTrue(isValid,MODULE_NAME+" Module reference invalid.");
+
+        try {
+            isValid = XMLUtils.isRefValid("//core:relatedTo", "xlink:href", allowedType, this.testSubject);
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            isValid = false;
+        }
+        Assert.assertTrue(isValid,MODULE_NAME+" Module reference invalid.");
     }
 
     /**
@@ -63,12 +57,15 @@ public class CoreValidation extends CommonFixture {
      * <p>If a space element is bounded by space boundaries using the property core:boundary (type: core:AbstractSpaceBoundaryPropertyType), each property SHALL contain exactly one surface element from <a href="https://docs.ogc.org/is/21-006r2/21-006r2.html#core-boundaries-table">Table 5</a>that is supported for the specific space element.</p>
      * <p>If no surface element is supported, the space element SHALL NOT be bounded by space boundaries.</p>
      */
-    @Test(enabled = false)
+    @Test(enabled = CORE_ENABLE)
     public void VerifyCoreBoundaries() {
-        // This test case should verify the type of this node, its inherited types
-        // For the current stage, we don't have solutions that can verify the node's type
-        String[] allowedBoundaries = { "core:AbstractSpaceBoundary", "core:AbstractThematicSurface", "core:ClosureSurface", "gen:GenericThematicSurface" };
-        boolean foundAtLeastOne = ValidationUtils.OnlyOneSpecifyBoundary(this.testSubject, allowedBoundaries);
-        Assert.assertTrue(foundAtLeastOne,"None of Allowed Boundaries elements was found in the document.");
+        String[] allowedSpace = {
+                "core:AbstractLogicalSpace",
+                "core:AbstractOccupiedSpace",
+                "core:AbstractPhysicalSpace",
+                "core:AbstractSpace",
+                "core:AbstractUnoccupiedSpace"};
+        boolean boundaryStatus = ValidationUtils.isBoundariesValid(this.testSubject, allowedSpace);
+        Assert.assertTrue(boundaryStatus,"None of Allowed Boundaries elements was found in the document.");
     }
 }

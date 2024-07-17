@@ -208,6 +208,29 @@ public class ValidationUtils {
         stringList = new ArrayList<>(boundariesSet);
         return stringList;
     }
+
+    public static List<String> getTypeData(String typeName) {
+
+        String jsonPath = ROOT_PKG + "type.json";
+        URL schemaURL = ValidationUtils.class.getResource(jsonPath);
+        List<String> stringList = new ArrayList<>();
+        Gson gson = new Gson();
+        Type mapType = new TypeToken<Map<String, List<String>>>(){}.getType();
+
+        Map<String, List<String>> jsonObj = new HashMap<>();
+        try (FileReader reader = new FileReader(schemaURL.getPath())) {
+            Map<String, List<String>> jsonObjTemp = gson.fromJson(reader, mapType);
+            if (jsonObjTemp != null && !jsonObjTemp.isEmpty()) {
+                jsonObj = jsonObjTemp;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        List<String> temp = jsonObj.get(typeName);
+        return temp;
+    }
+
     public static String getXmlns(String ns) {
         String CITYGML_NS = "http://www.opengis.net/citygml/";
         if (ns.toLowerCase().equals("core"))
@@ -233,7 +256,7 @@ public class ValidationUtils {
                     if (moduleName != "Core") {
                         String prefix = NamespaceBindings.getNameSpacePrefix(moduleNS);
                         String expr = "//" + prefix + ":"+ moduleName;
-                        NodeList nodeList = XMLUtils.GetNodeListByXPath(doc, expr);
+                        NodeList nodeList = XMLUtils.getNodeListByXPath(doc, expr);
                         if (nodeList.getLength() > 0) {
                             validElement = true;
                         }
@@ -244,69 +267,6 @@ public class ValidationUtils {
             }
         }
         return validElement;
-    }
-
-    public static boolean boundriesValidation(Document doc, String[] allowedBoundaries){
-        String expression = "//*[local-name()='boundary']";
-        try {
-            XPath xpath = XMLUtils.getCityGMLXPath();
-
-            NodeList boundaryNodes = (NodeList) xpath.evaluate(expression, doc, XPathConstants.NODESET);
-            // No boundary need to validate
-            if (boundaryNodes.getLength() == 0)
-                return true;
-
-            boolean foundAtLeastOne = false;
-            for (int i = 0; i < boundaryNodes.getLength() && !foundAtLeastOne ; i++) {
-                Node currentNode = boundaryNodes.item(i);
-                for (String expr : allowedBoundaries) {
-                    expression = ".//" + expr;
-                    NodeList child = (NodeList) xpath.evaluate(expression, currentNode, XPathConstants.NODESET);
-                    if (child.getLength() > 0) {
-                        foundAtLeastOne = true;
-                        break;
-                    }
-                }
-            }
-            return foundAtLeastOne;
-        } catch(Exception e) {
-            System.out.println(e);
-            return false;
-        }
-    }
-
-    public static boolean OnlyOneSpecifyBoundary(Document doc, String[] allowedBoundaries) {
-        String expression = "//*[local-name()='boundary']";
-        try {
-            XPath xpath = XMLUtils.getCityGMLXPath();
-
-            NodeList boundaryNodes = (NodeList) xpath.evaluate(expression, doc, XPathConstants.NODESET);
-            // No boundary need to validate
-            if (boundaryNodes.getLength() == 0)
-                return true;
-
-            boolean boundaryFound = false;
-            for (int i = 0; i < boundaryNodes.getLength() ; i++) {
-                Node currentNode = boundaryNodes.item(i);
-                for (String expr : allowedBoundaries) {
-                    expression = ".//" + expr;
-                    NodeList child = (NodeList) xpath.evaluate(expression, currentNode, XPathConstants.NODESET);
-                    if (child.getLength() > 0) {
-                        if (boundaryFound) {
-                            // there are more than one specify boundary
-                            boundaryFound = false;
-                            break;
-                        } else {
-                            boundaryFound = true;
-                        }
-                    }
-                }
-            }
-            return boundaryFound;
-        } catch(Exception e) {
-            System.out.println(e);
-            return false;
-        }
     }
 
     // if the document contain node named boundary, it's parent node name should inside allowedSpace list, and the boundary node should only contain 1 child

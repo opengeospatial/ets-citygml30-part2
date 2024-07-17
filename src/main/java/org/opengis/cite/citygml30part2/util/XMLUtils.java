@@ -438,7 +438,32 @@ public class XMLUtils {
         }
         return false;
     }
-    
+
+    public static boolean isRefValid(String xpathExpr, String attr, List<String> allowedElement, Document doc) throws Exception {
+        NodeList nodeList = getNodeListByXPath(doc, xpathExpr);
+
+        boolean isRefValid = true;
+        for (int i = 0; i < nodeList.getLength() && isRefValid; i++) {
+            Node currentNode = nodeList.item(i);
+            if (currentNode.getNodeType() != Node.ELEMENT_NODE)
+                continue;
+
+            Element currentElement = (Element) currentNode;
+            if (!currentElement.hasAttribute(attr))
+                return false;
+
+            String hrefName = currentElement.getAttribute("xlink:href").replace("#", "");
+
+            String findReferenceExpression = "//*[@gml:id='" + hrefName + "']";
+
+            Node xlinkNode = getNodeByXPath(doc, findReferenceExpression);
+            String name = xlinkNode.getNodeName();
+            if (!allowedElement.contains(name))
+                return false;
+        }
+        return true;
+    }
+
     public static XPath getCityGMLXPath() {
         XPathFactory xpathfactory = XPathFactory.newInstance();
         XPath xpath = xpathfactory.newXPath();
@@ -457,10 +482,32 @@ public class XMLUtils {
      * @param expression XPath expression
      * @return NodeList of Element nodes that match the XPath expression
      */
-    public static NodeList GetNodeListByXPath(Document doc, String expression) {
+    public static NodeList getNodeListByXPath(Document doc, String expression) {
         try {
             XPath xpath = getCityGMLXPath();
             NodeList nodes = (NodeList) xpath.evaluate(expression, doc, XPathConstants.NODESET);
+            return nodes;
+        } catch (Exception exception) {
+            System.out.println("Exception: " + exception.getMessage());
+            return null;
+        }
+    }
+
+    public static NodeList getNodeListByXPath(NodeList node, String expression) {
+        try {
+            XPath xpath = getCityGMLXPath();
+            NodeList nodes = (NodeList) xpath.evaluate(expression, node, XPathConstants.NODESET);
+            return nodes;
+        } catch (Exception exception) {
+            System.out.println("Exception: " + exception.getMessage());
+            return null;
+        }
+    }
+
+    public static NodeList getNodeListByXPath(Node node, String expression) {
+        try {
+            XPath xpath = getCityGMLXPath();
+            NodeList nodes = (NodeList) xpath.evaluate(expression, node, XPathConstants.NODESET);
             return nodes;
         } catch (Exception exception) {
             System.out.println("Exception: " + exception.getMessage());
@@ -472,6 +519,16 @@ public class XMLUtils {
         try {
             XPath xpath = getCityGMLXPath();
             Node nodes = (Node) xpath.evaluate(expression, doc, XPathConstants.NODE);
+            return nodes;
+        } catch (Exception exception) {
+            System.out.println("Exception: " + exception.getMessage());
+            return null;
+        }
+    }
+    public static Node getNodeByXPath(Node node, String expression) {
+        try {
+            XPath xpath = getCityGMLXPath();
+            Node nodes = (Node) xpath.evaluate(expression, node, XPathConstants.NODE);
             return nodes;
         } catch (Exception exception) {
             System.out.println("Exception: " + exception.getMessage());

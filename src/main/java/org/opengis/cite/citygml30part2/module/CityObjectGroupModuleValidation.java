@@ -8,6 +8,8 @@ import org.testng.annotations.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import java.util.List;
+
 public class CityObjectGroupModuleValidation extends CommonFixture {
     final boolean MODULE_ENABLE = true;
     String MODULE_NAME = "CityObjectGroup";
@@ -30,52 +32,35 @@ public class CityObjectGroupModuleValidation extends CommonFixture {
      */
     @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
     public void VerifyCityObjectGroupReference() {
+        boolean isValid;
         try {
-            String expressionProperty = "//grp:parent";
-            String shouldHasAttribute = "xlink:href";
-            NodeList result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionProperty);
-            boolean isValid = true;
+            List<String> allowedType = ValidationUtils.getTypeData("AbstractCityObject");
+            isValid = XMLUtils.isRefValid("//grp:parent", "xlink:href", allowedType, this.testSubject);
 
-            for (int i = 0; i < result.getLength(); i++) {
-                Element n = (Element) result.item(i);
-                String hrefName = n.getAttribute(shouldHasAttribute);
-                if (hrefName.isEmpty()) {
-                    isValid = false;
-                    break;
-                }
-                hrefName = hrefName.replace("#","");
-                String findReferenceExpression = "//*[@gml:id='"+hrefName+"']";
-                NodeList targetNode = XMLUtils.GetNodeListByXPath(this.testSubject, findReferenceExpression);
-                if (targetNode.getLength() <= 0) {
-                    isValid = false;
-                    break;
-                }
-            }
-            if (isValid) {
-                expressionProperty = "//grp:groupMember";
-                result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionProperty);
-                for (int i = 0; i < result.getLength(); i++) {
-                    Element n = (Element) result.item(i);
-                    String hrefName = n.getAttribute(shouldHasAttribute);
-                    if (hrefName.isEmpty()) {
-                        isValid = false;
-                        break;
-                    }
-                    hrefName = hrefName.replace("#","");
-                    String findReferenceExpression = "//*[@gml:id='"+hrefName+"']";
-                    NodeList targetNode = XMLUtils.GetNodeListByXPath(this.testSubject, findReferenceExpression);
-                    if (targetNode.getLength() <= 0) {
-                        isValid = false;
-                        break;
-                    }
-                }
-            }
-
-            Assert.assertTrue(isValid,MODULE_NAME+" Module reference invalid.");
-
-        } catch (Exception exception) {
-            System.out.println("Exception: " + exception.getMessage());
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            isValid = false;
         }
+        Assert.assertTrue(isValid,MODULE_NAME+" Module reference invalid.");
+
+        try {
+            List<String> allowedType = ValidationUtils.getTypeData("AbstractCityObject");
+            isValid = XMLUtils.isRefValid("//grp:parent", "xlink:href", allowedType, this.testSubject);
+
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            isValid = false;
+        }
+        Assert.assertTrue(isValid,MODULE_NAME+" Module reference invalid.");
+        try {
+            List<String> allowedType = ValidationUtils.getTypeData("AbstractCityObject");
+            isValid = XMLUtils.isRefValid("//grp:groupMember/grp:Role", "xlink:href", allowedType, this.testSubject);
+
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            isValid = false;
+        }
+        Assert.assertTrue(isValid,MODULE_NAME+" Module reference invalid.");
     }
 
     /**

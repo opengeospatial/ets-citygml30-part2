@@ -6,7 +6,15 @@ import org.opengis.cite.citygml30part2.util.XMLUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class DynamizerModuleValidation extends CommonFixture {
     final boolean MODULE_ENABLE = true;
@@ -26,33 +34,16 @@ public class DynamizerModuleValidation extends CommonFixture {
      */
     @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
     public void VerifyDynamizerReference() {
+        boolean isValid;
         try {
-            String expressionProperty = "//dyn:sensorLocation";
-            String shouldHasAttribute = "xlink:href";
-            NodeList result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionProperty);
-            boolean isValid = true;
+            List<String> allowedType = ValidationUtils.getTypeData("AbstractCityObject");
+            isValid = XMLUtils.isRefValid("//grp:parent", "xlink:href", allowedType, this.testSubject);
 
-            for (int i = 0; i < result.getLength(); i++) {
-                Element n = (Element) result.item(i);
-                String hrefName = n.getAttribute(shouldHasAttribute);
-                if (hrefName.isEmpty()) {
-                    isValid = false;
-                    break;
-                }
-                hrefName = hrefName.replace("#","");
-                String findReferenceExpression = "//*[@gml:id='"+hrefName+"']";
-                NodeList targetNode = XMLUtils.GetNodeListByXPath(this.testSubject, findReferenceExpression);
-                if (targetNode.getLength() <= 0) {
-                    isValid = false;
-                    break;
-                }
-            }
-
-            Assert.assertTrue(isValid,MODULE_NAME+" Module reference invalid.");
-
-        } catch (Exception exception) {
-            System.out.println("Exception: " + exception.getMessage());
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            isValid = false;
         }
+        Assert.assertTrue(isValid,MODULE_NAME+" Module reference invalid.");
     }
 
     /**
@@ -70,18 +61,73 @@ public class DynamizerModuleValidation extends CommonFixture {
      * </ul>
      */
     @Test(enabled = MODULE_ENABLE, groups = { "Module" })
-    public void VerifyDynamizerAttributeRef() {
-        String expressionProperty = "//dyn:attributeRef";
-        NodeList result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionProperty);
-        boolean isValid = true;
-        for (int i = 0; i < result.getLength(); i++) {
-            Element n = (Element) result.item(i);
-            String refXPath = n.getTextContent();
-            NodeList refNodeList = XMLUtils.GetNodeListByXPath(this.testSubject, refXPath);
-            if (refNodeList.getLength() <= 0)
-                isValid = false;
-        }
+    public void VerifyDynamizerAttributeRef() throws XPathExpressionException {
+        // find dyn:Dynamizer that contain dyn:attributeRef
+        String expressionProperty = "//dyn:Dynamizer[dyn:attributeRef]";
 
-        Assert.assertTrue(isValid,MODULE_NAME+" Module AttributeRef invalid.");
+        NodeList dynamizerNodeList = XMLUtils.getNodeListByXPath(this.testSubject, expressionProperty);//(NodeList) xpath.evaluate(expressionProperty, doc, XPathConstants.NODESET);
+        boolean allValid = true;
+        for (int i = 0; i < dynamizerNodeList.getLength(); i++) {
+            Node currentDynamizerNode = dynamizerNodeList.item(i);
+            boolean resultRefValid = true;
+            Node attributeRefNode = XMLUtils.getNodeByXPath(currentDynamizerNode, "dyn:attributeRef/text()");//xpath.evaluate("dyn:attributeRef/text()", currentDynamizerNode, XPathConstants.NODE);
+            String refValue = attributeRefNode.getNodeValue();
+
+            refValue = refValue.replace("genericAttribute","*[local-name()='genericAttribute']");
+            refValue = refValue.replace("[name='","[gen:name='");
+
+            // if using xpath
+            // search xpath expr by attributeRef value
+            Node attributeRefValueNode = XMLUtils.getNodeByXPath(this.testSubject, refValue); //(Node) xpath.evaluate(refValue, doc, XPathConstants.NODE);
+            if (attributeRefValueNode == null)
+            {
+                resultRefValid = false;
+            }
+            String typeOfValue = attributeRefValueNode.getParentNode().getLocalName();
+
+            XPath xpath = XMLUtils.getCityGMLXPath();
+            String valueNode = (String) xpath.evaluate("text()", attributeRefValueNode, XPathConstants.STRING);
+
+            Class<?> TYPE = null;
+            try {
+                TYPE = getTYPE(typeOfValue, valueNode);
+            } catch (Exception e) {
+                resultRefValid = false;
+            }
+
+            boolean typeEqual = true;
+
+            boolean dynamizerValid = resultRefValid && typeEqual;
+
+            allValid &= dynamizerValid;
+        }
+    }
+
+    public Class<?> getTYPE(String typeOfValue, String valueNode) throws Exception {
+        Class<?> TYPE;
+        if (typeOfValue.equals("DoubleAttribute")) {
+            TYPE = Double.class;
+            Double.parseDouble(valueNode);
+        } else if (typeOfValue.equals("CodeAttribute")) {
+            TYPE = String.class;
+        } else if (typeOfValue.equals("DateAttribute")) {
+            TYPE = Date.class;
+            Date.parse(valueNode);
+        } else if (typeOfValue.equals("GenericAttribute")) {
+            TYPE = String.class;
+        } else if (typeOfValue.equals("StringAttribute")) {
+            TYPE = String.class;
+        } else if (typeOfValue.equals("IntAttribute")) {
+            TYPE = Integer.class;
+            Integer.parseInt(valueNode);
+        } else if (typeOfValue.equals("MeasureAttribute")) {
+            TYPE = String.class;
+        } else if (typeOfValue.equals("UriAttribute")) {
+            TYPE = String.class;
+        }
+        else {
+            TYPE = String.class;
+        }
+        return TYPE;
     }
 }

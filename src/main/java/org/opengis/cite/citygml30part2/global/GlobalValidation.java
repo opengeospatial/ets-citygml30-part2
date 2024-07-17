@@ -1,10 +1,8 @@
 package org.opengis.cite.citygml30part2.global;
 
-import org.apache.jena.base.Sys;
 import org.apache.xerces.dom.DeferredAttrNSImpl;
 import org.apache.xerces.dom.DeferredElementNSImpl;
 import org.opengis.cite.citygml30part2.CommonFixture;
-import org.opengis.cite.citygml30part2.util.ValidationUtils;
 import org.opengis.cite.citygml30part2.util.XMLUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -12,7 +10,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.xml.xpath.XPathConstants;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GlobalValidation extends CommonFixture {
@@ -49,14 +49,14 @@ public class GlobalValidation extends CommonFixture {
         String findReferenceExpression = "//*/@" + xlinkAttribute;
         boolean exist = true;
 
-        NodeList xlinkNodeList = XMLUtils.GetNodeListByXPath(this.testSubject, findReferenceExpression);
+        NodeList xlinkNodeList = XMLUtils.getNodeListByXPath(this.testSubject, findReferenceExpression);
         for (int i = 0; i < xlinkNodeList.getLength(); i++) {
             DeferredAttrNSImpl n = (DeferredAttrNSImpl) xlinkNodeList.item(i);
             String hrefName = n.getValue();
 
             hrefName = hrefName.replace("#","");
             String gmlIdItem = "//*[@gml:id='"+hrefName+"']";
-            NodeList targetNode = XMLUtils.GetNodeListByXPath(this.testSubject, gmlIdItem);
+            NodeList targetNode = XMLUtils.getNodeListByXPath(this.testSubject, gmlIdItem);
             if (!(targetNode.getLength() > 0)) {
                 exist = false;
             }
@@ -77,11 +77,11 @@ public class GlobalValidation extends CommonFixture {
     @Test(enabled = GLOBAL_ENABLE)
     public void VerifyGlobalReferencingGeometries2() {
         String spaceGeometriesExpr = "//*:spaceType";
-        NodeList spaceGeometries = XMLUtils.GetNodeListByXPath(this.testSubject, spaceGeometriesExpr);
+        NodeList spaceGeometries = XMLUtils.getNodeListByXPath(this.testSubject, spaceGeometriesExpr);
         boolean spaceStatus = true;
 
         String boundaryGeometriesExpr = "//*:SpaceBoundary";
-        NodeList boundaryGeometries = XMLUtils.GetNodeListByXPath(this.testSubject, boundaryGeometriesExpr);
+        NodeList boundaryGeometries = XMLUtils.getNodeListByXPath(this.testSubject, boundaryGeometriesExpr);
         boolean boundaryStatus = true;
 
         // No boundary need to validate
@@ -114,29 +114,53 @@ public class GlobalValidation extends CommonFixture {
      */
     @Test(enabled = GLOBAL_ENABLE)
     public void VerifyGlobalReferencingGeometries3() {
-        String lodExpr = "//*[starts-with(name(), 'lod')]";
+        String lodExpr = "//*[starts-with(local-name(), 'lod')]";
         boolean selfContainedStatus = true;
-        NodeList lodNodeList = XMLUtils.GetNodeListByXPath(this.testSubject, lodExpr);
+        NodeList lodNodeList = XMLUtils.getNodeListByXPath(this.testSubject, lodExpr);
         for (int i = 0; i < lodNodeList.getLength(); i++) {
             Node lodNode = lodNodeList.item(i);
             Node parent = lodNode.getParentNode();
-            NodeList childrens = parent.getChildNodes();
+            NodeList children = parent.getChildNodes();
             int numChildElements = 0;
-            for (int j = 0; j < childrens.getLength(); j++) {
-                String itemClassName = childrens.item(j).getClass().toString();
-
+            for (int j = 0; j < children.getLength(); j++) {
+                String itemClassName = children.item(j).getClass().toString();
                 if(itemClassName.equals("class org.apache.xerces.dom.DeferredElementNSImpl")) {
-                    DeferredElementNSImpl element = (DeferredElementNSImpl) childrens.item(j);
+                    DeferredElementNSImpl element = (DeferredElementNSImpl) children.item(j);
                     if (element.hasAttribute("xlink:href"))
                         numChildElements++ ;
                 }
-
             }
             if (numChildElements > 1)
                 selfContainedStatus = false;
         }
-
         Assert.assertTrue(selfContainedStatus, "LoDs SHALL be self-contained.");
+
+        // if (selfContainedStatus) will throw an exception
+        // geometries shall not be shared between different LoDs.
+        boolean notShared = true;
+        for (int i = 0; i < lodNodeList.getLength() && notShared; i++) {
+            NodeList children = lodNodeList.item(i).getChildNodes();
+            for (int j = 0; j < children.getLength() && notShared; j++) {
+                if (children.item(j).getNodeType() == Node.ELEMENT_NODE){
+                    Element selfContained = (Element) children.item(j);
+                    if (selfContained.hasAttribute("gml:id")) {
+                        String id = "#" + selfContained.getAttribute("gml:id");
+                        String expressionOfId = "//*[@xlink:href='"+id+"']";
+                        NodeList xLinkHrefList = XMLUtils.getNodeListByXPath(this.testSubject, expressionOfId);
+                        for (int k = 0; k < xLinkHrefList.getLength() && notShared; k++) {
+                            Node xlinkHrefNode = xLinkHrefList.item(k);
+                            Node parentNode = xlinkHrefNode.getParentNode();
+
+                            String localNameOfXlink = parentNode.getLocalName();
+                            if (localNameOfXlink.startsWith("lod")) {
+                                notShared = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     /**
@@ -149,9 +173,27 @@ public class GlobalValidation extends CommonFixture {
      */
     @Test(enabled = GLOBAL_ENABLE)
     public void VerifyGlobalReferencingGeometries4() {
+        List<String> topLevelFeature = new ArrayList<>(Arrays.asList("Bridge", "Building", "CityFurniture", "CityObjectGroup", "GenericLogicalSpace", "GenericOccupiedSpace", "GenericThematicSurface", "GenericUnoccupiedSpace", "LandUse", "OtherConstruction", "PlantCover", "Railway", "ReliefFeature", "Road", "SolitaryVegetationObject", "Square", "Track", "Tunnel", "WaterBody", "Waterway"));
+        boolean topLevelSeparately = true;
+        String relatedExpression = "//*[core:relatedTo/core:CityObjectRelation/core:relationType='shared']";
+
+        NodeList nodeList = XMLUtils.getNodeListByXPath(this.testSubject, relatedExpression);
+        for (int i = 0; i < nodeList.getLength() && topLevelSeparately; i++) {
+            Node n = nodeList.item(i);
+            String localName = n.getLocalName();
+            if (!topLevelFeature.contains(localName))
+                continue;
+            String relatedId = XMLUtils.getNodeByXPath(n, "core:relatedTo/core:CityObjectRelation/core:relatedTo/@xlink:href").getNodeValue();
+            String idExpression = "//*[@gml:id='"+relatedId+"']";
+            Node idNode = XMLUtils.getNodeByXPath(n, idExpression);
+            if (idNode != null)
+                topLevelSeparately = false;
+        }
+
+        Assert.assertTrue(topLevelSeparately, "The shared geometry is NOT stored for each top-level feature separately.");
         String cityObjectRelationExpr = "//*/core:CityObjectRelation/core:relationType";
         boolean referenceStatus = true;
-        NodeList lodNodeList = XMLUtils.GetNodeListByXPath(this.testSubject, cityObjectRelationExpr);
+        NodeList lodNodeList = XMLUtils.getNodeListByXPath(this.testSubject, cityObjectRelationExpr);
         for (int i = 0; i < lodNodeList.getLength(); i++) {
             Node lodNode = lodNodeList.item(i);
 

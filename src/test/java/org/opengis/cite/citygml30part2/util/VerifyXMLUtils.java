@@ -13,10 +13,8 @@ import net.sf.saxon.s9api.SaxonApiException;
 import net.sf.saxon.s9api.XdmValue;
 import net.sf.saxon.trans.XPathException;
 
-import org.apache.jena.base.Sys;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -177,7 +175,7 @@ public class VerifyXMLUtils {
     public void GetNodeListByXPath_expected() throws Exception {
         Document doc = docBuilder.parse(this.getClass().getResourceAsStream("/LocalCRS_CityGML3.gml"));
         String expression = "//*[@gml:id = 'local-CRS-1']" ;
-        NodeList lodNodeList = XMLUtils.GetNodeListByXPath(doc, expression);
+        NodeList lodNodeList = XMLUtils.getNodeListByXPath(doc, expression);
         Assert.assertTrue("Get node by xpath failed", lodNodeList.getLength() == 1);
 
         Element element = (Element) lodNodeList.item(0);

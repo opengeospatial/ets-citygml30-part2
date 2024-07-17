@@ -8,6 +8,9 @@ import org.testng.annotations.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class VersioningModuleValidation  extends CommonFixture {
     final boolean MODULE_ENABLE = true;
     String MODULE_NAME = "Versioning";
@@ -33,113 +36,51 @@ public class VersioningModuleValidation  extends CommonFixture {
      */
     @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
     public void VerifyVersioningReference() {
+        List<String> vers = new ArrayList<>();
+        vers.add("vers:Version");
+        boolean isValid;
         try {
-            String expressionProperty = "//vers:from";
-            String shouldHasAttribute = "xlink:href";
-            NodeList result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionProperty);
-            boolean isValid = true;
-
-            for (int i = 0; i < result.getLength(); i++) {
-                Element n = (Element) result.item(i);
-                String hrefName = n.getAttribute(shouldHasAttribute);
-                if (hrefName.isEmpty()) {
-                    isValid = false;
-                    break;
-                }
-                hrefName = hrefName.replace("#","");
-                String findReferenceExpression = "//*[@gml:id='"+hrefName+"']";
-                NodeList targetNode = XMLUtils.GetNodeListByXPath(this.testSubject, findReferenceExpression);
-                if (targetNode.getLength() <= 0 || targetNode.item(0).getLocalName() != "Version") {
-                    isValid = false;
-                    break;
-                }
-            }
-
-            if (isValid) {
-                expressionProperty = "//vers:to";
-                result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionProperty);
-                for (int i = 0; i < result.getLength(); i++) {
-                    Element n = (Element) result.item(i);
-                    String hrefName = n.getAttribute(shouldHasAttribute);
-                    if (hrefName.isEmpty()) {
-                        isValid = false;
-                        break;
-                    }
-                    hrefName = hrefName.replace("#","");
-                    String findReferenceExpression = "//*[@gml:id='"+hrefName+"']";
-                    NodeList targetNode = XMLUtils.GetNodeListByXPath(this.testSubject, findReferenceExpression);
-                    if (targetNode.getLength() <= 0 || targetNode.item(0).getLocalName() != "Version") {
-                        isValid = false;
-                        break;
-                    }
-                }
-            }
-
-            if (isValid) {
-                expressionProperty = "//vers:oldFeature";
-                result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionProperty);
-                for (int i = 0; i < result.getLength(); i++) {
-                    Element n = (Element) result.item(i);
-                    String hrefName = n.getAttribute(shouldHasAttribute);
-                    if (hrefName.isEmpty()) {
-                        isValid = false;
-                        break;
-                    }
-                    hrefName = hrefName.replace("#","");
-                    String findReferenceExpression = "//*[@gml:id='"+hrefName+"']";
-                    NodeList targetNode = XMLUtils.GetNodeListByXPath(this.testSubject, findReferenceExpression);
-                    if (targetNode.getLength() <= 0) {
-                        isValid = false;
-                        break;
-                    }
-                }
-            }
-
-            if (isValid) {
-                expressionProperty = "//vers:newFeature";
-                result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionProperty);
-                for (int i = 0; i < result.getLength(); i++) {
-                    Element n = (Element) result.item(i);
-                    String hrefName = n.getAttribute(shouldHasAttribute);
-                    if (hrefName.isEmpty()) {
-                        isValid = false;
-                        break;
-                    }
-                    hrefName = hrefName.replace("#","");
-                    String findReferenceExpression = "//*[@gml:id='"+hrefName+"']";
-                    NodeList targetNode = XMLUtils.GetNodeListByXPath(this.testSubject, findReferenceExpression);
-                    if (targetNode.getLength() <= 0) {
-                        isValid = false;
-                        break;
-                    }
-                }
-            }
-
-            if (isValid) {
-                expressionProperty = "//vers:versionMember";
-                result = XMLUtils.GetNodeListByXPath(this.testSubject, expressionProperty);
-                for (int i = 0; i < result.getLength(); i++) {
-                    Element n = (Element) result.item(i);
-                    String hrefName = n.getAttribute(shouldHasAttribute);
-                    if (hrefName.isEmpty()) {
-                        isValid = false;
-                        break;
-                    }
-                    hrefName = hrefName.replace("#","");
-                    String findReferenceExpression = "//*[@gml:id='"+hrefName+"']";
-                    NodeList targetNode = XMLUtils.GetNodeListByXPath(this.testSubject, findReferenceExpression);
-                    if (targetNode.getLength() <= 0) {
-                        isValid = false;
-                        break;
-                    }
-                }
-            }
-
-            Assert.assertTrue(isValid,MODULE_NAME+" Module reference invalid.");
-
-        } catch (Exception exception) {
-            System.out.println("Exception: " + exception.getMessage());
+            isValid = XMLUtils.isRefValid("//vers:from", "xlink:href", vers, this.testSubject);
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            isValid = false;
         }
+        Assert.assertTrue(isValid,MODULE_NAME+" Module reference invalid.");
+
+        try {
+            isValid = XMLUtils.isRefValid("//vers:to", "xlink:href", vers, this.testSubject);
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            isValid = false;
+        }
+        Assert.assertTrue(isValid,MODULE_NAME+" Module reference invalid.");
+
+        List<String> allowedAbstractFeatureWithLifespan = ValidationUtils.getTypeData("AbstractFeatureWithLifespan");
+
+        try {
+            isValid = XMLUtils.isRefValid("//vers:oldFeature", "xlink:href", allowedAbstractFeatureWithLifespan, this.testSubject);
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            isValid = false;
+        }
+        Assert.assertTrue(isValid,MODULE_NAME+" Module reference invalid.");
+
+        try {
+            isValid = XMLUtils.isRefValid("//vers:newFeature", "xlink:href", allowedAbstractFeatureWithLifespan, this.testSubject);
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            isValid = false;
+        }
+        Assert.assertTrue(isValid,MODULE_NAME+" Module reference invalid.");
+
+        try {
+            isValid = XMLUtils.isRefValid("//vers:versionMember", "xlink:href", allowedAbstractFeatureWithLifespan, this.testSubject);
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            isValid = false;
+        }
+        Assert.assertTrue(isValid,MODULE_NAME+" Module reference invalid.");
+
     }
 
 }
