@@ -128,11 +128,14 @@ public class AppearanceModuleValidation extends CommonFixture {
 
         Assert.assertTrue(propertiesCountValid,MODULE_NAME+": number of textureCoordinates and ring properties are NOT identical");
 
+        // The ring property (type: anyURI) SHALL reference the gml:id of the target gml:LinearRing using an appropriate XPointer
         // Test D
-        String expressionPath = "//app:textureCoordinates[@ring]";
+        String expressionPath = "//app:ring/text()";
         NodeList nodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionPath);
         boolean flag = true;
         for (int i = 0; i < nodes.getLength(); i++) {
+            if (nodes.item(i).getNodeType() != Node.ELEMENT_NODE)
+                continue;
             Element n = (Element) nodes.item(i);
             String ringReference = n.getAttribute("ring").substring(1);
             String findReferenceExpression = "//*[@gml:id='"+ringReference+"']";
