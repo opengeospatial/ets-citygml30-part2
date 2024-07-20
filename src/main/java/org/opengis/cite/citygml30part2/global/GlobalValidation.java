@@ -3,6 +3,7 @@ package org.opengis.cite.citygml30part2.global;
 import org.apache.xerces.dom.DeferredAttrNSImpl;
 import org.apache.xerces.dom.DeferredElementNSImpl;
 import org.opengis.cite.citygml30part2.CommonFixture;
+import org.opengis.cite.citygml30part2.util.ValidationUtils;
 import org.opengis.cite.citygml30part2.util.XMLUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -10,7 +11,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -75,38 +78,67 @@ public class GlobalValidation extends CommonFixture {
      * </ul>
      */
     @Test(enabled = GLOBAL_ENABLE)
-    public void VerifyGlobalReferencingGeometries2() {
-        String spaceGeometriesExpr = "//*:spaceType";
-        NodeList spaceGeometries = XMLUtils.getNodeListByXPath(this.testSubject, spaceGeometriesExpr);
-        boolean spaceStatus = true;
+    public void VerifyGlobalReferencingGeometries2() throws XPathExpressionException {
+        List<String> spaceBoundaryNamesList = ValidationUtils.getTypeData("AbstractSpaceBoundary");
+        List<String> spaceNameList = ValidationUtils.getTypeData("AbstractSpace");
+        XPath xPath = XMLUtils.getCityGMLXPath();
 
-        String boundaryGeometriesExpr = "//*:SpaceBoundary";
-        NodeList boundaryGeometries = XMLUtils.getNodeListByXPath(this.testSubject, boundaryGeometriesExpr);
-        boolean boundaryStatus = true;
+        boolean valid = true;
 
-        // No boundary need to validate
-        if (spaceGeometries == null || boundaryGeometries == null) {
-            return;
+        String exprBoundary = "//*[local-name()='boundary']";
+
+        NodeList boundariesNode = (NodeList) xPath.evaluate(exprBoundary, this.testSubject, XPathConstants.NODESET);
+        for (int i = 0; i < boundariesNode.getLength() && valid; i++){
+            Node currentBoundaryNode = boundariesNode.item(i);
+            Node parentNode = currentBoundaryNode.getParentNode();
+            String parentNodeName = parentNode.getNodeName();
+            if (!spaceNameList.contains(parentNodeName)) {
+                valid = false;
+                break;
+            }
         }
 
-        for (int i = 0; i < boundaryGeometries.getLength() ; i++) {
-            String boundaryGeomId = boundaryGeometries.item(i).getAttributes().getNamedItem("id").getNodeValue();
-            for (int j = 0; j < spaceGeometries.getLength(); j++) {
-                Node spaceGeometry = spaceGeometries.item(j);
-                if (spaceGeometry.getTextContent().contains(boundaryGeomId)) {
-                    spaceStatus = false;
+        List<NodeList> allSpaceBoundariesList = new ArrayList<>();
+        for (String spaceBoundaryName : spaceBoundaryNamesList) {
+            String expr = "//"+ spaceBoundaryName;
+
+            NodeList spaceBoundariesNode = (NodeList)xPath.evaluate(expr, this.testSubject, XPathConstants.NODESET);
+            if (spaceBoundariesNode == null || spaceBoundariesNode.getLength() == 0)
+                continue;
+            allSpaceBoundariesList.add(spaceBoundariesNode);
+        }
+
+        List<NodeList> allSpaceList = new ArrayList<>();
+
+        for (String spaceName : spaceNameList) {
+            String spaceLocalName = spaceName.split(":")[1];
+            String expr = "//*[local-name()='"+spaceLocalName+"']";
+            NodeList spacesNode = (NodeList)xPath.evaluate(expr, this.testSubject, XPathConstants.NODESET);
+            if (spacesNode == null || spacesNode.getLength() == 0)
+                continue;
+            allSpaceList.add(spacesNode);
+        }
+
+        for (int i = 0; i < allSpaceList.size() && valid; i++) {
+            NodeList currentSpaceNodeList = allSpaceList.get(i);
+            for (int j = 0; j < currentSpaceNodeList.getLength() && valid; j++) {
+                Node currentSpaceNode = currentSpaceNodeList.item(j);
+                int childCount = currentSpaceNode.getChildNodes().getLength();
+                if (childCount == 0)
+                {
+                    valid = false;
+                    break;
                 }
+                String id = currentSpaceNode.getAttributes().getNamedItem("gml:id").getNodeValue();
+
+                String expr = "//*[xlink:href='#" + id + "']";
+                NodeList refList = (NodeList) xPath.evaluate(expr, this.testSubject, XPathConstants.NODESET);
+                if (refList.getLength() > 0)
+                    valid = false;
             }
         }
 
-        for (int i = 0; i < boundaryGeometries.getLength(); i++) {
-            String xlinkHref = boundaryGeometries.item(i).getAttributes().getNamedItem("xlink:href").getNodeValue();
-            if (xlinkHref != null && !xlinkHref.isEmpty()) {
-                boundaryStatus = false;
-            }
-        }
-
-        Assert.assertTrue(spaceStatus && boundaryStatus, "Referencing geometries of spaces and space boundaries invalid.");
+        Assert.assertTrue(valid, "Referencing geometries of spaces and space boundaries invalid.");
     }
 
     /**
@@ -217,14 +249,4 @@ public class GlobalValidation extends CommonFixture {
 
         Assert.assertTrue(referenceStatus, "CityObjectRelation reference invalid.");
     }
-
-    /**
-     * When referencing features from alternative aggregations, verify that:
-     * <ul>
-     * <li>Each feature belongs to a natural aggregation hierarchy and is stored inline this hierarchy.
-     *
-     * <li> Alternative aggregations do not contain the feature inline but use an XLink to reference the feature.
-     * </ul>
-     */
-
 }
