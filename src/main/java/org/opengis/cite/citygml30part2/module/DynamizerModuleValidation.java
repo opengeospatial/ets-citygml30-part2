@@ -23,7 +23,7 @@ public class DynamizerModuleValidation extends CommonFixture {
     /**
      * <p>Verify that instance documents using the Dynamizer XML elements listed in <a href="https://docs.ogc.org/is/21-006r2/21-006r2.html#dynamizer-xml-elements">Table 17</a> validate against the XML schema specified in <a href="http://schemas.opengis.net/citygml/dynamizer/3.0/dynamizer.xsd">dynamizer.xsd</a>.</p>
      */
-    @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
+    @Test(enabled = MODULE_ENABLE, groups = { "Module" })
     public void VerifyDynamizerModule() {
         boolean foundAtLeastOne = ValidationUtils.elementValidation(this.testSubject, MODULE_NAME);
         Assert.assertTrue(foundAtLeastOne,"No "+MODULE_NAME+" element was found in the document.");
@@ -60,7 +60,7 @@ public class DynamizerModuleValidation extends CommonFixture {
      * </li>
      * </ul>
      */
-    @Test(enabled = MODULE_ENABLE, groups = { "Module" })
+    @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
     public void VerifyDynamizerAttributeRef() throws XPathExpressionException {
         // find dyn:Dynamizer that contain dyn:attributeRef
         String expressionProperty = "//dyn:Dynamizer[dyn:attributeRef]";
