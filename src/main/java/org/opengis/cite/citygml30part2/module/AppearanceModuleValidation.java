@@ -1,6 +1,7 @@
 package org.opengis.cite.citygml30part2.module;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -35,8 +36,20 @@ public class AppearanceModuleValidation extends CommonFixture {
     public void VerifyAppearanceTarget() throws Exception  {
         String expressionTarget = "//app:target/text()";
         NodeList nodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionTarget);
+
+        List<String> allowedRef = Arrays.asList(
+                "gml:MultiSurface",
+                "gml:AbstractSurface",
+                "gml:CompositeSurface",
+                "gml:OrientableSurface",
+                "gml:Polygon",
+                "gml:PolyhedralSurface",
+                "gml:Surface",
+                "gml:Tin",
+                "gml:TriangulatedSurface");
+
         boolean flag = true;
-        for (int i = 0; i < nodes.getLength() && flag == true; i++) {
+        for (int i = 0; i < nodes.getLength() && flag; i++) {
             String referenceTarget = nodes.item(i).getNodeValue().substring(1);
             String findReferenceExpression = "//*[@gml:id='"+referenceTarget+"']";
             Node node = XMLUtils.getNodeByXPath(this.testSubject, findReferenceExpression);
@@ -47,17 +60,14 @@ public class AppearanceModuleValidation extends CommonFixture {
             }
 
             String nodeName = node.getLocalName();
-            // TODO: add  gml:AbstractSurfaceType, gml:MultiSurface and their inheritance
-            List<String> allowedRef = new ArrayList<>();
-
 
             if (allowedRef.contains(nodeName)) {
                 break;
             }
             flag = false;
         }
-        throw new SkipException("Not implemented yet.");
-        //Assert.assertTrue(flag,MODULE_NAME+" reference invalid.");
+
+        Assert.assertTrue(flag,MODULE_NAME+" reference invalid.");
     }
 
     /**
