@@ -79,63 +79,69 @@ public class GlobalValidation extends CommonFixture {
      */
     @Test(enabled = GLOBAL_ENABLE)
     public void VerifyGlobalReferencingGeometries2() throws XPathExpressionException {
-        List<String> spaceBoundaryNamesList = ValidationUtils.getTypeData("AbstractSpaceBoundary");
-        List<String> spaceNameList = ValidationUtils.getTypeData("AbstractSpace");
-        XPath xPath = XMLUtils.getCityGMLXPath();
-
         boolean valid = true;
+        String exceptionMessage = "";
+        try {
+            List<String> spaceBoundaryNamesList = ValidationUtils.getTypeData("AbstractSpaceBoundary");
+            List<String> spaceNameList = ValidationUtils.getTypeData("AbstractSpace");
+            XPath xPath = XMLUtils.getCityGMLXPath();
 
-        String exprBoundary = "//*[local-name()='boundary']";
+            String exprBoundary = "//*[local-name()='boundary']";
 
-        NodeList boundariesNode = (NodeList) xPath.evaluate(exprBoundary, this.testSubject, XPathConstants.NODESET);
-        for (int i = 0; i < boundariesNode.getLength() && valid; i++){
-            Node currentBoundaryNode = boundariesNode.item(i);
-            Node parentNode = currentBoundaryNode.getParentNode();
-            String parentNodeName = parentNode.getNodeName();
-            if (!spaceNameList.contains(parentNodeName)) {
-                valid = false;
-                break;
-            }
-        }
-
-        List<NodeList> allSpaceBoundariesList = new ArrayList<>();
-        for (String spaceBoundaryName : spaceBoundaryNamesList) {
-            String expr = "//"+ spaceBoundaryName;
-
-            NodeList spaceBoundariesNode = (NodeList)xPath.evaluate(expr, this.testSubject, XPathConstants.NODESET);
-            if (spaceBoundariesNode == null || spaceBoundariesNode.getLength() == 0)
-                continue;
-            allSpaceBoundariesList.add(spaceBoundariesNode);
-        }
-
-        List<NodeList> allSpaceList = new ArrayList<>();
-
-        for (String spaceName : spaceNameList) {
-            String spaceLocalName = spaceName.split(":")[1];
-            String expr = "//*[local-name()='"+spaceLocalName+"']";
-            NodeList spacesNode = (NodeList)xPath.evaluate(expr, this.testSubject, XPathConstants.NODESET);
-            if (spacesNode == null || spacesNode.getLength() == 0)
-                continue;
-            allSpaceList.add(spacesNode);
-        }
-
-        for (int i = 0; i < allSpaceList.size() && valid; i++) {
-            NodeList currentSpaceNodeList = allSpaceList.get(i);
-            for (int j = 0; j < currentSpaceNodeList.getLength() && valid; j++) {
-                Node currentSpaceNode = currentSpaceNodeList.item(j);
-                int childCount = currentSpaceNode.getChildNodes().getLength();
-                if (childCount == 0)
-                {
+            NodeList boundariesNode = (NodeList) xPath.evaluate(exprBoundary, this.testSubject, XPathConstants.NODESET);
+            for (int i = 0; i < boundariesNode.getLength() && valid; i++){
+                Node currentBoundaryNode = boundariesNode.item(i);
+                Node parentNode = currentBoundaryNode.getParentNode();
+                String parentNodeName = parentNode.getNodeName();
+                if (!spaceNameList.contains(parentNodeName)) {
                     valid = false;
                     break;
                 }
-                String id = currentSpaceNode.getAttributes().getNamedItem("gml:id").getNodeValue();
-
-                String expr = "//*[xlink:href='#" + id + "']";
-                NodeList refList = (NodeList) xPath.evaluate(expr, this.testSubject, XPathConstants.NODESET);
-                if (refList.getLength() > 0)
-                    valid = false;
             }
+
+            List<NodeList> allSpaceBoundariesList = new ArrayList<>();
+            for (String spaceBoundaryName : spaceBoundaryNamesList) {
+                String expr = "//"+ spaceBoundaryName;
+
+                NodeList spaceBoundariesNode = (NodeList)xPath.evaluate(expr, this.testSubject, XPathConstants.NODESET);
+                if (spaceBoundariesNode == null || spaceBoundariesNode.getLength() == 0)
+                    continue;
+                allSpaceBoundariesList.add(spaceBoundariesNode);
+            }
+
+            List<NodeList> allSpaceList = new ArrayList<>();
+
+            for (String spaceName : spaceNameList) {
+                String spaceLocalName = spaceName.split(":")[1];
+                String expr = "//*[local-name()='"+spaceLocalName+"']";
+                NodeList spacesNode = (NodeList)xPath.evaluate(expr, this.testSubject, XPathConstants.NODESET);
+                if (spacesNode == null || spacesNode.getLength() == 0)
+                    continue;
+                allSpaceList.add(spacesNode);
+            }
+
+            for (int i = 0; i < allSpaceList.size() && valid; i++) {
+                NodeList currentSpaceNodeList = allSpaceList.get(i);
+                for (int j = 0; j < currentSpaceNodeList.getLength() && valid; j++) {
+                    Node currentSpaceNode = currentSpaceNodeList.item(j);
+                    int childCount = currentSpaceNode.getChildNodes().getLength();
+                    if (childCount == 0)
+                    {
+                        valid = false;
+                        break;
+                    }
+                    String id = currentSpaceNode.getAttributes().getNamedItem("gml:id").getNodeValue();
+
+                    String expr = "//*[xlink:href='#" + id + "']";
+                    NodeList refList = (NodeList) xPath.evaluate(expr, this.testSubject, XPathConstants.NODESET);
+                    if (refList.getLength() > 0)
+                        valid = false;
+                }
+            }
+
+        } catch (Exception e) {
+            valid = false;
+            Assert.fail("Invalid XML document. " + e.getMessage());
         }
 
         Assert.assertTrue(valid, "Referencing geometries of spaces and space boundaries invalid.");

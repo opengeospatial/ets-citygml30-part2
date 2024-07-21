@@ -211,24 +211,23 @@ public class ValidationUtils {
 
     public static List<String> getTypeData(String typeName) {
 
-        String jsonPath = ROOT_PKG + "type.json";
+        String jsonPath = ROOT_PKG + "type-inheritance.json";
         URL schemaURL = ValidationUtils.class.getResource(jsonPath);
         List<String> stringList = new ArrayList<>();
         Gson gson = new Gson();
         Type mapType = new TypeToken<Map<String, List<String>>>(){}.getType();
 
-        Map<String, List<String>> jsonObj = new HashMap<>();
+        List<String> jsonObj = new ArrayList<>();
         try (FileReader reader = new FileReader(schemaURL.getPath())) {
             Map<String, List<String>> jsonObjTemp = gson.fromJson(reader, mapType);
             if (jsonObjTemp != null && !jsonObjTemp.isEmpty()) {
-                jsonObj = jsonObjTemp;
+                jsonObj = jsonObjTemp.get(typeName);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        List<String> temp = jsonObj.get(typeName);
-        return temp;
+        return jsonObj;
     }
 
     public static String getXmlns(String ns) {
