@@ -141,15 +141,17 @@ public class AppearanceModuleValidation extends CommonFixture {
         // The ring property (type: anyURI) SHALL reference the gml:id of the target gml:LinearRing using an appropriate XPointer
         // Test D
         String expressionPath = "//app:ring/text()";
-        NodeList nodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionPath);
+        NodeList ringNodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionPath);
         boolean flag = true;
-        for (int i = 0; i < nodes.getLength(); i++) {
-            if (nodes.item(i).getNodeType() != Node.ELEMENT_NODE)
+        for (int i = 0; i < ringNodes.getLength(); i++) {
+            Node currentNode = ringNodes.item(i);
+            if (currentNode.getNodeType() != Node.TEXT_NODE)
                 continue;
-            Element n = (Element) nodes.item(i);
-            String ringReference = n.getAttribute("ring").substring(1);
-            String findReferenceExpression = "//*[@gml:id='"+ringReference+"']";
-            Node node = XMLUtils.getNodeByXPath(this.testSubject, findReferenceExpression);
+
+            String ringContent = currentNode.getTextContent();
+            String refId = ringContent.substring(1);
+            String ringRefIdExpression = "//*[@gml:id='"+refId+"']";
+            Node node = XMLUtils.getNodeByXPath(this.testSubject, ringRefIdExpression);
             if (!node.getLocalName().equals("gml:LinearRing")) {
                 flag = false;
                 break;
@@ -158,15 +160,22 @@ public class AppearanceModuleValidation extends CommonFixture {
 
         Assert.assertTrue(flag,MODULE_NAME+" ring reference invalid.");
 
+        // Each point in a ring of a surface geometry SHALL receive a point in texture space.
+        // The number of 2D points in the textureCoordinates element therefore SHALL be identical with the number of 3D points in the ring referenced by the corresponding ring property.
+        // This explicitly includes texture coordinates for the last point in a gml:LinearRing element which, by GML definition, must be coincident with the first point.
         // Test E
-        String expressionRingRef = "//app:textureCoordinates[@ring]";
-        NodeList ringRefNodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionRingRef);
+
         boolean valueCountValid = true;
-        for (int i = 0; i < ringRefNodes.getLength() && valueCountValid; i++) {
-            Element elementTextureCoord = (Element) ringRefNodes.item(i);
-            String ringRefId = elementTextureCoord.getAttribute("ring").substring(1);
-            String findReferenceExpression = "//*[@gml:id='"+ringRefId+"']";
-            Node gmlIdNode = XMLUtils.getNodeByXPath(elementTextureCoord, expressionRingRef);
+        for (int i = 0; i < ringNodes.getLength() && valueCountValid; i++) {
+            Node currentNode = ringNodes.item(i);
+            if (currentNode.getNodeType() != Node.TEXT_NODE)
+                continue;
+
+            String ringContent = currentNode.getTextContent();
+            String refId = ringContent.substring(1);
+            String ringRefIdExpression = "//*[@gml:id='"+refId+"']";
+
+            Node gmlIdNode = XMLUtils.getNodeByXPath(this.testSubject, ringRefIdExpression);
             if (gmlIdNode.getNodeName().equals("gml:LinearRing")) {
                 Node postList = XMLUtils.getNodeByXPath(gmlIdNode, "gml:posList");
                 Element postListElement = (Element) postList;
@@ -184,9 +193,9 @@ public class AppearanceModuleValidation extends CommonFixture {
                     valueCountValid = false;
                     break;
                 }
-                String textureCoordRawValue = elementTextureCoord.getTextContent();
+
                 List<String> valueList2d = new ArrayList<String>();
-                for (String rawString : textureCoordRawValue.split(" ")) {
+                for (String rawString : ringContent.split(" ")) {
                     if (!rawString.equals(""))
                         valueList2d.add(rawString);
                 }
@@ -216,11 +225,17 @@ public class AppearanceModuleValidation extends CommonFixture {
         }
 
         List<String> ringRef = new ArrayList<String>();
-        for (int i = 0; i < ringRefNodes.getLength(); i++) {
-            Element element = (Element) ringRefNodes.item(i);
-            String ring = element.getAttribute("ring").substring(1);
-            ringRef.add(ring);
+
+        for (int i = 0; i < ringNodes.getLength(); i++) {
+            Node currentNode = ringNodes.item(i);
+            if (currentNode.getNodeType() != Node.TEXT_NODE)
+                continue;
+
+            String ringContent = currentNode.getTextContent();
+            String refId = ringContent.substring(1);
+            ringRef.add(refId);
         }
+
         boolean orderValid = true;
         if (ringRef.size() != linearRingId.size()) {
             System.out.println("Invalid ring size");
