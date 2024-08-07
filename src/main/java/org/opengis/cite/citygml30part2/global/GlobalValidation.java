@@ -255,4 +255,40 @@ public class GlobalValidation extends CommonFixture {
 
         Assert.assertTrue(referenceStatus, "CityObjectRelation reference invalid.");
     }
+    
+    /**
+     * For referencing features from alternative aggregations::
+     * <ul>
+     * <li>Each feature belongs to a natural aggregation hierarchy and SHALL be stored inline this hierarchy.
+     *
+     * <li>Alternative aggregations SHALL NOT contain the feature inline but SHALL use an XLink to reference the feature.
+     * </ul>
+     */
+    @Test(
+            enabled = GLOBAL_ENABLE)
+    public void VerifyAlternativeAggregations() {
+        // get any element at feature level that does not have child elements
+        String query = "//core:cityObjectMember/*[not(*)]";
+        NodeList nodeList = XMLUtils.getNodeListByXPath(this.testSubject, query);
+        if (nodeList.getLength() == 0) {
+            // try one level further down
+            query = "//core:cityObjectMember/*/*[not(*)]";
+            nodeList = XMLUtils.getNodeListByXPath(this.testSubject, query);
+        }
+        if (nodeList.getLength() != 0) {
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+                String nodeName = node.getNodeName();
+                if (nodeName.contains("relatedTo") || node.getAttributes().getLength() == 0
+                        || node.getAttributes().getNamedItem("xlink:href") == null) {
+                    continue;
+                }
+                String xlinkHrefTextContent = node.getAttributes().getNamedItem("xlink:href").getTextContent();
+                String xlinkHrefTextContent_Modified = xlinkHrefTextContent.replaceFirst("#", "");
+                query = String.format("//%s/*[@gml:id='%s']", nodeName, xlinkHrefTextContent_Modified);
+                nodeList = XMLUtils.getNodeListByXPath(this.testSubject, query);
+                Assert.assertTrue(nodeList.getLength() > 0, String.format("Element '%s' contains non resolvable xlink '%s'.", nodeName, xlinkHrefTextContent));
+            }
+        }
+    }
 }
