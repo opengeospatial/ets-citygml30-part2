@@ -266,7 +266,7 @@ public class GlobalValidation extends CommonFixture {
      */
     @Test(
             enabled = GLOBAL_ENABLE)
-    public void VerifyAlternativeAggregations() {
+    public void VerifyGlobalAlternativeAggregations() {
         // get any element at feature level that does not have child elements
         String query = "//core:cityObjectMember/*[not(*)]";
         NodeList nodeList = XMLUtils.getNodeListByXPath(this.testSubject, query);
