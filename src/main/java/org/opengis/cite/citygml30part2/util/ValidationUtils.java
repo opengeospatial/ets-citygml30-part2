@@ -1,12 +1,19 @@
 package org.opengis.cite.citygml30part2.util;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import javax.xml.XMLConstants;
@@ -23,8 +30,6 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.apache.xerces.dom.DeferredElementNSImpl;
 import org.apache.xerces.util.XMLCatalogResolver;
 import org.opengis.cite.citygml30part2.Namespaces;
@@ -35,6 +40,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * A utility class that provides convenience methods to support schema
@@ -193,10 +201,10 @@ public class ValidationUtils {
     }
     public static List<String> getAllowedBoundaries(String spaceName) {
         String jsonPath = ROOT_PKG + "boundaries.json";
-        URL schemaURL = ValidationUtils.class.getResource(jsonPath);
+        InputStream in = ValidationUtils.class.getResourceAsStream(jsonPath);
         List<String> stringList = new ArrayList<>();
 
-        Map<String, Map<String, List<String>>> jsonObj = readBoundariesJsonObj(schemaURL.getPath());
+        Map<String, Map<String, List<String>>> jsonObj = readBoundariesJsonObj(in);
         Map<String, List<String>> temp = jsonObj.get(spaceName);
         if (temp == null) {
             return stringList;
@@ -210,15 +218,13 @@ public class ValidationUtils {
     }
 
     public static List<String> getTypeData(String typeName) {
-
         String jsonPath = ROOT_PKG + "type-inheritance.json";
-        URL schemaURL = ValidationUtils.class.getResource(jsonPath);
-        List<String> stringList = new ArrayList<>();
+        InputStream in = ValidationUtils.class.getResourceAsStream(jsonPath);
         Gson gson = new Gson();
         Type mapType = new TypeToken<Map<String, List<String>>>(){}.getType();
 
         List<String> jsonObj = new ArrayList<>();
-        try (FileReader reader = new FileReader(schemaURL.getPath())) {
+        try (InputStreamReader reader = new InputStreamReader(in)) {
             Map<String, List<String>> jsonObjTemp = gson.fromJson(reader, mapType);
             if (jsonObjTemp != null && !jsonObjTemp.isEmpty()) {
                 jsonObj = jsonObjTemp.get(typeName);
@@ -226,7 +232,6 @@ public class ValidationUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return jsonObj;
     }
 
@@ -320,12 +325,12 @@ public class ValidationUtils {
         return true;
     }
 
-    public static Map<String, Map<String, List<String>>> readBoundariesJsonObj(String path) {
+    public static Map<String, Map<String, List<String>>> readBoundariesJsonObj(InputStream in) {
         Gson gson = new Gson();
         Type mapType = new TypeToken<Map<String, Map<String, List<String>>>>(){}.getType();
 
         Map<String, Map<String, List<String>>> jsonObj = new HashMap<>();
-        try (FileReader reader = new FileReader(path)) {
+        try (InputStreamReader reader = new InputStreamReader(in)) {
             Map<String, Map<String, List<String>>> jsonObjTemp = gson.fromJson(reader, mapType);
             if (jsonObjTemp != null && !jsonObjTemp.isEmpty()) {
                 jsonObj = jsonObjTemp;
