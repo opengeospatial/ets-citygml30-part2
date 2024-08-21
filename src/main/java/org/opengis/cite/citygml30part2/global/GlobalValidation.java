@@ -6,6 +6,7 @@ import org.opengis.cite.citygml30part2.CommonFixture;
 import org.opengis.cite.citygml30part2.util.ValidationUtils;
 import org.opengis.cite.citygml30part2.util.XMLUtils;
 import org.testng.Assert;
+import static org.testng.Assert.fail;
 import org.testng.annotations.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -14,6 +15,7 @@ import org.w3c.dom.NodeList;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -80,7 +82,6 @@ public class GlobalValidation extends CommonFixture {
     @Test(enabled = GLOBAL_ENABLE)
     public void VerifyGlobalReferencingGeometries2() throws XPathExpressionException {
         boolean valid = true;
-        String exceptionMessage = "";
         try {
             List<String> spaceBoundaryNamesList = ValidationUtils.getTypeData("AbstractSpaceBoundary");
             List<String> spaceNameList = ValidationUtils.getTypeData("AbstractSpace");
@@ -127,13 +128,27 @@ public class GlobalValidation extends CommonFixture {
                     int childCount = currentSpaceNode.getChildNodes().getLength();
                     if (childCount == 0)
                     {
-                        valid = false;
-                        break;
+                        checkXLink(currentSpaceNode);
+                        continue;
                     }
-                    String id = currentSpaceNode.getAttributes().getNamedItem("gml:id").getNodeValue();
+                    //check possible existing xlink:href references
+                    //see https://github.com/opengeospatial/ets-citygml30-part2/issues/36                    
+                    String expr = "//*[@xlink:href]";
+                    NodeList refList = (NodeList) xPath.evaluate(expr, currentSpaceNode, XPathConstants.NODESET);
+                    if (refList.getLength() > 0) {
+                        for (int l = 0; l < refList.getLength(); l++) {
+                            Node xlinkHrefNode = refList.item(l);
+                            checkXLink(xlinkHrefNode);
+                        }
+                    }
+                    Node gmlIdNode = currentSpaceNode.getAttributes().getNamedItem("gml:id");
+                    if(gmlIdNode == null) {
+                        continue;
+                    }
+                    String id = gmlIdNode.getNodeValue();
 
-                    String expr = "//*[xlink:href='#" + id + "']";
-                    NodeList refList = (NodeList) xPath.evaluate(expr, this.testSubject, XPathConstants.NODESET);
+                    expr = "*[xlink:href='#" + id + "']";
+                    refList = (NodeList) xPath.evaluate(expr, this.testSubject, XPathConstants.NODESET);
                     if (refList.getLength() > 0)
                         valid = false;
                 }
@@ -283,12 +298,21 @@ public class GlobalValidation extends CommonFixture {
                         || node.getAttributes().getNamedItem("xlink:href") == null) {
                     continue;
                 }
-                String xlinkHrefTextContent = node.getAttributes().getNamedItem("xlink:href").getTextContent();
-                String xlinkHrefTextContent_Modified = xlinkHrefTextContent.replaceFirst("#", "");
-                query = String.format("//%s/*[@gml:id='%s']", nodeName, xlinkHrefTextContent_Modified);
-                nodeList = XMLUtils.getNodeListByXPath(this.testSubject, query);
-                Assert.assertTrue(nodeList.getLength() > 0, String.format("Element '%s' contains non resolvable xlink '%s'.", nodeName, xlinkHrefTextContent));
+                checkXLink(node);
             }
         }
+    }
+
+    private void checkXLink(Node node) {
+        try {
+            String nodeName = node.getNodeName();
+            String xlinkHrefTextContent = node.getAttributes().getNamedItem("xlink:href").getTextContent();
+            String xlinkHrefTextContent_Modified = xlinkHrefTextContent.replaceFirst("#", "");
+            String query = String.format("//%s/*[@gml:id='%s']", nodeName , xlinkHrefTextContent_Modified);
+            NodeList nodeList = XMLUtils.getNodeListByXPath(this.testSubject, query);
+            Assert.assertTrue(nodeList.getLength() > 0, String.format("Element '%s' contains non resolvable xlink '%s'.", nodeName, xlinkHrefTextContent));             
+        } catch (Exception e) {
+            fail("Could not check XLink of node.", e);
+        }      
     }
 }
