@@ -1,16 +1,8 @@
 package org.opengis.cite.citygml30part2.util;
 
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import net.sf.saxon.s9api.*;
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,37 +10,23 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.Validator;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import java.io.*;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import net.sf.saxon.s9api.DOMDestination;
-import net.sf.saxon.s9api.DocumentBuilder;
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.XPathCompiler;
-import net.sf.saxon.s9api.XPathSelector;
-import net.sf.saxon.s9api.XQueryCompiler;
-import net.sf.saxon.s9api.XQueryEvaluator;
-import net.sf.saxon.s9api.XQueryExecutable;
-import net.sf.saxon.s9api.XdmNode;
-import net.sf.saxon.s9api.XdmValue;
-import net.sf.saxon.s9api.XsltCompiler;
-import net.sf.saxon.s9api.XsltExecutable;
-import net.sf.saxon.s9api.XsltTransformer;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import static org.opengis.cite.citygml30part2.util.SchemaPathConst.*;
+import static org.opengis.cite.citygml30part2.util.ValidationUtils.getXmlns;
 
 /**
  * Provides various utility methods for accessing or manipulating XML
@@ -88,7 +66,7 @@ public class XMLUtils {
         try {
             Transformer idTransformer = TransformerFactory.newInstance().newTransformer();
             Properties outProps = new Properties();
-            outProps.setProperty(OutputKeys.ENCODING, "US-ASCII");
+            outProps.setProperty(OutputKeys.ENCODING, "UTF-8");
             outProps.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             outProps.setProperty(OutputKeys.INDENT, "yes");
             idTransformer.setOutputProperties(outProps);
@@ -406,5 +384,198 @@ public class XMLUtils {
             nodes.add(nodeList.item(i));
         }
         return nodes;
+    }
+
+    /**
+	 * Transform XML Document to UTF-8 String
+	 * @param xmlDoc The XML Document
+	 * @return A String data type of XML Document
+	 * @throws Exception TransformerConfigurationException, TransformerException
+	 */
+	public static String TransformXMLDocumentToXMLString(Document xmlDoc) throws Exception {
+		Transformer tf = TransformerFactory.newInstance().newTransformer();
+		tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+		tf.setOutputProperty(OutputKeys.INDENT, "yes");
+		Writer out = new StringWriter();
+		tf.transform(new DOMSource(xmlDoc), new StreamResult(out));
+		return out.toString();
+	}
+
+    public static boolean isMultipleXMLSchemaValid(String xmlString, String[] arrXsdPath) throws Exception {
+		try {
+			Schema schema = ValidationUtils.createMultipleSchema(arrXsdPath);
+			Validator validator = schema.newValidator();
+			validator.validate(new StreamSource(new StringReader(xmlString)));
+		} catch (IOException | SAXException e) {
+			System.out.println("Exception: " + e.getMessage());
+            String s = "Exception: " + e.getMessage();
+            throw new Exception(s);
+		}
+		return true;
+	}
+
+    public static boolean isMultipleXMLSchemaValid(Document doc, ArrayList<String> arrayList) throws Exception{
+        String[] arrayXsdPath = new String[arrayList.size()];
+        arrayList.toArray(arrayXsdPath);
+        return isMultipleXMLSchemaValid(doc, arrayXsdPath);
+    }
+
+    public static boolean isMultipleXMLSchemaValid(Document doc, String[] arrXsdPath) throws Exception{
+        try {
+            String str = XMLUtils.TransformXMLDocumentToXMLString(doc);
+            return isMultipleXMLSchemaValid(str, arrXsdPath);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+    public static boolean hasChildWithAttribute(Element element, String attributeName) {
+        NodeList childNodes = element.getChildNodes();
+        for (int j = 0; j < childNodes.getLength(); j++) {
+            Node childNode = childNodes.item(j);
+            if (childNode instanceof Element && ((Element) childNode).hasAttribute(attributeName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isRefValid(String xpathExpr, String attr, List<String> allowedElement, Document doc) throws Exception {
+        NodeList nodeList = getNodeListByXPath(doc, xpathExpr);
+
+        boolean isRefValid = true;
+        for (int i = 0; i < nodeList.getLength() && isRefValid; i++) {
+            Node currentNode = nodeList.item(i);
+            if (currentNode.getNodeType() != Node.ELEMENT_NODE)
+                continue;
+
+            Element currentElement = (Element) currentNode;
+            if (!currentElement.hasAttribute(attr))
+                return false;
+
+            String hrefName = currentElement.getAttribute("xlink:href").replace("#", "");
+
+            String findReferenceExpression = "//*[@gml:id='" + hrefName + "']";
+
+            Node xlinkNode = getNodeByXPath(doc, findReferenceExpression);
+            String name = xlinkNode.getNodeName();
+            if (!allowedElement.contains(name))
+                return false;
+        }
+        return true;
+    }
+
+    public static XPath getCityGMLXPath() {
+        XPathFactory xpathfactory = XPathFactory.newInstance();
+        XPath xpath = xpathfactory.newXPath();
+
+        Map<String, String> namespaceBindings = NamespaceBindings.getNamespaceMap();
+
+        NamespaceBindings bindings = NamespaceBindings.withStandardBindings();
+        bindings.addAllBindings(namespaceBindings);
+        xpath.setNamespaceContext(bindings);
+        return xpath;
+    }
+
+    /**
+     * Return a NodeList of all Element nodes that match the XPath expression
+     * @param doc Document of XML Source
+     * @param expression XPath expression
+     * @return NodeList of Element nodes that match the XPath expression
+     */
+    public static NodeList getNodeListByXPath(Document doc, String expression) {
+        try {
+            XPath xpath = getCityGMLXPath();
+            NodeList nodes = (NodeList) xpath.evaluate(expression, doc, XPathConstants.NODESET);
+            return nodes;
+        } catch (Exception exception) {
+            System.out.println("Exception: " + exception.getMessage());
+            return null;
+        }
+    }
+
+    public static NodeList getNodeListByXPath(NodeList node, String expression) {
+        try {
+            XPath xpath = getCityGMLXPath();
+            NodeList nodes = (NodeList) xpath.evaluate(expression, node, XPathConstants.NODESET);
+            return nodes;
+        } catch (Exception exception) {
+            System.out.println("Exception: " + exception.getMessage());
+            return null;
+        }
+    }
+
+    public static NodeList getNodeListByXPath(Node node, String expression) {
+        try {
+            XPath xpath = getCityGMLXPath();
+            NodeList nodes = (NodeList) xpath.evaluate(expression, node, XPathConstants.NODESET);
+            return nodes;
+        } catch (Exception exception) {
+            System.out.println("Exception: " + exception.getMessage());
+            return null;
+        }
+    }
+
+    public static Node getNodeByXPath(Document doc, String expression) {
+        try {
+            XPath xpath = getCityGMLXPath();
+            Node nodes = (Node) xpath.evaluate(expression, doc, XPathConstants.NODE);
+            return nodes;
+        } catch (Exception exception) {
+            System.out.println("Exception: " + exception.getMessage());
+            return null;
+        }
+    }
+    public static Node getNodeByXPath(Node node, String expression) {
+        try {
+            XPath xpath = getCityGMLXPath();
+            Node nodes = (Node) xpath.evaluate(expression, node, XPathConstants.NODE);
+            return nodes;
+        } catch (Exception exception) {
+            System.out.println("Exception: " + exception.getMessage());
+            return null;
+        }
+    }
+
+    public static ArrayList<String> GetToValidateXsdPathArrayList(Document doc){
+        //
+        HashMap<String, String> hashMap = new LinkedHashMap<String, String>();
+        hashMap.put(getXmlns("CORE"), XSD_CORE);
+        hashMap.put(getXmlns("APPEARANCE"), XSD_APPEARANCE);
+        hashMap.put(getXmlns("BRIDGE"), XSD_BRIDGE);
+        hashMap.put(getXmlns("BUILDING"), XSD_BUILDING);
+        hashMap.put(getXmlns("CITYFURNITURE"), XSD_CITYFURNITURE);
+        hashMap.put(getXmlns("CITYOBJECTGROUP"), XSD_CITYOBJECTGROUP);
+        hashMap.put(getXmlns("CONSTRUCTION"), XSD_CONSTRUCTION);
+        hashMap.put(getXmlns("DYNAMIZER"), XSD_DYNAMIZER);
+        hashMap.put(getXmlns("GENERICS"), XSD_GENERICS);
+        hashMap.put(getXmlns("LANDUSE"), XSD_LANDUSE);
+        hashMap.put(getXmlns("POINTCLOUD"), XSD_POINTCLOUD);
+        hashMap.put(getXmlns("RELIEF"), XSD_RELIEF);
+        hashMap.put(getXmlns("TRANSPORTATION"), XSD_TRANSPORTATION);
+        hashMap.put(getXmlns("TUNNEL"), XSD_TUNNEL);
+        hashMap.put(getXmlns("VEGETATION"), XSD_VEGETATION);
+        hashMap.put(getXmlns("VERSIONING"), XSD_VERSIONING);
+        hashMap.put(getXmlns("WATERBODY"), XSD_WATERBODY);
+        hashMap.put("urn:oasis:names:tc:ciq:xal:3", "xsd/opengis/citygml/schema/xAL/xAL.xsd");
+        //
+
+        Element rootElement = doc.getDocumentElement();
+        NamedNodeMap namedNodeMap = rootElement.getAttributes();
+        ArrayList<String> arrayList = new ArrayList<String>();
+        for (int i = 0; i < namedNodeMap.getLength(); i++) {
+            Node attr = namedNodeMap.item(i);
+            String attrName = attr.getNodeName();
+            String namespaceUri = attr.getNodeValue();
+            if (attrName.contains("xmlns")) {
+                if (hashMap.containsKey(namespaceUri)) {
+                    arrayList.add(hashMap.get(namespaceUri));
+                    //System.out.println(attr.getNodeName()+ " = \"" + attr.getNodeValue() + "\"");
+                }
+            }
+        }
+        arrayList.add("xsd/opengis/citygml/schema/CityGML.xsd");
+        arrayList.add("xsd/opengis/gml/3.2.1/gml-3.2.1.xsd");
+        /*arrayList.add("xsd/opengis/gml/3.2/gml-3.2.2.xsd");*/
+        return arrayList;
     }
 }

@@ -3,15 +3,32 @@ package org.opengis.cite.citygml30part2;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientRequest;
 import com.sun.jersey.api.client.ClientResponse;
+
+import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URI;
-import java.util.Map;
+import java.util.*;
 import javax.ws.rs.core.MediaType;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 import org.opengis.cite.citygml30part2.util.ClientUtils;
+import static org.opengis.cite.citygml30part2.util.SchemaPathConst.*;
+import static org.opengis.cite.citygml30part2.util.ValidationUtils.getXmlns;
 import org.testng.ITestContext;
 import org.testng.SkipException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 
 /**
  * A supporting base class that sets up a common test fixture. These
@@ -36,6 +53,8 @@ public class CommonFixture {
      */
     protected ClientResponse response;
 
+    protected Document testSubject;
+
     /**
      * Initializes the common test fixture with a client component for 
      * interacting with HTTP endpoints.
@@ -53,6 +72,10 @@ public class CommonFixture {
         if (null == obj) {
             throw new SkipException("Test subject not found in ITestContext.");
         }
+        if (Document.class.isAssignableFrom(obj.getClass())) {
+			this.testSubject = Document.class.cast(obj);
+            this.testSubject.getDocumentElement().normalize();
+		}
     }
 
     @BeforeMethod
@@ -96,4 +119,18 @@ public class CommonFixture {
         return ClientUtils.buildGetRequest(endpoint, qryParams, mediaTypes);
     }
 
+    /**
+     * Transform XML Document to UTF-8 String
+     * @param xmlDoc The XML Document
+     * @return A String data type of XML Document
+     * @throws Exception TransformerConfigurationException, TransformerException
+     */
+    public String TransformXMLDocumentToXMLString(Document xmlDoc) throws Exception {
+        Transformer tf = TransformerFactory.newInstance().newTransformer();
+        tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        tf.setOutputProperty(OutputKeys.INDENT, "yes");
+        Writer out = new StringWriter();
+        tf.transform(new DOMSource(xmlDoc), new StreamResult(out));
+        return out.toString();
+    }
 }

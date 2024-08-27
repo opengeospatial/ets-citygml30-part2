@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="1" failed="0" total="1" passed="0">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Default Suite" duration-ms="14" started-at="2024-05-07T02:47:08Z" finished-at="2024-05-07T02:47:08Z">
+    <groups>
+    </groups>
+    <test name="ets-citygml30-part2" duration-ms="14" started-at="2024-05-07T02:47:08Z" finished-at="2024-05-07T02:47:08Z">
+      <class name="org.opengis.cite.citygml30part2.global.GlobalValidation">
+        <test-method status="SKIP" signature="initCommonFixture(org.testng.ITestContext)[pri:0, instance:org.opengis.cite.citygml30part2.global.GlobalValidation@235f4c10]" name="initCommonFixture" is-config="true" duration-ms="0" started-at="2024-05-07T10:47:08Z" finished-at="2024-05-07T10:47:08Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[org.testng.TestRunner@a77614d]]>
+              </value>
+            </param>
+          </params>
+          <exception class="org.testng.SkipException">
+            <message>
+              <![CDATA[Test subject not found in ITestContext.]]>
+            </message>
+          </exception> <!-- org.testng.SkipException -->
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- initCommonFixture -->
+        <test-method status="SKIP" signature="clearMessages()[pri:0, instance:org.opengis.cite.citygml30part2.global.GlobalValidation@235f4c10]" name="clearMessages" is-config="true" duration-ms="0" started-at="2024-05-07T10:47:08Z" finished-at="2024-05-07T10:47:08Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- clearMessages -->
+        <test-method status="SKIP" signature="verifyCityGMLInstanceDoc()[pri:0, instance:org.opengis.cite.citygml30part2.global.GlobalValidation@235f4c10]" name="verifyCityGMLInstanceDoc" duration-ms="0" started-at="2024-05-07T10:47:08Z" finished-at="2024-05-07T10:47:08Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- verifyCityGMLInstanceDoc -->
+      </class> <!-- org.opengis.cite.citygml30part2.global.GlobalValidation -->
+    </test> <!-- ets-citygml30-part2 -->
+  </suite> <!-- Default Suite -->
+</testng-results>

@@ -37,7 +37,6 @@ public class VerifyURIUtils {
                 "note", doc.getDocumentElement().getLocalName());
     }
 
-    @Ignore
     @Test
     // comment out @Ignore to run test (requires network connection)
     public void resolveHttpUriAsFile() throws SAXException, IOException {
@@ -50,32 +49,18 @@ public class VerifyURIUtils {
     @Test
     public void resolveClasspathResource() throws SAXException, IOException,
             URISyntaxException {
-        URL url = this.getClass().getResource("/atom-feed.xml");
+        URL url = this.getClass().getResource("/LocalCRS_CityGML3.gml");
+
         Document doc = URIUtils.parseURI(url.toURI());
         Assert.assertNotNull(doc);
         Assert.assertEquals("Document element has unexpected [local name].",
-                "feed", doc.getDocumentElement().getLocalName());
-    }
-
-    @Test
-    public void resolveFileRefWithXInclude() throws SAXException, IOException,
-            URISyntaxException {
-        File file = new File("src/test/resources/Alpha-xinclude.xml");
-        Document doc = URIUtils.parseURI(file.toURI());
-        Assert.assertNotNull(doc);
-        Assert.assertEquals("Document element has unexpected [local name].",
-                "Alpha", doc.getDocumentElement().getLocalName());
-        NodeList nodes = doc.getDocumentElement().getElementsByTagNameNS(
-                "http://www.example.net/gamma", "Gamma");
-        Assert.assertEquals(
-                "Expected element {http://www.example.net/gamma}Gamma", 1,
-                nodes.getLength());
+                "CityModel", doc.getDocumentElement().getLocalName());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void resolveMissingClasspathResource() throws SAXException,
             URISyntaxException, IOException {
-        URL url = this.getClass().getResource("/alpha.xml");
+        URL url = this.getClass().getResource("/LocalCRS_CityGML3.xml");
         URI uri = (null != url) ? url.toURI() : null;
         Document doc = URIUtils.parseURI(uri);
         Assert.assertNull(doc);

@@ -10,12 +10,94 @@
     <listener class-name="org.opengis.cite.citygml30part2.TestFailureListener" />
   </listeners>
 
-  <test name="Conformance Level 1">
-    <packages>
-      <package name="org.opengis.cite.citygml30part2.level1" />
-    </packages>
+  <test name="Global Validation">
     <classes>
-      <class name="org.opengis.cite.citygml30part2.SuitePreconditions" />
+      <class name="org.opengis.cite.citygml30part2.global.GlobalValidation" />
+    </classes>
+  </test>
+  <test name="Core Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.core.CoreValidation" />
+    </classes>
+  </test>
+  <test name="Appearance Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.AppearanceModuleValidation" />
+    </classes>
+  </test>
+  <test name="Bridge Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.BridgeModuleValidation" />
+    </classes>
+  </test>
+  <test name="Building Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.BuildingModuleValidation" />
+    </classes>
+  </test>
+  <test name="CityObjectGroup Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.CityObjectGroupModuleValidation" />
+    </classes>
+  </test>
+  <test name="Dynamizer Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.DynamizerModuleValidation" />
+    </classes>
+  </test>
+  <test name="CityFurniture Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.CityFurnitureModuleValidation" />
+    </classes>
+  </test>
+  <test name="Construction Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.ConstructionModuleValidation" />
+    </classes>
+  </test>
+  <test name="Generics Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.GenericsModuleValidation" />
+    </classes>
+  </test>
+  <test name="LandUse Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.LandUseModuleValidation" />
+    </classes>
+  </test>
+  <test name="PointCloud Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.PointCloudModuleValidation" />
+    </classes>
+  </test>
+  <test name="Relief Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.ReliefModuleValidation" />
+    </classes>
+  </test>
+  <test name="Transportation Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.TransportationModuleValidation" />
+    </classes>
+  </test>
+  <test name="Vegetation Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.VegetationModuleValidation" />
+    </classes>
+  </test>
+  <test name="Versioning Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.VersioningModuleValidation" />
+    </classes>
+  </test>
+  <test name="WaterBody Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.WaterBodyModuleValidation" />
+    </classes>
+  </test>
+  <test name="Tunnel Validation">
+    <classes>
+      <class name="org.opengis.cite.citygml30part2.module.TunnelModuleValidation" />
     </classes>
   </test>
   <!-- Add test sets for other conformance classes/levels -->

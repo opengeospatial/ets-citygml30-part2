@@ -56,7 +56,7 @@ public class VerifySuiteFixtureListener {
 
     @Test
     public void processIUTParameter() throws URISyntaxException {
-        URL url = this.getClass().getResource("/atom-feed.xml");
+        URL url = this.getClass().getResource("/LocalCRS_CityGML3.gml");
         Map<String, String> params = new HashMap<String, String>();
         params.put(TestRunArg.IUT.toString(), url.toURI().toString());
         when(xmlSuite.getParameters()).thenReturn(params);
