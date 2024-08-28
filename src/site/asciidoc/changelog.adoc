@@ -1,15 +1,16 @@
 = Release Notes
 
-== 0.3
+== 0.3 (2024-08-14)
+* https://github.com/opengeospatial/ets-citygml30-part2/issues/41[#41] Rescources not found when running ETS in servlet container
+* https://github.com/opengeospatial/ets-citygml30-part2/issues/40[#40] "Verify City GML Instance Doc" test finishes with unexpected error
 * https://github.com/opengeospatial/ets-citygml30-part2/issues/39[#39] Tests are not skipped when no Dynamizer element was found
-* https://github.com/opengeospatial/ets-citygml30-part2/issues/38[#38]  Abstract Test 11 /req/appearance/target
+* https://github.com/opengeospatial/ets-citygml30-part2/issues/38[#38] Abstract Test 11 /req/appearance/target
 * https://github.com/opengeospatial/ets-citygml30-part2/issues/37[#37] Re-work implementations of Appearance tests
 * https://github.com/opengeospatial/ets-citygml30-part2/issues/36[#36] Re-work implementations of Global tests
 * https://github.com/opengeospatial/ets-citygml30-part2/issues/30[#30] Abstract Test 9: Rework detection of allowed spaces
 * https://github.com/opengeospatial/ets-citygml30-part2/issues/21[#21] Implement of Requirement 6
 
 == 0.2 (2024-04-11)
-* https://github.com/opengeospatial/ets-citygml30-part2/issues/40[#40] "Verify City GML Instance Doc" test finishes with unexpected error
 * https://github.com/opengeospatial/ets-citygml30-part2/issues/35[#35] Implement third bullet point of Abstract Test 27
 * https://github.com/opengeospatial/ets-citygml30-part2/issues/34[#34] Re-work XLink tests
 * https://github.com/opengeospatial/ets-citygml30-part2/issues/33[#33] Re-work boundary tests
