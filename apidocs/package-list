@@ -1,0 +1,5 @@
+org.opengis.cite.citygml30part2
+org.opengis.cite.citygml30part2.core
+org.opengis.cite.citygml30part2.global
+org.opengis.cite.citygml30part2.module
+org.opengis.cite.citygml30part2.util
