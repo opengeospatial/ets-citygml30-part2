@@ -47,7 +47,7 @@
   <properties>
     <ets-code>citygml30-part2</ets-code>
     <spec-version>3.0</spec-version>
-    <docker.teamengine.version>5.4</docker.teamengine.version>
+    <docker.teamengine.version>5.7</docker.teamengine.version>
   </properties>
 
   <dependencies>
