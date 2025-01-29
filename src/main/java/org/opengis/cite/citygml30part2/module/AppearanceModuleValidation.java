@@ -2,335 +2,372 @@ package org.opengis.cite.citygml30part2.module;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.List;
 
 import org.opengis.cite.citygml30part2.CommonFixture;
-import org.opengis.cite.citygml30part2.util.*;
-import org.testng.SkipException;
+import org.opengis.cite.citygml30part2.util.ValidationUtils;
+import org.opengis.cite.citygml30part2.util.XMLUtils;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
-import javax.xml.xpath.XPathConstants;
 
 public class AppearanceModuleValidation extends CommonFixture {
-    final boolean MODULE_ENABLE = true;
-    String MODULE_NAME = "Appearance";
 
-    /**
-     * CityGML XML elements implemented by a conforming instance document shall conform to the XML schema in <a href="http://schemas.opengis.net/citygml/appearance/3.0/appearance.xsd">appearance.xsd</a>.
-     */
-    @Test(enabled = MODULE_ENABLE, groups = { "Module" })
-    public void VerifyAppearanceModule(){
-        boolean foundAtLeastOne = ValidationUtils.elementValidation(this.testSubject, MODULE_NAME);
-        Assert.assertTrue(foundAtLeastOne,"No "+MODULE_NAME+" element was found in the document.");
-    }
+	final boolean MODULE_ENABLE = true;
 
-    /**
-     * Surface data SHALL only be applied to surface geometries. The target property of a surface data element therefore SHALL only reference a subtype of gml:AbstractSurfaceType or a gml:MultiSurface.
-     */
-    @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
-    public void VerifyAppearanceTarget() throws Exception  {
-        String expressionTarget = "//app:target/text()";
-        NodeList nodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionTarget);
+	String MODULE_NAME = "Appearance";
 
-        List<String> allowedRef = Arrays.asList(
-                "gml:MultiSurface",
-                "gml:AbstractSurface",
-                "gml:CompositeSurface",
-                "gml:OrientableSurface",
-                "gml:Polygon",
-                "gml:PolyhedralSurface",
-                "gml:Surface",
-                "gml:Tin",
-                "gml:TriangulatedSurface");
+	/**
+	 * CityGML XML elements implemented by a conforming instance document shall conform to
+	 * the XML schema in <a href=
+	 * "http://schemas.opengis.net/citygml/appearance/3.0/appearance.xsd">appearance.xsd</a>.
+	 */
+	@Test(enabled = MODULE_ENABLE, groups = { "Module" })
+	public void VerifyAppearanceModule() {
+		boolean foundAtLeastOne = ValidationUtils.elementValidation(this.testSubject, MODULE_NAME);
+		Assert.assertTrue(foundAtLeastOne, "No " + MODULE_NAME + " element was found in the document.");
+	}
 
-        boolean flag = true;
-        for (int i = 0; i < nodes.getLength() && flag; i++) {
-            String referenceTarget = nodes.item(i).getNodeValue().substring(1);
-            String findReferenceExpression = "//*[@gml:id='"+referenceTarget+"']";
-            Node node = XMLUtils.getNodeByXPath(this.testSubject, findReferenceExpression);
+	/**
+	 * Surface data SHALL only be applied to surface geometries. The target property of a
+	 * surface data element therefore SHALL only reference a subtype of
+	 * gml:AbstractSurfaceType or a gml:MultiSurface.
+	 */
+	@Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
+	public void VerifyAppearanceTarget() throws Exception {
+		String expressionTarget = "//app:target/text()";
+		NodeList nodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionTarget);
 
-            if (node == null) {
-                flag = false;
-                break;
-            }
+		List<String> allowedRef = Arrays.asList("gml:MultiSurface", "gml:AbstractSurface", "gml:CompositeSurface",
+				"gml:OrientableSurface", "gml:Polygon", "gml:PolyhedralSurface", "gml:Surface", "gml:Tin",
+				"gml:TriangulatedSurface");
 
-            String nodeName = node.getLocalName();
+		boolean flag = true;
+		for (int i = 0; i < nodes.getLength() && flag; i++) {
+			String referenceTarget = nodes.item(i).getNodeValue().substring(1);
+			String findReferenceExpression = "//*[@gml:id='" + referenceTarget + "']";
+			Node node = XMLUtils.getNodeByXPath(this.testSubject, findReferenceExpression);
 
-            if (allowedRef.contains(nodeName)) {
-                break;
-            }
-            flag = false;
-        }
+			if (node == null) {
+				flag = false;
+				break;
+			}
 
-        Assert.assertTrue(flag,MODULE_NAME+" reference invalid.");
-    }
+			String nodeName = node.getLocalName();
 
-    /**
-     * Assigning texture coordinates to a surface geometry using ParameterizedTexture elements is subject to the following restrictions:
-     * <ul>
-     *     <li>A: Texture coordinates given by the textureCoordinates property of the TexCoordList element define an explicit mapping of a surface’s boundary points to points in texture space. A point in texture space SHALL be given as a coordinate pair consisting of two doubles.</li>
-     *     <li>B: The textureCoordinates and ring properties of a TexCoordList element form pairs and their order is decisive. The first textureCoordinates property in the sequence forms a pair with the first ring property in the sequence, the second textureCoordinates property forms a pair with the second ring property, and so on. As a consequence, the number of textureCoordinates and ring properties SHALL be identical.</li>
-     *     <li>C: A TexCoordList element SHALL provide textureCoordinates for all gml:LinearRing elements contained in the surface geometry that is referenced by the target property of the embracing TextureAssociation. This explicitly includes both exterior and interior rings.</li>
-     *     <li>D: The ring property (type: anyURI) SHALL reference the gml:id of the target gml:LinearRing using an appropriate XPointer.</li>
-     *     <li>E: Each point in a ring of a surface geometry SHALL receive a point in texture space. The number of 2D points in the textureCoordinates element therefore SHALL be identical with the number of 3D points in the ring referenced by the corresponding ring property. This explicitly includes texture coordinates for the last point in a gml:LinearRing element which, by GML definition, must be coincident with the first point.</li>
-     *     <li>F: The order of points in the textureCoordinates SHALL follow the order of the points in the referenced ring element as given in the CityGML document regardless of a possibly flipped surface orientation.</li>
-     * </ul>
-     */
-    @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
-    public void VerifyAppearanceParameterizedTexture() {
-        // Test A (verify two double value)
-        String expressionTextureCoordList = "//app:TexCoordList/app:textureCoordinates/text()";
+			if (allowedRef.contains(nodeName)) {
+				break;
+			}
+			flag = false;
+		}
 
-        NodeList textureCoordinatesNodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionTextureCoordList);
+		Assert.assertTrue(flag, MODULE_NAME + " reference invalid.");
+	}
 
-        boolean allCoordValid = true;
-        for (int i = 0; i < textureCoordinatesNodes.getLength() && allCoordValid; i++) {
-            String rawValue = textureCoordinatesNodes.item(i).getNodeValue();
-            String[] splitString = rawValue.split(" ");
-            if (splitString.length > 2) {
-                allCoordValid = false;
-                break;
-            }
-            try {
-                Double.parseDouble(splitString[0]);
-                Double.parseDouble(splitString[1]);
-            } catch (Exception e) {
-                allCoordValid = false;
-            }
-        }
+	/**
+	 * Assigning texture coordinates to a surface geometry using ParameterizedTexture
+	 * elements is subject to the following restrictions:
+	 * <ul>
+	 * <li>A: Texture coordinates given by the textureCoordinates property of the
+	 * TexCoordList element define an explicit mapping of a surface’s boundary points to
+	 * points in texture space. A point in texture space SHALL be given as a coordinate
+	 * pair consisting of two doubles.</li>
+	 * <li>B: The textureCoordinates and ring properties of a TexCoordList element form
+	 * pairs and their order is decisive. The first textureCoordinates property in the
+	 * sequence forms a pair with the first ring property in the sequence, the second
+	 * textureCoordinates property forms a pair with the second ring property, and so on.
+	 * As a consequence, the number of textureCoordinates and ring properties SHALL be
+	 * identical.</li>
+	 * <li>C: A TexCoordList element SHALL provide textureCoordinates for all
+	 * gml:LinearRing elements contained in the surface geometry that is referenced by the
+	 * target property of the embracing TextureAssociation. This explicitly includes both
+	 * exterior and interior rings.</li>
+	 * <li>D: The ring property (type: anyURI) SHALL reference the gml:id of the target
+	 * gml:LinearRing using an appropriate XPointer.</li>
+	 * <li>E: Each point in a ring of a surface geometry SHALL receive a point in texture
+	 * space. The number of 2D points in the textureCoordinates element therefore SHALL be
+	 * identical with the number of 3D points in the ring referenced by the corresponding
+	 * ring property. This explicitly includes texture coordinates for the last point in a
+	 * gml:LinearRing element which, by GML definition, must be coincident with the first
+	 * point.</li>
+	 * <li>F: The order of points in the textureCoordinates SHALL follow the order of the
+	 * points in the referenced ring element as given in the CityGML document regardless
+	 * of a possibly flipped surface orientation.</li>
+	 * </ul>
+	 */
+	@Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
+	public void VerifyAppearanceParameterizedTexture() {
+		// Test A (verify two double value)
+		String expressionTextureCoordList = "//app:TexCoordList/app:textureCoordinates/text()";
 
-        Assert.assertTrue(allCoordValid,MODULE_NAME+" texture coordinates invalid.");
+		NodeList textureCoordinatesNodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionTextureCoordList);
 
-        // Test B (verify the number of textureCoordinates and ring properties are identical)
-        String expressionTexCoordList = "//app:TexCoordList";
+		boolean allCoordValid = true;
+		for (int i = 0; i < textureCoordinatesNodes.getLength() && allCoordValid; i++) {
+			String rawValue = textureCoordinatesNodes.item(i).getNodeValue();
+			String[] splitString = rawValue.split(" ");
+			if (splitString.length > 2) {
+				allCoordValid = false;
+				break;
+			}
+			try {
+				Double.parseDouble(splitString[0]);
+				Double.parseDouble(splitString[1]);
+			}
+			catch (Exception e) {
+				allCoordValid = false;
+			}
+		}
 
-        NodeList texCoordListNodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionTexCoordList);
+		Assert.assertTrue(allCoordValid, MODULE_NAME + " texture coordinates invalid.");
 
-        boolean propertiesCountValid = true;
-        for (int i = 0; i < texCoordListNodes.getLength() && propertiesCountValid; i++) {
-            NodeList children = texCoordListNodes.item(i).getChildNodes();
-            int textureCoordinatesCount = 0;
-            int ringCount = 0;
-            for (int j = 0; j < children.getLength(); j++) {
-                if (children.item(j).getNodeType() != Node.ELEMENT_NODE)
-                    continue;
-                Element childElement = (Element) children.item(j);
-                String childName = childElement.getNodeName();
-                switch (childName) {
-                    case "app:textureCoordinates":
-                        textureCoordinatesCount ++;
-                        break;
-                    case "app:ring":
-                        ringCount ++;
-                        break;
-                }
-            }
-            if (textureCoordinatesCount!= ringCount) {
-                propertiesCountValid = false;
-                System.out.println("number of textureCoordinates and ring properties are NOT identical");
-            }
-        }
+		// Test B (verify the number of textureCoordinates and ring properties are
+		// identical)
+		String expressionTexCoordList = "//app:TexCoordList";
 
-        Assert.assertTrue(propertiesCountValid,MODULE_NAME+": number of textureCoordinates and ring properties are NOT identical");
+		NodeList texCoordListNodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionTexCoordList);
 
-        // The ring property (type: anyURI) SHALL reference the gml:id of the target gml:LinearRing using an appropriate XPointer
-        // Test D
-        String expressionPath = "//app:ring/text()";
-        NodeList ringNodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionPath);
-        boolean flag = true;
-        for (int i = 0; i < ringNodes.getLength(); i++) {
-            Node currentNode = ringNodes.item(i);
-            if (currentNode.getNodeType() != Node.TEXT_NODE)
-                continue;
+		boolean propertiesCountValid = true;
+		for (int i = 0; i < texCoordListNodes.getLength() && propertiesCountValid; i++) {
+			NodeList children = texCoordListNodes.item(i).getChildNodes();
+			int textureCoordinatesCount = 0;
+			int ringCount = 0;
+			for (int j = 0; j < children.getLength(); j++) {
+				if (children.item(j).getNodeType() != Node.ELEMENT_NODE)
+					continue;
+				Element childElement = (Element) children.item(j);
+				String childName = childElement.getNodeName();
+				switch (childName) {
+					case "app:textureCoordinates":
+						textureCoordinatesCount++;
+						break;
+					case "app:ring":
+						ringCount++;
+						break;
+				}
+			}
+			if (textureCoordinatesCount != ringCount) {
+				propertiesCountValid = false;
+				System.out.println("number of textureCoordinates and ring properties are NOT identical");
+			}
+		}
 
-            String ringContent = currentNode.getTextContent();
-            String refId = ringContent.substring(1);
-            String ringRefIdExpression = "//*[@gml:id='"+refId+"']";
-            Node node = XMLUtils.getNodeByXPath(this.testSubject, ringRefIdExpression);
-            if (!node.getLocalName().equals("gml:LinearRing")) {
-                flag = false;
-                break;
-            }
-        }
+		Assert.assertTrue(propertiesCountValid,
+				MODULE_NAME + ": number of textureCoordinates and ring properties are NOT identical");
 
-        Assert.assertTrue(flag,MODULE_NAME+" ring reference invalid.");
+		// The ring property (type: anyURI) SHALL reference the gml:id of the target
+		// gml:LinearRing using an appropriate XPointer
+		// Test D
+		String expressionPath = "//app:ring/text()";
+		NodeList ringNodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionPath);
+		boolean flag = true;
+		for (int i = 0; i < ringNodes.getLength(); i++) {
+			Node currentNode = ringNodes.item(i);
+			if (currentNode.getNodeType() != Node.TEXT_NODE)
+				continue;
 
-        // Each point in a ring of a surface geometry SHALL receive a point in texture space.
-        // The number of 2D points in the textureCoordinates element therefore SHALL be identical with the number of 3D points in the ring referenced by the corresponding ring property.
-        // This explicitly includes texture coordinates for the last point in a gml:LinearRing element which, by GML definition, must be coincident with the first point.
-        // Test E
+			String ringContent = currentNode.getTextContent();
+			String refId = ringContent.substring(1);
+			String ringRefIdExpression = "//*[@gml:id='" + refId + "']";
+			Node node = XMLUtils.getNodeByXPath(this.testSubject, ringRefIdExpression);
+			if (!node.getLocalName().equals("gml:LinearRing")) {
+				flag = false;
+				break;
+			}
+		}
 
-        boolean valueCountValid = true;
-        for (int i = 0; i < ringNodes.getLength() && valueCountValid; i++) {
-            Node currentNode = ringNodes.item(i);
-            if (currentNode.getNodeType() != Node.TEXT_NODE)
-                continue;
+		Assert.assertTrue(flag, MODULE_NAME + " ring reference invalid.");
 
-            String ringContent = currentNode.getTextContent();
-            String refId = ringContent.substring(1);
-            String ringRefIdExpression = "//*[@gml:id='"+refId+"']";
+		// Each point in a ring of a surface geometry SHALL receive a point in texture
+		// space.
+		// The number of 2D points in the textureCoordinates element therefore SHALL be
+		// identical with the number of 3D points in the ring referenced by the
+		// corresponding ring property.
+		// This explicitly includes texture coordinates for the last point in a
+		// gml:LinearRing element which, by GML definition, must be coincident with the
+		// first point.
+		// Test E
 
-            Node gmlIdNode = XMLUtils.getNodeByXPath(this.testSubject, ringRefIdExpression);
-            if (gmlIdNode.getNodeName().equals("gml:LinearRing")) {
-                Node postList = XMLUtils.getNodeByXPath(gmlIdNode, "gml:posList");
-                Element postListElement = (Element) postList;
-                int srsDimensionValue = Integer.parseInt(postListElement.getAttribute("srsDimension"));
-                String rawValue = postListElement.getTextContent();
-                rawValue = rawValue.replace("\t", " ").replace("\r", " ").replace("\n", " ");
-                List<String> valueList3d = new ArrayList<String>();
-                for (String rawString : rawValue.split(" ")) {
-                    if (!rawString.equals(""))
-                        valueList3d.add(rawString);
-                }
-                int lengthOf3D = valueList3d.size() / srsDimensionValue;
-                if (valueList3d.size() % srsDimensionValue!= 0) {
-                    System.out.println("value size invalid");
-                    valueCountValid = false;
-                    break;
-                }
+		boolean valueCountValid = true;
+		for (int i = 0; i < ringNodes.getLength() && valueCountValid; i++) {
+			Node currentNode = ringNodes.item(i);
+			if (currentNode.getNodeType() != Node.TEXT_NODE)
+				continue;
 
-                List<String> valueList2d = new ArrayList<String>();
-                for (String rawString : ringContent.split(" ")) {
-                    if (!rawString.equals(""))
-                        valueList2d.add(rawString);
-                }
-                int lengthOf2D = valueList2d.size() / 2;
-                if (valueList2d.size() % 2!= 0) {
-                    System.out.println("value size invalid");
-                    valueCountValid = false;
-                    break;
-                }
-                if (lengthOf2D != lengthOf3D) {
-                    System.out.println("value size not match invalid");
-                    valueCountValid = false;
-                    break;
-                }
-            }
-        }
-        Assert.assertTrue(valueCountValid,"textureCoordinates value count invalid.");
+			String ringContent = currentNode.getTextContent();
+			String refId = ringContent.substring(1);
+			String ringRefIdExpression = "//*[@gml:id='" + refId + "']";
 
-        // Test F
-        String expressionLinearRing = "//gml:LinearRing[@gml:id]";
-        NodeList linearRingNodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionLinearRing);
-        List<String> linearRingId = new ArrayList<String>();
-        for (int i = 0; i < linearRingNodes.getLength(); i++) {
-            Element element = (Element) linearRingNodes.item(i);
-            String id = element.getAttribute("gml:id");
-            linearRingId.add(id);
-        }
+			Node gmlIdNode = XMLUtils.getNodeByXPath(this.testSubject, ringRefIdExpression);
+			if (gmlIdNode.getNodeName().equals("gml:LinearRing")) {
+				Node postList = XMLUtils.getNodeByXPath(gmlIdNode, "gml:posList");
+				Element postListElement = (Element) postList;
+				int srsDimensionValue = Integer.parseInt(postListElement.getAttribute("srsDimension"));
+				String rawValue = postListElement.getTextContent();
+				rawValue = rawValue.replace("\t", " ").replace("\r", " ").replace("\n", " ");
+				List<String> valueList3d = new ArrayList<String>();
+				for (String rawString : rawValue.split(" ")) {
+					if (!rawString.equals(""))
+						valueList3d.add(rawString);
+				}
+				int lengthOf3D = valueList3d.size() / srsDimensionValue;
+				if (valueList3d.size() % srsDimensionValue != 0) {
+					System.out.println("value size invalid");
+					valueCountValid = false;
+					break;
+				}
 
-        List<String> ringRef = new ArrayList<String>();
+				List<String> valueList2d = new ArrayList<String>();
+				for (String rawString : ringContent.split(" ")) {
+					if (!rawString.equals(""))
+						valueList2d.add(rawString);
+				}
+				int lengthOf2D = valueList2d.size() / 2;
+				if (valueList2d.size() % 2 != 0) {
+					System.out.println("value size invalid");
+					valueCountValid = false;
+					break;
+				}
+				if (lengthOf2D != lengthOf3D) {
+					System.out.println("value size not match invalid");
+					valueCountValid = false;
+					break;
+				}
+			}
+		}
+		Assert.assertTrue(valueCountValid, "textureCoordinates value count invalid.");
 
-        for (int i = 0; i < ringNodes.getLength(); i++) {
-            Node currentNode = ringNodes.item(i);
-            if (currentNode.getNodeType() != Node.TEXT_NODE)
-                continue;
+		// Test F
+		String expressionLinearRing = "//gml:LinearRing[@gml:id]";
+		NodeList linearRingNodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionLinearRing);
+		List<String> linearRingId = new ArrayList<String>();
+		for (int i = 0; i < linearRingNodes.getLength(); i++) {
+			Element element = (Element) linearRingNodes.item(i);
+			String id = element.getAttribute("gml:id");
+			linearRingId.add(id);
+		}
 
-            String ringContent = currentNode.getTextContent();
-            String refId = ringContent.substring(1);
-            ringRef.add(refId);
-        }
+		List<String> ringRef = new ArrayList<String>();
 
-        boolean orderValid = true;
-        if (ringRef.size() != linearRingId.size()) {
-            System.out.println("Invalid ring size");
-            orderValid = false;
-        }
-        for (int i = 0; i < linearRingId.size() && orderValid; i++) {
-            if (!linearRingId.get(i).equals(ringRef.get(i))) {
-                orderValid = false;
-                break;
-            }
-        }
+		for (int i = 0; i < ringNodes.getLength(); i++) {
+			Node currentNode = ringNodes.item(i);
+			if (currentNode.getNodeType() != Node.TEXT_NODE)
+				continue;
 
-        Assert.assertTrue(orderValid,"Ring reference and LinearRing invalid.");
-    }
+			String ringContent = currentNode.getTextContent();
+			String refId = ringContent.substring(1);
+			ringRef.add(refId);
+		}
 
-    /**
-     * Using GeoreferencedTexture elements is subject to the following restrictions:
-     * <ul>
-     *     <li>A: GeoreferencedTexture element SHALL define the geo-reference either inline using the referencePoint and orientation properties or externally inside the texture image (e.g., by using the GeoTIFF image format) or through an accompanying world file.</li>
-     *     <li>B: The referencePoint property (type: gml:PointPropertyType) SHALL only contain or reference a 2D point geometry.</li>
-     * </ul>
-     */
-    @Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
-    public void VerifyAppearanceGeoreferencedtexture() {
-        // Test A
-        String expressionGeoreferencedTexture = "//app:GeoreferencedTexture";
+		boolean orderValid = true;
+		if (ringRef.size() != linearRingId.size()) {
+			System.out.println("Invalid ring size");
+			orderValid = false;
+		}
+		for (int i = 0; i < linearRingId.size() && orderValid; i++) {
+			if (!linearRingId.get(i).equals(ringRef.get(i))) {
+				orderValid = false;
+				break;
+			}
+		}
 
-        NodeList geoRefNodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionGeoreferencedTexture);
-        boolean allGeorefencedValid = true;
-        for (int i = 0; i < geoRefNodes.getLength(); i++) {
-            Node currentGeoRefNode = geoRefNodes.item(i);
-            NodeList children = currentGeoRefNode.getChildNodes();
-            List<String> nodeNameList = new ArrayList<String>();
-            for (int j = 0; j < children.getLength(); j++) {
-                Node child = children.item(j);
-                if (child.getNodeType() == Node.ELEMENT_NODE) {
-                    nodeNameList.add(child.getNodeName());
-                }
-            }
+		Assert.assertTrue(orderValid, "Ring reference and LinearRing invalid.");
+	}
 
-            if (nodeNameList.contains("app:referencePoint") || nodeNameList.contains("app:orientation")) {
-                if (!(nodeNameList.contains("app:referencePoint") && nodeNameList.contains("app:orientation"))) {
-                    allGeorefencedValid = false;
-                    System.out.println("The geo-reference either inline using the referencePoint and orientation properties or externally inside the texture image (e.g., by using the GeoTIFF image format) or through an accompanying world file.");
-                }
-            } else if (nodeNameList.contains("app:target")) {
-                Node preferNode = XMLUtils.getNodeByXPath(currentGeoRefNode, "app:preferWorldFile");
-                if (preferNode != null && preferNode.getNodeValue() == "false") {
-                    allGeorefencedValid = false;
-                    System.out.println("The preferWorldFile property SHALL not be false if there are referencing a external resource");
-                }
-            } else {
-                allGeorefencedValid = false;
-                System.out.println("There are no referencePoint and orientation or external references");
-            }
+	/**
+	 * Using GeoreferencedTexture elements is subject to the following restrictions:
+	 * <ul>
+	 * <li>A: GeoreferencedTexture element SHALL define the geo-reference either inline
+	 * using the referencePoint and orientation properties or externally inside the
+	 * texture image (e.g., by using the GeoTIFF image format) or through an accompanying
+	 * world file.</li>
+	 * <li>B: The referencePoint property (type: gml:PointPropertyType) SHALL only contain
+	 * or reference a 2D point geometry.</li>
+	 * </ul>
+	 */
+	@Test(enabled = MODULE_ENABLE, dependsOnGroups = { "Module" })
+	public void VerifyAppearanceGeoreferencedtexture() {
+		// Test A
+		String expressionGeoreferencedTexture = "//app:GeoreferencedTexture";
 
-            Assert.assertTrue(allGeorefencedValid, "GeoreferencedTexture invalid.");
+		NodeList geoRefNodes = XMLUtils.getNodeListByXPath(this.testSubject, expressionGeoreferencedTexture);
+		boolean allGeorefencedValid = true;
+		for (int i = 0; i < geoRefNodes.getLength(); i++) {
+			Node currentGeoRefNode = geoRefNodes.item(i);
+			NodeList children = currentGeoRefNode.getChildNodes();
+			List<String> nodeNameList = new ArrayList<String>();
+			for (int j = 0; j < children.getLength(); j++) {
+				Node child = children.item(j);
+				if (child.getNodeType() == Node.ELEMENT_NODE) {
+					nodeNameList.add(child.getNodeName());
+				}
+			}
 
-            // Test B
-            boolean referencePointValid = true;
-            for (int a = 0; a < geoRefNodes.getLength(); a++) {
-                Node currentGeoRefNode2 = geoRefNodes.item(a);
+			if (nodeNameList.contains("app:referencePoint") || nodeNameList.contains("app:orientation")) {
+				if (!(nodeNameList.contains("app:referencePoint") && nodeNameList.contains("app:orientation"))) {
+					allGeorefencedValid = false;
+					System.out.println(
+							"The geo-reference either inline using the referencePoint and orientation properties or externally inside the texture image (e.g., by using the GeoTIFF image format) or through an accompanying world file.");
+				}
+			}
+			else if (nodeNameList.contains("app:target")) {
+				Node preferNode = XMLUtils.getNodeByXPath(currentGeoRefNode, "app:preferWorldFile");
+				if (preferNode != null && preferNode.getNodeValue() == "false") {
+					allGeorefencedValid = false;
+					System.out.println(
+							"The preferWorldFile property SHALL not be false if there are referencing a external resource");
+				}
+			}
+			else {
+				allGeorefencedValid = false;
+				System.out.println("There are no referencePoint and orientation or external references");
+			}
 
-                NodeList referencePointNodeList = XMLUtils.getNodeListByXPath(currentGeoRefNode2, "app:referencePoint");
-                for (int j = 0; j < referencePointNodeList.getLength(); j++) {
-                    Node referencePointNode = referencePointNodeList.item(j);
-                    Node pointNode = XMLUtils.getNodeByXPath(referencePointNode, "gml:Point/gml:pos/text()");
-                    if (pointNode == null) {
-                        Element elementRefPoint = (Element) referencePointNode;
-                        if (elementRefPoint.hasAttribute("xlink:href")) {
-                            String hrefName = elementRefPoint.getAttribute("xlink:href");
-                            hrefName = hrefName.replace("#","");
-                            String findReferenceExpression = "//*[@gml:id='"+hrefName+"']";
+			Assert.assertTrue(allGeorefencedValid, "GeoreferencedTexture invalid.");
 
-                            NodeList xlinkNode = XMLUtils.getNodeListByXPath(this.testSubject, findReferenceExpression);
-                            if (xlinkNode == null) {
-                                referencePointValid = false;
-                                System.out.println("The referencePoint property (type: gml:PointPropertyType) SHALL only contain or reference a 2D point geometry.");
-                                break;
-                            }
-                        } else {
-                            referencePointValid = false;
-                            break;
-                        }
-                    }
-                    String pointRawValue = pointNode.getNodeValue();
-                    String[] pointValues = pointRawValue.split(" ");
-                    if (pointValues.length > 2) {
-                        referencePointValid = false;
-                        System.out.println("The referencePoint property (type: gml:PointPropertyType) SHALL only contain or reference a 2D point geometry.");
-                    }
-                }
-            }
+			// Test B
+			boolean referencePointValid = true;
+			for (int a = 0; a < geoRefNodes.getLength(); a++) {
+				Node currentGeoRefNode2 = geoRefNodes.item(a);
 
-            Assert.assertTrue(referencePointValid, "The referencePoint property invalid");
-        }
-    }
+				NodeList referencePointNodeList = XMLUtils.getNodeListByXPath(currentGeoRefNode2, "app:referencePoint");
+				for (int j = 0; j < referencePointNodeList.getLength(); j++) {
+					Node referencePointNode = referencePointNodeList.item(j);
+					Node pointNode = XMLUtils.getNodeByXPath(referencePointNode, "gml:Point/gml:pos/text()");
+					if (pointNode == null) {
+						Element elementRefPoint = (Element) referencePointNode;
+						if (elementRefPoint.hasAttribute("xlink:href")) {
+							String hrefName = elementRefPoint.getAttribute("xlink:href");
+							hrefName = hrefName.replace("#", "");
+							String findReferenceExpression = "//*[@gml:id='" + hrefName + "']";
+
+							NodeList xlinkNode = XMLUtils.getNodeListByXPath(this.testSubject, findReferenceExpression);
+							if (xlinkNode == null) {
+								referencePointValid = false;
+								System.out.println(
+										"The referencePoint property (type: gml:PointPropertyType) SHALL only contain or reference a 2D point geometry.");
+								break;
+							}
+						}
+						else {
+							referencePointValid = false;
+							break;
+						}
+					}
+					String pointRawValue = pointNode.getNodeValue();
+					String[] pointValues = pointRawValue.split(" ");
+					if (pointValues.length > 2) {
+						referencePointValid = false;
+						System.out.println(
+								"The referencePoint property (type: gml:PointPropertyType) SHALL only contain or reference a 2D point geometry.");
+					}
+				}
+			}
+
+			Assert.assertTrue(referencePointValid, "The referencePoint property invalid");
+		}
+	}
+
 }
