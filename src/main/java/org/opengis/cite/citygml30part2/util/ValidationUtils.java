@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -32,6 +31,8 @@ import javax.xml.xpath.XPathConstants;
 
 import org.apache.xerces.dom.DeferredElementNSImpl;
 import org.apache.xerces.util.XMLCatalogResolver;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.opengis.cite.citygml30part2.Namespaces;
 import org.opengis.cite.validation.SchematronValidator;
 import org.w3c.dom.Document;
@@ -40,9 +41,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * A utility class that provides convenience methods to support schema
@@ -220,16 +218,16 @@ public class ValidationUtils {
     public static List<String> getTypeData(String typeName) {
         String jsonPath = ROOT_PKG + "type-inheritance.json";
         InputStream in = ValidationUtils.class.getResourceAsStream(jsonPath);
-        Gson gson = new Gson();
-        Type mapType = new TypeToken<Map<String, List<String>>>(){}.getType();
+        JSONParser gson = new JSONParser();
+//        Type mapType = new TypeToken<Map<String, List<String>>>(){}.getType();
 
         List<String> jsonObj = new ArrayList<>();
         try (InputStreamReader reader = new InputStreamReader(in)) {
-            Map<String, List<String>> jsonObjTemp = gson.fromJson(reader, mapType);
+            Map<String, List<String>> jsonObjTemp = (Map<String, List<String>>) gson.parse(reader);
             if (jsonObjTemp != null && !jsonObjTemp.isEmpty()) {
                 jsonObj = jsonObjTemp.get(typeName);
             }
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
         return jsonObj;
@@ -326,16 +324,17 @@ public class ValidationUtils {
     }
 
     public static Map<String, Map<String, List<String>>> readBoundariesJsonObj(InputStream in) {
-        Gson gson = new Gson();
-        Type mapType = new TypeToken<Map<String, Map<String, List<String>>>>(){}.getType();
+//        Gson gson = new Gson();
+        JSONParser gson = new JSONParser();
+//        Type mapType = new TypeToken<Map<String, Map<String, List<String>>>>(){}.getType();
 
         Map<String, Map<String, List<String>>> jsonObj = new HashMap<>();
         try (InputStreamReader reader = new InputStreamReader(in)) {
-            Map<String, Map<String, List<String>>> jsonObjTemp = gson.fromJson(reader, mapType);
+            Map<String, Map<String, List<String>>> jsonObjTemp = (Map<String, Map<String, List<String>>>) gson.parse(reader);
             if (jsonObjTemp != null && !jsonObjTemp.isEmpty()) {
                 jsonObj = jsonObjTemp;
             }
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
         return jsonObj;
