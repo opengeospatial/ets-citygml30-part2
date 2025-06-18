@@ -1,5 +1,11 @@
 = Release Notes
 
+== 0.2 (2025-06-18)
+
+Attention: Java 17 and Tomcat 10.1 are required.
+
+* https://github.com/opengeospatial/ets-citygml30-part2/issues/47[#47] Migrate test suite to TEAM Engine 6 (Java 17)
+
 == 0.1 (2024-08-14)
 * https://github.com/opengeospatial/ets-citygml30-part2/issues/41[#41] Rescources not found when running ETS in servlet container
 * https://github.com/opengeospatial/ets-citygml30-part2/issues/40[#40] "Verify City GML Instance Doc" test finishes with unexpected error
